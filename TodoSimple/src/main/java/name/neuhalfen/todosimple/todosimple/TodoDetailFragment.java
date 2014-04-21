@@ -25,7 +25,7 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
      * The fragment argument representing the item ID that this fragment
      * represents.
      */
-    public static final String ARG_ITEM_ID = "item_id";
+    public static final String ARG_ITEM_URI = "item_id";
 
 
     private Uri todoUri;
@@ -43,8 +43,8 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments().containsKey(ARG_ITEM_ID)) {
-            String uristr = getArguments().getString(ARG_ITEM_ID);
+        if (getArguments().containsKey(ARG_ITEM_URI)) {
+            String uristr = getArguments().getString(ARG_ITEM_URI);
             todoUri = Uri.parse(uristr);
         }
     }

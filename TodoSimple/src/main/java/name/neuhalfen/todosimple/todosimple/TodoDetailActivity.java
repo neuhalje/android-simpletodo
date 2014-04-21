@@ -39,8 +39,8 @@ public class TodoDetailActivity extends FragmentActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(TodoDetailFragment.ARG_ITEM_ID,
-                    getIntent().getStringExtra(TodoDetailFragment.ARG_ITEM_ID));
+            arguments.putString(TodoDetailFragment.ARG_ITEM_URI,
+                    getIntent().getStringExtra(TodoDetailFragment.ARG_ITEM_URI));
             TodoDetailFragment fragment = new TodoDetailFragment();
             fragment.setArguments(arguments);
             getFragmentManager().beginTransaction()

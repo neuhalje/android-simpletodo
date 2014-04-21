@@ -65,7 +65,7 @@ public class TodoListActivity extends Activity
             // adding or replacing the detail fragment using a
             // fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(TodoDetailFragment.ARG_ITEM_ID, id.toString());
+            arguments.putString(TodoDetailFragment.ARG_ITEM_URI, id.toString());
             TodoDetailFragment fragment = new TodoDetailFragment();
             fragment.setArguments(arguments);
             getFragmentManager().beginTransaction()
@@ -76,7 +76,7 @@ public class TodoListActivity extends Activity
             // In single-pane mode, simply start the detail activity
             // for the selected item ID.
             Intent detailIntent = new Intent(this, TodoDetailActivity.class);
-            detailIntent.putExtra(TodoDetailFragment.ARG_ITEM_ID, id.toString());
+            detailIntent.putExtra(TodoDetailFragment.ARG_ITEM_URI, id.toString());
             startActivity(detailIntent);
         }
     }
