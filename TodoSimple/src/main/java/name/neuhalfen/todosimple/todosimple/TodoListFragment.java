@@ -6,20 +6,22 @@ import android.support.v4.app.ListFragment;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import name.neuhalfen.todosimple.todosimple.db.TodoDataSource;
+import name.neuhalfen.todosimple.todosimple.domain.model.Todo;
 
-
-import name.neuhalfen.todosimple.todosimple.dummy.DummyContent;
+import java.util.List;
 
 /**
  * A list fragment representing a list of Todos. This fragment
  * also supports tablet devices by allowing list items to be given an
  * 'activated' state upon selection. This helps indicate which item is
  * currently being viewed in a {@link TodoDetailFragment}.
- * <p>
+ * <p/>
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  */
 public class TodoListFragment extends ListFragment {
+    private TodoDataSource datasource;
 
     /**
      * The serialization (saved instance state) Bundle key representing the
@@ -47,7 +49,7 @@ public class TodoListFragment extends ListFragment {
         /**
          * Callback for when an item has been selected.
          */
-        public void onItemSelected(String id);
+        public void onItemSelected(long id);
     }
 
     /**
@@ -56,7 +58,7 @@ public class TodoListFragment extends ListFragment {
      */
     private static Callbacks sDummyCallbacks = new Callbacks() {
         @Override
-        public void onItemSelected(String id) {
+        public void onItemSelected(long id) {
         }
     };
 
@@ -71,12 +73,37 @@ public class TodoListFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        datasource = new TodoDataSource(getActivity());
+        datasource.open();
+
+        List<Todo> values = datasource.getAllTodos();
+
+        // DEMO
+        if (values.isEmpty()) {
+            datasource.createTodo("Todo One");
+            datasource.createTodo("Todo Two");
+            datasource.createTodo("Todo Three");
+            values = datasource.getAllTodos();
+        }
+
         // TODO: replace with a real list adapter.
-        setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(
+        setListAdapter(new ArrayAdapter<Todo>(
                 getActivity(),
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,
-                DummyContent.ITEMS));
+                values));
+    }
+
+    @Override
+    public void onResume() {
+        datasource.open();
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        datasource.close();
+        super.onPause();
     }
 
     @Override
@@ -116,7 +143,9 @@ public class TodoListFragment extends ListFragment {
 
         // Notify the active callbacks interface (the activity, if the
         // fragment is attached to one) that an item has been selected.
-        mCallbacks.onItemSelected(DummyContent.ITEMS.get(position).id);
+        // TODO: IS this right??
+        Todo itemAtPosition = (Todo) listView.getItemAtPosition(position);
+        mCallbacks.onItemSelected(itemAtPosition.getId());
     }
 
     @Override

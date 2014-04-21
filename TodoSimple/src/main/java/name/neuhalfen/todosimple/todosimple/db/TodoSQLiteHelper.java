@@ -26,6 +26,7 @@ public class TodoSQLiteHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase database) {
         database.execSQL(DATABASE_CREATE);
+
     }
 
     @Override

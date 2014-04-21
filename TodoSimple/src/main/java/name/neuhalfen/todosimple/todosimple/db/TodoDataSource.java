@@ -14,11 +14,15 @@ public class TodoDataSource {
     // Database fields
     private SQLiteDatabase database;
     private TodoSQLiteHelper dbHelper;
-    private String[] allColumns = { TodoSQLiteHelper.COLUMN_ID,
-            TodoSQLiteHelper.COLUMN_TODO };
+    private String[] allColumns = {TodoSQLiteHelper.COLUMN_ID,
+            TodoSQLiteHelper.COLUMN_TODO};
 
     public TodoDataSource(Context context) {
         dbHelper = new TodoSQLiteHelper(context);
+    }
+
+    public TodoDataSource(TodoSQLiteHelper helper) {
+        dbHelper = helper;
     }
 
     public void open() throws SQLException {
@@ -72,5 +76,23 @@ public class TodoDataSource {
         comment.setId(cursor.getLong(0));
         comment.setTodo(cursor.getString(1));
         return comment;
+    }
+
+    public Todo findById(long id) {
+        Cursor cursor = database.query(TodoSQLiteHelper.TABLE_TODOS,
+                allColumns, TodoSQLiteHelper.COLUMN_ID
+                        + " = " + id, null, null, null, null
+        );
+
+        final Todo todo;
+        cursor.moveToFirst();
+        if (!cursor.isAfterLast()) {
+            todo = cursorToTodo(cursor);
+        } else {
+            todo = null;
+        }
+        // make sure to close the cursor
+        cursor.close();
+        return todo;
     }
 }
