@@ -9,7 +9,7 @@ public class TodoSQLiteHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "todotable.db";
     private static final int DATABASE_VERSION = 1;
 
-    public TodoSQLiteHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+    public TodoSQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
