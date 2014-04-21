@@ -8,8 +8,6 @@ public class TodoTable {
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_TODO = "comment";
 
-    private static final String DATABASE_NAME = "commments.db";
-    private static final int DATABASE_VERSION = 1;
 
     // Database creation sql statement
     private static final String DATABASE_CREATE = "create table "

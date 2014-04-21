@@ -5,8 +5,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class TodoSQLiteHelper extends SQLiteOpenHelper {
+
+    private static final String DATABASE_NAME = "todotable.db";
+    private static final int DATABASE_VERSION = 1;
+
     public TodoSQLiteHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
