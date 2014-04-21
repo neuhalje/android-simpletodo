@@ -3,40 +3,20 @@ package name.neuhalfen.todosimple.todosimple.infrastructure.db;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 public class TodoSQLiteHelper extends SQLiteOpenHelper {
-    public static final String TABLE_TODOS = "comments";
-    public static final String COLUMN_ID = "_id";
-    public static final String COLUMN_TODO = "comment";
-
-    private static final String DATABASE_NAME = "commments.db";
-    private static final int DATABASE_VERSION = 1;
-
-    // Database creation sql statement
-    private static final String DATABASE_CREATE = "create table "
-            + TABLE_TODOS + "(" + COLUMN_ID
-            + " integer primary key autoincrement, " + COLUMN_TODO
-            + " text not null);";
-
-    public TodoSQLiteHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    public TodoSQLiteHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+        super(context, name, factory, version);
     }
 
     @Override
-    public void onCreate(SQLiteDatabase database) {
-        database.execSQL(DATABASE_CREATE);
-
+    public void onCreate(SQLiteDatabase db) {
+        TodoTable.onCreate(db);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.w(TodoSQLiteHelper.class.getName(),
-                "Upgrading database from version " + oldVersion + " to "
-                        + newVersion + ", which will destroy all old data"
-        );
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TODOS);
-        onCreate(db);
-    }
+        TodoTable.onUpgrade(db, oldVersion, newVersion);
 
+    }
 }
