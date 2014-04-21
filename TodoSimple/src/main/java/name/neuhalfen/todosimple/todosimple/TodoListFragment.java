@@ -106,6 +106,7 @@ public class TodoListFragment extends ListFragment implements
                     dataSource.createTodo("Todo #" + i);
                 }
                 dataSource.close();
+                getLoaderManager().restartLoader(0,null,this);
 
                 return true;
             default:
@@ -212,7 +213,7 @@ public class TodoListFragment extends ListFragment implements
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String[] projection = { TodoTable.COLUMN_ID, TodoTable.COLUMN_TODO };
         CursorLoader cursorLoader = new CursorLoader(getActivity(),
-                TodoContentProvider.CONTENT_URI, projection, null, null, null);
+                TodoContentProvider.CONTENT_URI, projection, null, null, TodoTable.COLUMN_TODO);
         return cursorLoader;
     }
 
