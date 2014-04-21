@@ -3,5 +3,6 @@
 
     <string name="app_name">Todo Simple</string>
     <string name="title_todo_detail">Todo Detail</string>
+    <string name="add_demo_tasks">Add demo</string>
 
 </resources>

@@ -8,10 +8,14 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import name.neuhalfen.todosimple.todosimple.infrastructure.contentprovider.TodoContentProvider;
+import name.neuhalfen.todosimple.todosimple.infrastructure.db.TodoDataSource;
 import name.neuhalfen.todosimple.todosimple.infrastructure.db.TodoTable;
 
 
@@ -78,11 +82,36 @@ public class TodoListFragment extends ListFragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
 
-        // TODO: replace with a real list adapter.
         setListAdapter(createDbAdapater());
     }
 
+    @Override
+    public void onCreateOptionsMenu(
+            Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_actionbar, menu);
+    }
+
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // handle item selection
+        switch (item.getItemId()) {
+            case R.id.add_demmo_items:
+                TodoDataSource dataSource = new TodoDataSource(getActivity());
+                dataSource.open();
+                for (int i=1;i<500;i++) {
+                    dataSource.createTodo("Todo #" + i);
+                }
+                dataSource.close();
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
 
     private SimpleCursorAdapter createDbAdapater() {
