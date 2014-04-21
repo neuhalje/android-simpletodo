@@ -2,6 +2,7 @@ package name.neuhalfen.todosimple.todosimple;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 
@@ -55,15 +56,16 @@ public class TodoListActivity extends Activity
     /**
      * Callback method from {@link TodoListFragment.Callbacks}
      * indicating that the item with the given ID was selected.
+     * @param id
      */
     @Override
-    public void onItemSelected(long id) {
+    public void onItemSelected(Uri id) {
         if (mTwoPane) {
             // In two-pane mode, show the detail view in this activity by
             // adding or replacing the detail fragment using a
             // fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putLong(TodoDetailFragment.ARG_ITEM_ID, id);
+            arguments.putString(TodoDetailFragment.ARG_ITEM_ID, id.toString());
             TodoDetailFragment fragment = new TodoDetailFragment();
             fragment.setArguments(arguments);
             getFragmentManager().beginTransaction()
@@ -74,7 +76,7 @@ public class TodoListActivity extends Activity
             // In single-pane mode, simply start the detail activity
             // for the selected item ID.
             Intent detailIntent = new Intent(this, TodoDetailActivity.class);
-            detailIntent.putExtra(TodoDetailFragment.ARG_ITEM_ID, id);
+            detailIntent.putExtra(TodoDetailFragment.ARG_ITEM_ID, id.toString());
             startActivity(detailIntent);
         }
     }

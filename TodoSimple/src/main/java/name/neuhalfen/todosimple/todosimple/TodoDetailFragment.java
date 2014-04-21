@@ -1,14 +1,18 @@
 package name.neuhalfen.todosimple.todosimple;
 
-import android.app.Activity;
 import android.app.Fragment;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import name.neuhalfen.todosimple.todosimple.infrastructure.db.TodoDataSource;
-import name.neuhalfen.todosimple.todosimple.domain.model.Todo;
+import name.neuhalfen.todosimple.todosimple.infrastructure.db.TodoTable;
+
 
 /**
  * A fragment representing a single Todo detail screen.
@@ -16,18 +20,17 @@ import name.neuhalfen.todosimple.todosimple.domain.model.Todo;
  * in two-pane mode (on tablets) or a {@link TodoDetailActivity}
  * on handsets.
  */
-public class TodoDetailFragment extends Fragment {
-    private TodoDataSource datasource;
+public class TodoDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     /**
      * The fragment argument representing the item ID that this fragment
      * represents.
      */
     public static final String ARG_ITEM_ID = "item_id";
 
-    /**
-     * The dummy content this fragment is presenting.
-     */
-    private Todo mItem;
+
+    private Uri todoUri;
+
+    TextView todoDetailText;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -40,43 +43,54 @@ public class TodoDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        datasource = new TodoDataSource(getActivity());
-        datasource.open();
         if (getArguments().containsKey(ARG_ITEM_ID)) {
-            // Load the dummy content specified by the fragment
-            // arguments. In a real-world scenario, use a Loader
-            // to load content from a content provider.
-            mItem = datasource.findById(getArguments().getLong(ARG_ITEM_ID));
+            String uristr = getArguments().getString(ARG_ITEM_ID);
+            todoUri = Uri.parse(uristr);
         }
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    private void fillData(Cursor cursor) {
+        if (cursor != null) {
+            cursor.moveToFirst();
+
+            todoDetailText.setText(cursor.getString(cursor
+                    .getColumnIndexOrThrow(TodoTable.COLUMN_TODO)));
+
+            // always close the cursor
+            cursor.close();
+        }
     }
 
-    @Override
-    public void onResume() {
-        datasource.open();
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        datasource.close();
-        super.onPause();
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_todo_detail, container, false);
 
-        // Show the dummy content as text in a TextView.
-        if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.todo_detail)).setText(mItem.getTodo());
-        }
+        todoDetailText = (TextView) rootView.findViewById(R.id.todo_detail);
+        getLoaderManager().initLoader(0, null, this);
 
         return rootView;
+    }
+
+    // creates a new loader after the initLoader () call
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String[] projection = {TodoTable.COLUMN_ID, TodoTable.COLUMN_TODO};
+        CursorLoader cursorLoader = new CursorLoader(getActivity(),
+                todoUri, projection, null, null, null);
+        return cursorLoader;
+    }
+
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        fillData(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        // data is not available anymore, delete reference
+        fillData(null);
     }
 }

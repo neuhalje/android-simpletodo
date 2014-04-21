@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import name.neuhalfen.todosimple.todosimple.domain.model.Todo;
 import name.neuhalfen.todosimple.todosimple.infrastructure.contentprovider.TodoContentProvider;
 import name.neuhalfen.todosimple.todosimple.infrastructure.db.TodoTable;
 
@@ -54,8 +53,9 @@ public class TodoListFragment extends ListFragment implements
     public interface Callbacks {
         /**
          * Callback for when an item has been selected.
+         * @param id
          */
-        public void onItemSelected(long id);
+        public void onItemSelected(Uri id);
     }
 
     /**
@@ -64,7 +64,7 @@ public class TodoListFragment extends ListFragment implements
      */
     private static Callbacks sDummyCallbacks = new Callbacks() {
         @Override
-        public void onItemSelected(long id) {
+        public void onItemSelected(Uri id) {
         }
     };
 
@@ -139,11 +139,10 @@ public class TodoListFragment extends ListFragment implements
 
         // Notify the active callbacks interface (the activity, if the
         // fragment is attached to one) that an item has been selected.
-        // TODO: IS this right??
 
-        // Uri todoUri = Uri.parse(TodoContentProvider.CONTENT_URI + "/" + id);
+        Uri todoUri = Uri.parse(TodoContentProvider.CONTENT_URI + "/" + id);
 
-        mCallbacks.onItemSelected(id);
+        mCallbacks.onItemSelected(todoUri);
     }
 
     @Override
