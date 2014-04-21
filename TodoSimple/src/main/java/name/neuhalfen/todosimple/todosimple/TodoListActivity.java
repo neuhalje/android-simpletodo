@@ -1,9 +1,8 @@
 package name.neuhalfen.todosimple.todosimple;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-
 
 
 /**
@@ -22,7 +21,7 @@ import android.support.v4.app.FragmentActivity;
  * {@link TodoListFragment.Callbacks} interface
  * to listen for item selections.
  */
-public class TodoListActivity extends FragmentActivity
+public class TodoListActivity extends Activity
         implements TodoListFragment.Callbacks {
 
     /**
@@ -45,7 +44,7 @@ public class TodoListActivity extends FragmentActivity
 
             // In two-pane mode, list items should be given the
             // 'activated' state when touched.
-            ((TodoListFragment) getSupportFragmentManager()
+            ((TodoListFragment) getFragmentManager()
                     .findFragmentById(R.id.todo_list))
                     .setActivateOnItemClick(true);
         }
@@ -67,7 +66,7 @@ public class TodoListActivity extends FragmentActivity
             arguments.putLong(TodoDetailFragment.ARG_ITEM_ID, id);
             TodoDetailFragment fragment = new TodoDetailFragment();
             fragment.setArguments(arguments);
-            getSupportFragmentManager().beginTransaction()
+            getFragmentManager().beginTransaction()
                     .replace(R.id.todo_detail_container, fragment)
                     .commit();
 

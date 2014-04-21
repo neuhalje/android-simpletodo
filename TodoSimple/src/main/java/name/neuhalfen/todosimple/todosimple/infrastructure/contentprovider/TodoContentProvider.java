@@ -25,7 +25,7 @@ public class TodoContentProvider extends ContentProvider {
     private static final int TODOS = 10;
     private static final int TODO_ID = 20;
 
-    private static final String AUTHORITY = "name.neuhalfen.todosimple.todosimple";
+    private static final String AUTHORITY = "name.neuhalfen.todosimple.todosimple.TODOS";
 
     private static final String BASE_PATH = "todos";
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY

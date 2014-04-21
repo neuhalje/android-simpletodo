@@ -43,7 +43,7 @@ public class TodoDetailActivity extends FragmentActivity {
                     getIntent().getStringExtra(TodoDetailFragment.ARG_ITEM_ID));
             TodoDetailFragment fragment = new TodoDetailFragment();
             fragment.setArguments(arguments);
-            getSupportFragmentManager().beginTransaction()
+            getFragmentManager().beginTransaction()
                     .add(R.id.todo_detail_container, fragment)
                     .commit();
         }

@@ -1,15 +1,20 @@
 package name.neuhalfen.todosimple.todosimple;
 
 import android.app.Activity;
+import android.app.ListFragment;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import name.neuhalfen.todosimple.todosimple.infrastructure.db.TodoDataSource;
+import android.widget.SimpleCursorAdapter;
 import name.neuhalfen.todosimple.todosimple.domain.model.Todo;
+import name.neuhalfen.todosimple.todosimple.infrastructure.contentprovider.TodoContentProvider;
+import name.neuhalfen.todosimple.todosimple.infrastructure.db.TodoTable;
 
-import java.util.List;
 
 /**
  * A list fragment representing a list of Todos. This fragment
@@ -20,8 +25,9 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  */
-public class TodoListFragment extends ListFragment {
-    private TodoDataSource datasource;
+public class TodoListFragment extends ListFragment implements
+        LoaderManager.LoaderCallbacks<Cursor> {
+    private SimpleCursorAdapter adapter;
 
     /**
      * The serialization (saved instance state) Bundle key representing the
@@ -73,38 +79,28 @@ public class TodoListFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        datasource = new TodoDataSource(getActivity());
-        datasource.open();
-
-        List<Todo> values = datasource.getAllTodos();
-
-        // DEMO
-        if (values.isEmpty()) {
-            datasource.createTodo("Todo One");
-            datasource.createTodo("Todo Two");
-            datasource.createTodo("Todo Three");
-            values = datasource.getAllTodos();
-        }
-
         // TODO: replace with a real list adapter.
-        setListAdapter(new ArrayAdapter<Todo>(
-                getActivity(),
-                android.R.layout.simple_list_item_activated_1,
-                android.R.id.text1,
-                values));
+        setListAdapter(createDbAdapater());
     }
 
-    @Override
-    public void onResume() {
-        datasource.open();
-        super.onResume();
+
+
+    private SimpleCursorAdapter createDbAdapater() {
+
+        // Fields from the database (projection)
+        // Must include the _id column for the adapter to work
+        String[] from = new String[] { TodoTable.COLUMN_TODO };
+        // Fields on the UI to which we map
+        int[] to = new int[] {  android.R.id.text1 };
+
+        getLoaderManager().initLoader(0, null, this);
+        adapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_activated_1, null, from,
+                to, 0);
+
+        setListAdapter(adapter);
+        return adapter;
     }
 
-    @Override
-    public void onPause() {
-        datasource.close();
-        super.onPause();
-    }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -144,8 +140,10 @@ public class TodoListFragment extends ListFragment {
         // Notify the active callbacks interface (the activity, if the
         // fragment is attached to one) that an item has been selected.
         // TODO: IS this right??
-        Todo itemAtPosition = (Todo) listView.getItemAtPosition(position);
-        mCallbacks.onItemSelected(itemAtPosition.getId());
+
+        // Uri todoUri = Uri.parse(TodoContentProvider.CONTENT_URI + "/" + id);
+
+        mCallbacks.onItemSelected(id);
     }
 
     @Override
@@ -178,4 +176,27 @@ public class TodoListFragment extends ListFragment {
 
         mActivatedPosition = position;
     }
+
+
+
+    // creates a new loader after the initLoader () call
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String[] projection = { TodoTable.COLUMN_ID, TodoTable.COLUMN_TODO };
+        CursorLoader cursorLoader = new CursorLoader(getActivity(),
+                TodoContentProvider.CONTENT_URI, projection, null, null, null);
+        return cursorLoader;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        adapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        // data is not available anymore, delete reference
+        adapter.swapCursor(null);
+    }
+
 }

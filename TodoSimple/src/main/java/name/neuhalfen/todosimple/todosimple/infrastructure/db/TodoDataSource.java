@@ -14,16 +14,13 @@ public class TodoDataSource {
     // Database fields
     private SQLiteDatabase database;
     private TodoSQLiteHelper dbHelper;
-    private String[] allColumns = {TodoSQLiteHelper.COLUMN_ID,
-            TodoSQLiteHelper.COLUMN_TODO};
+    private String[] allColumns = {TodoTable.COLUMN_ID,
+            TodoTable.COLUMN_TODO};
 
     public TodoDataSource(Context context) {
         dbHelper = new TodoSQLiteHelper(context);
     }
 
-    public TodoDataSource(TodoSQLiteHelper helper) {
-        dbHelper = helper;
-    }
 
     public void open() throws SQLException {
         database = dbHelper.getWritableDatabase();
@@ -35,11 +32,11 @@ public class TodoDataSource {
 
     public Todo createTodo(String comment) {
         ContentValues values = new ContentValues();
-        values.put(TodoSQLiteHelper.COLUMN_TODO, comment);
-        long insertId = database.insert(TodoSQLiteHelper.TABLE_TODOS, null,
+        values.put(TodoTable.COLUMN_TODO, comment);
+        long insertId = database.insert(TodoTable.TABLE_TODOS, null,
                 values);
-        Cursor cursor = database.query(TodoSQLiteHelper.TABLE_TODOS,
-                allColumns, TodoSQLiteHelper.COLUMN_ID + " = " + insertId, null,
+        Cursor cursor = database.query(TodoTable.TABLE_TODOS,
+                allColumns, TodoTable.COLUMN_ID + " = " + insertId, null,
                 null, null, null);
         cursor.moveToFirst();
         Todo newTodo = cursorToTodo(cursor);
@@ -50,14 +47,14 @@ public class TodoDataSource {
     public void deleteTodo(Todo comment) {
         long id = comment.getId();
         System.out.println("Todo deleted with id: " + id);
-        database.delete(TodoSQLiteHelper.TABLE_TODOS, TodoSQLiteHelper.COLUMN_ID
+        database.delete(TodoTable.TABLE_TODOS, TodoTable.COLUMN_ID
                 + " = " + id, null);
     }
 
     public List<Todo> getAllTodos() {
         List<Todo> comments = new ArrayList<Todo>();
 
-        Cursor cursor = database.query(TodoSQLiteHelper.TABLE_TODOS,
+        Cursor cursor = database.query(TodoTable.TABLE_TODOS,
                 allColumns, null, null, null, null, null);
 
         cursor.moveToFirst();
@@ -79,8 +76,8 @@ public class TodoDataSource {
     }
 
     public Todo findById(long id) {
-        Cursor cursor = database.query(TodoSQLiteHelper.TABLE_TODOS,
-                allColumns, TodoSQLiteHelper.COLUMN_ID
+        Cursor cursor = database.query(TodoTable.TABLE_TODOS,
+                allColumns, TodoTable.COLUMN_ID
                         + " = " + id, null, null, null, null
         );
 

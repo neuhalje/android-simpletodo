@@ -4,9 +4,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 public class TodoTable {
-    public static final String TABLE_TODOS = "comments";
+    public static final String TABLE_TODOS = "todos";
     public static final String COLUMN_ID = "_id";
-    public static final String COLUMN_TODO = "comment";
+    public static final String COLUMN_TODO = "todo";
 
 
     // Database creation sql statement
