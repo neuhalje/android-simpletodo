@@ -6,7 +6,7 @@ import android.support.v4.app.ListFragment;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import name.neuhalfen.todosimple.todosimple.db.TodoDataSource;
+import name.neuhalfen.todosimple.todosimple.infrastructure.db.TodoDataSource;
 import name.neuhalfen.todosimple.todosimple.domain.model.Todo;
 
 import java.util.List;

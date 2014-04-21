@@ -1,4 +1,4 @@
-package name.neuhalfen.todosimple.todosimple.db;
+package name.neuhalfen.todosimple.todosimple.infrastructure.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

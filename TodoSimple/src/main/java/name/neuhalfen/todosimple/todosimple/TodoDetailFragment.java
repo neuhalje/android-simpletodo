@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import name.neuhalfen.todosimple.todosimple.db.TodoDataSource;
+import name.neuhalfen.todosimple.todosimple.infrastructure.db.TodoDataSource;
 import name.neuhalfen.todosimple.todosimple.domain.model.Todo;
 
 /**
