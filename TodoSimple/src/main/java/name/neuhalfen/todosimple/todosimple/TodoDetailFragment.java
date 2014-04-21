@@ -55,9 +55,6 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
 
             todoDetailText.setText(cursor.getString(cursor
                     .getColumnIndexOrThrow(TodoTable.COLUMN_TODO)));
-
-            // always close the cursor
-            cursor.close();
         }
     }
 
