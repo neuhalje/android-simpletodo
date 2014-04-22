@@ -3,12 +3,11 @@ package name.neuhalfen.todosimple.todosimple.view;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.app.LoaderManager;
-import android.content.ContentUris;
-import android.content.CursorLoader;
-import android.content.Loader;
+import android.content.*;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,6 +18,9 @@ import name.neuhalfen.todosimple.todosimple.R;
 import name.neuhalfen.todosimple.todosimple.infrastructure.contentprovider.TodoContentProvider;
 import name.neuhalfen.todosimple.todosimple.infrastructure.db.TodoDataSource;
 import name.neuhalfen.todosimple.todosimple.infrastructure.db.TodoTable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -102,12 +104,25 @@ public class TodoListFragment extends ListFragment implements
         // handle item selection
         switch (item.getItemId()) {
             case R.id.add_demo_items:
-                TodoDataSource dataSource = new TodoDataSource(getActivity());
-                dataSource.open();
+                ArrayList<ContentProviderOperation> ops =
+                        	   new ArrayList<ContentProviderOperation>();
+
+
                 for (int i=1;i<500;i++) {
-                    dataSource.createTodo("Todo #" + i);
+                    ops.add(
+                            ContentProviderOperation.newInsert(TodoContentProvider.CONTENT_URI)
+                                    .withValue(TodoTable.COLUMN_TODO, String.format("Todo #%0,10d", i))
+                                    .withYieldAllowed(true)
+                                    .build()
+                    );
                 }
-                dataSource.close();
+                try {
+                    getActivity().getContentResolver().applyBatch(TodoContentProvider.AUTHORITY, ops);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                } catch (OperationApplicationException e) {
+                    e.printStackTrace();
+                }
                 getLoaderManager().restartLoader(0,null,this);
 
                 return true;
