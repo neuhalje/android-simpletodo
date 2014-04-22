@@ -84,7 +84,7 @@ public class TodoListFragment extends ListFragment implements
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        setListAdapter(createDbAdapater());
+        setListAdapter(createDbAdapter());
     }
 
     @Override
@@ -115,7 +115,7 @@ public class TodoListFragment extends ListFragment implements
     }
 
 
-    private SimpleCursorAdapter createDbAdapater() {
+    private SimpleCursorAdapter createDbAdapter() {
 
         // Fields from the database (projection)
         // Must include the _id column for the adapter to work
