@@ -26,7 +26,7 @@
         </activity>
         <provider
             android:exported="false"
-            android:name=".domain.queries.TodoContentProvider"
+            android:name=".infrastructure.contentprovider.TodoContentProviderImpl"
             android:authorities="name.neuhalfen.todosimple.todosimple.TODOS"  />
     </application>
 
