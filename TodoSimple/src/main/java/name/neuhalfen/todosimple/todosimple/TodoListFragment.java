@@ -3,6 +3,7 @@ package name.neuhalfen.todosimple.todosimple;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.app.LoaderManager;
+import android.content.ContentUris;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
@@ -170,7 +171,7 @@ public class TodoListFragment extends ListFragment implements
         // Notify the active callbacks interface (the activity, if the
         // fragment is attached to one) that an item has been selected.
 
-        Uri todoUri = Uri.parse(TodoContentProvider.CONTENT_URI + "/" + id);
+        Uri todoUri = ContentUris.withAppendedId(TodoContentProvider.CONTENT_URI, id);
 
         mCallbacks.onItemSelected(todoUri);
     }
