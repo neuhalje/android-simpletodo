@@ -99,7 +99,7 @@ public class TodoListFragment extends ListFragment implements
     public boolean onOptionsItemSelected(MenuItem item) {
         // handle item selection
         switch (item.getItemId()) {
-            case R.id.add_demmo_items:
+            case R.id.add_demo_items:
                 TodoDataSource dataSource = new TodoDataSource(getActivity());
                 dataSource.open();
                 for (int i=1;i<500;i++) {
