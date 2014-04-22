@@ -11,7 +11,14 @@ public interface TodoContentProvider {
     public interface TodoTable {
         public static final String TABLE_TODOS = "todos";
         public static final String COLUMN_ID = "_id";
-        public static final String COLUMN_TODO = "todo";
+        /**
+         * String
+         */
+        public static final String COLUMN_TITLE = "title";
+        /**
+         * String
+         */
+        public static final String COLUMN_DESCRIPTION = "description";
     }
 
 

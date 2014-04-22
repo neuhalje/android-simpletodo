@@ -42,7 +42,7 @@ public class TodoContentProviderImpl extends ContentProvider implements TodoCont
     public Cursor query(Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
 
-        // Uisng SQLiteQueryBuilder instead of query() method
+        // Using SQLiteQueryBuilder instead of query() method
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
 
         // check if the caller has requested a column which does not exists
@@ -57,6 +57,7 @@ public class TodoContentProviderImpl extends ContentProvider implements TodoCont
                 break;
             case TODO_ID:
                 // adding the ID to the original query
+                // FIXME: SQL Injection
                 queryBuilder.appendWhere(TodoTable.COLUMN_ID + "="
                         + uri.getLastPathSegment());
                 break;
@@ -108,10 +109,12 @@ public class TodoContentProviderImpl extends ContentProvider implements TodoCont
             case TODO_ID:
                 String id = uri.getLastPathSegment();
                 if (TextUtils.isEmpty(selection)) {
+                    // FIXME: SQL Injection
                     rowsDeleted = sqlDB.delete(TodoTable.TABLE_TODOS,
                             TodoTable.COLUMN_ID + "=" + id,
                             null);
                 } else {
+                    // FIXME: SQL Injection
                     rowsDeleted = sqlDB.delete(TodoTable.TABLE_TODOS,
                             TodoTable.COLUMN_ID + "=" + id
                                     + " and " + selection,
@@ -143,11 +146,13 @@ public class TodoContentProviderImpl extends ContentProvider implements TodoCont
             case TODO_ID:
                 String id = uri.getLastPathSegment();
                 if (TextUtils.isEmpty(selection)) {
+                    // FIXME: SQL Injection
                     rowsUpdated = sqlDB.update(TodoTable.TABLE_TODOS,
                             values,
                             TodoTable.COLUMN_ID + "=" + id,
                             null);
                 } else {
+                    // FIXME: SQL Injection
                     rowsUpdated = sqlDB.update(TodoTable.TABLE_TODOS,
                             values,
                             TodoTable.COLUMN_ID + "=" + id
@@ -165,7 +170,7 @@ public class TodoContentProviderImpl extends ContentProvider implements TodoCont
     }
 
     private void checkColumns(String[] projection) {
-        String[] available = {TodoTable.COLUMN_TODO,
+        String[] available = {TodoTable.COLUMN_TITLE,TodoTable.COLUMN_DESCRIPTION,
                 TodoTable.COLUMN_ID};
         if (projection != null) {
             Set<String> requestedColumns = new HashSet<String>(Arrays.asList(projection));

@@ -10,7 +10,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.EditText;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import name.neuhalfen.todosimple.todosimple.R;
@@ -33,8 +33,11 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
 
     private Uri todoUri;
 
-    @InjectView(R.id.todo_detail)
-    TextView todoDetailText;
+    @InjectView(R.id.todo_edit_title)
+    EditText titleText;
+
+    @InjectView(R.id.todo_edit_description)
+    EditText descriptionText;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -57,8 +60,10 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
         if (cursor != null) {
             cursor.moveToFirst();
 
-            todoDetailText.setText(cursor.getString(cursor
-                    .getColumnIndexOrThrow(TodoContentProvider.TodoTable.COLUMN_TODO)));
+            titleText.setText(cursor.getString(cursor
+                    .getColumnIndexOrThrow(TodoContentProvider.TodoTable.COLUMN_TITLE)));
+            descriptionText.setText(cursor.getString(cursor
+                    .getColumnIndexOrThrow(TodoContentProvider.TodoTable.COLUMN_DESCRIPTION)));
         }
     }
 
@@ -83,7 +88,7 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
     // creates a new loader after the initLoader () call
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String[] projection = {TodoContentProvider.TodoTable.COLUMN_ID, TodoContentProvider.TodoTable.COLUMN_TODO};
+        String[] projection = {TodoContentProvider.TodoTable.COLUMN_ID, TodoContentProvider.TodoTable.COLUMN_TITLE, TodoContentProvider.TodoTable.COLUMN_DESCRIPTION};
         CursorLoader cursorLoader = new CursorLoader(getActivity(),
                 todoUri, projection, null, null, null);
         return cursorLoader;

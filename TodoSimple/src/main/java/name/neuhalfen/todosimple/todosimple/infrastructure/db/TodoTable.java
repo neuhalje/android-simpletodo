@@ -9,8 +9,10 @@ class TodoTable implements TodoContentProvider.TodoTable {
     // Database creation sql statement
     private static final String DATABASE_CREATE = "create table "
             + TABLE_TODOS + "(" + COLUMN_ID
-            + " integer primary key autoincrement, " + COLUMN_TODO
-            + " text not null);";
+            + " integer primary key autoincrement, "
+            + COLUMN_TITLE + " text not null,"
+            + COLUMN_DESCRIPTION + " text not null"
+            +");";
 
 
     public static void onCreate(SQLiteDatabase database) {

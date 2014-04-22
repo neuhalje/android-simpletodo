@@ -109,7 +109,8 @@ public class TodoListFragment extends ListFragment implements
                 for (int i=1;i<500;i++) {
                     ops.add(
                             ContentProviderOperation.newInsert(TodoContentProvider.CONTENT_URI)
-                                    .withValue(TodoTable.COLUMN_TODO, String.format("Todo #%0,10d", i))
+                                    .withValue(TodoTable.COLUMN_TITLE, String.format("Todo #%0,10d", i))
+                                    .withValue(TodoTable.COLUMN_DESCRIPTION, String.format("Described as #%0,10d", i))
                                     .withYieldAllowed(true)
                                     .build()
                     );
@@ -134,7 +135,7 @@ public class TodoListFragment extends ListFragment implements
 
         // Fields from the database (projection)
         // Must include the _id column for the adapter to work
-        String[] from = new String[] { TodoTable.COLUMN_TODO };
+        String[] from = new String[] { TodoTable.COLUMN_TITLE};
         // Fields on the UI to which we map
         int[] to = new int[] {  android.R.id.text1 };
 
@@ -226,9 +227,9 @@ public class TodoListFragment extends ListFragment implements
     // creates a new loader after the initLoader () call
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String[] projection = { TodoTable.COLUMN_ID, TodoTable.COLUMN_TODO };
+        String[] projection = { TodoTable.COLUMN_ID, TodoTable.COLUMN_TITLE};
         CursorLoader cursorLoader = new CursorLoader(getActivity(),
-                TodoContentProvider.CONTENT_URI, projection, null, null, TodoTable.COLUMN_TODO);
+                TodoContentProvider.CONTENT_URI, projection, null, null, TodoTable.COLUMN_TITLE);
         return cursorLoader;
     }
 
