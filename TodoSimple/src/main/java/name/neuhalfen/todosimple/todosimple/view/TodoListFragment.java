@@ -1,4 +1,4 @@
-package name.neuhalfen.todosimple.todosimple;
+package name.neuhalfen.todosimple.todosimple.view;
 
 import android.app.Activity;
 import android.app.ListFragment;
@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import name.neuhalfen.todosimple.todosimple.R;
 import name.neuhalfen.todosimple.todosimple.infrastructure.contentprovider.TodoContentProvider;
 import name.neuhalfen.todosimple.todosimple.infrastructure.db.TodoDataSource;
 import name.neuhalfen.todosimple.todosimple.infrastructure.db.TodoTable;

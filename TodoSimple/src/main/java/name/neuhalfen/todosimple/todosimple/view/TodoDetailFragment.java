@@ -1,4 +1,4 @@
-package name.neuhalfen.todosimple.todosimple;
+package name.neuhalfen.todosimple.todosimple.view;
 
 import android.app.Fragment;
 import android.app.LoaderManager;
@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import name.neuhalfen.todosimple.todosimple.R;
 import name.neuhalfen.todosimple.todosimple.infrastructure.db.TodoTable;
 
 

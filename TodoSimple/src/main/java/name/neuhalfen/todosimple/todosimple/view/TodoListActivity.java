@@ -1,9 +1,10 @@
-package name.neuhalfen.todosimple.todosimple;
+package name.neuhalfen.todosimple.todosimple.view;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import name.neuhalfen.todosimple.todosimple.R;
 
 
 /**

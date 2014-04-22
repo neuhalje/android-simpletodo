@@ -8,7 +8,7 @@
     android:divider="?android:attr/dividerHorizontal"
     android:orientation="horizontal"
     android:showDividers="middle"
-    tools:context="name.neuhalfen.todosimple.todosimple.TodoListActivity">
+    tools:context="name.neuhalfen.todosimple.todosimple.view.TodoListActivity">
 
     <!--
     This layout is a two-pane layout for the Todos
@@ -23,7 +23,7 @@
 
     <fragment
         android:id="@+id/todo_list"
-        android:name="name.neuhalfen.todosimple.todosimple.TodoListFragment"
+        android:name="name.neuhalfen.todosimple.todosimple.view.TodoListFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"

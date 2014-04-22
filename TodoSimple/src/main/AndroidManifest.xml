@@ -8,7 +8,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="name.neuhalfen.todosimple.todosimple.TodoListActivity"
+            android:name=".view.TodoListActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -17,12 +17,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="name.neuhalfen.todosimple.todosimple.TodoDetailActivity"
+            android:name=".view.TodoDetailActivity"
             android:label="@string/title_todo_detail"
-            android:parentActivityName="name.neuhalfen.todosimple.todosimple.TodoListActivity" >
+            android:parentActivityName=".view.TodoListActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="name.neuhalfen.todosimple.todosimple.TodoListActivity" />
+                android:value="name.neuhalfen.todosimple.todosimple.view.TodoListActivity" />
         </activity>
         <provider
             android:exported="false"
