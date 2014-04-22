@@ -2,7 +2,7 @@ package name.neuhalfen.todosimple.todosimple.infrastructure.db;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-import name.neuhalfen.todosimple.todosimple.infrastructure.contentprovider.TodoContentProvider;
+import name.neuhalfen.todosimple.todosimple.domain.queries.TodoContentProvider;
 
 class TodoTable implements TodoContentProvider.TodoTable {
 

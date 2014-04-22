@@ -1,7 +1,6 @@
 package name.neuhalfen.todosimple.todosimple.infrastructure.contentprovider;
 
 import android.content.ContentProvider;
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
@@ -9,18 +8,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
+import name.neuhalfen.todosimple.todosimple.domain.queries.TodoContentProvider;
 import name.neuhalfen.todosimple.todosimple.infrastructure.db.TodoSQLiteHelper;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class TodoContentProvider extends ContentProvider {
-    public interface TodoTable {
-        public static final String TABLE_TODOS = "todos";
-        public static final String COLUMN_ID = "_id";
-        public static final String COLUMN_TODO = "todo";
-    }
+public class TodoContentProviderImpl extends ContentProvider implements TodoContentProvider {
 
     // database
     private TodoSQLiteHelper database;
@@ -29,16 +24,6 @@ public class TodoContentProvider extends ContentProvider {
     private static final int TODOS = 10;
     private static final int TODO_ID = 20;
 
-    public static final String AUTHORITY = "name.neuhalfen.todosimple.todosimple.TODOS";
-
-    private static final String BASE_PATH = "todos";
-    public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
-            + "/" + BASE_PATH);
-
-    public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
-            + "/todos";
-    public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
-            + "/todo";
 
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 

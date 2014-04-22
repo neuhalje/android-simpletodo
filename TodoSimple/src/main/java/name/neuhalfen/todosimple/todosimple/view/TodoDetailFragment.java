@@ -14,7 +14,7 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import name.neuhalfen.todosimple.todosimple.R;
-import name.neuhalfen.todosimple.todosimple.infrastructure.contentprovider.TodoContentProvider;
+import name.neuhalfen.todosimple.todosimple.domain.queries.TodoContentProvider;
 
 
 /**
