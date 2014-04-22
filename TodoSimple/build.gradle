@@ -29,9 +29,16 @@ android {
     }
     productFlavors {
     }
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+    packagingOptions {
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    }
 }
 
 dependencies {
     compile 'com.android.support:support-v4:19.+'
+    compile 'com.jakewharton:butterknife:5.0.0'
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }

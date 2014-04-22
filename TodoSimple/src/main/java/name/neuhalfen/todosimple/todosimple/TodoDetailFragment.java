@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import name.neuhalfen.todosimple.todosimple.infrastructure.db.TodoTable;
 
 
@@ -30,6 +32,7 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
 
     private Uri todoUri;
 
+    @InjectView(R.id.todo_detail)
     TextView todoDetailText;
 
     /**
@@ -60,11 +63,17 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
 
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.reset(this);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_todo_detail, container, false);
+        ButterKnife.inject(this, rootView);
 
-        todoDetailText = (TextView) rootView.findViewById(R.id.todo_detail);
         getLoaderManager().initLoader(0, null, this);
 
         return rootView;
