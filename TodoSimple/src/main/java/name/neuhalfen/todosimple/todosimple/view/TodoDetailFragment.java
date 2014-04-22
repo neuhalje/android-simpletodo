@@ -14,7 +14,7 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import name.neuhalfen.todosimple.todosimple.R;
-import name.neuhalfen.todosimple.todosimple.infrastructure.db.TodoTable;
+import name.neuhalfen.todosimple.todosimple.infrastructure.contentprovider.TodoContentProvider;
 
 
 /**
@@ -58,7 +58,7 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
             cursor.moveToFirst();
 
             todoDetailText.setText(cursor.getString(cursor
-                    .getColumnIndexOrThrow(TodoTable.COLUMN_TODO)));
+                    .getColumnIndexOrThrow(TodoContentProvider.TodoTable.COLUMN_TODO)));
         }
     }
 
@@ -83,7 +83,7 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
     // creates a new loader after the initLoader () call
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String[] projection = {TodoTable.COLUMN_ID, TodoTable.COLUMN_TODO};
+        String[] projection = {TodoContentProvider.TodoTable.COLUMN_ID, TodoContentProvider.TodoTable.COLUMN_TODO};
         CursorLoader cursorLoader = new CursorLoader(getActivity(),
                 todoUri, projection, null, null, null);
         return cursorLoader;

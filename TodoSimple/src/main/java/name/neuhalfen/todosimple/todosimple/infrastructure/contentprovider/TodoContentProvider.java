@@ -10,13 +10,17 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
 import name.neuhalfen.todosimple.todosimple.infrastructure.db.TodoSQLiteHelper;
-import name.neuhalfen.todosimple.todosimple.infrastructure.db.TodoTable;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 public class TodoContentProvider extends ContentProvider {
+    public interface TodoTable {
+        public static final String TABLE_TODOS = "todos";
+        public static final String COLUMN_ID = "_id";
+        public static final String COLUMN_TODO = "todo";
+    }
 
     // database
     private TodoSQLiteHelper database;

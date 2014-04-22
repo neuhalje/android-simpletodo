@@ -2,12 +2,9 @@ package name.neuhalfen.todosimple.todosimple.infrastructure.db;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import name.neuhalfen.todosimple.todosimple.infrastructure.contentprovider.TodoContentProvider;
 
-public class TodoTable {
-    public static final String TABLE_TODOS = "todos";
-    public static final String COLUMN_ID = "_id";
-    public static final String COLUMN_TODO = "todo";
-
+class TodoTable implements TodoContentProvider.TodoTable {
 
     // Database creation sql statement
     private static final String DATABASE_CREATE = "create table "

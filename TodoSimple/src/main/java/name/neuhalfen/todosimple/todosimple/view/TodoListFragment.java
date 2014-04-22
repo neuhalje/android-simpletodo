@@ -16,11 +16,9 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import name.neuhalfen.todosimple.todosimple.R;
 import name.neuhalfen.todosimple.todosimple.infrastructure.contentprovider.TodoContentProvider;
-import name.neuhalfen.todosimple.todosimple.infrastructure.db.TodoDataSource;
-import name.neuhalfen.todosimple.todosimple.infrastructure.db.TodoTable;
+import name.neuhalfen.todosimple.todosimple.infrastructure.contentprovider.TodoContentProvider.TodoTable;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 /**
