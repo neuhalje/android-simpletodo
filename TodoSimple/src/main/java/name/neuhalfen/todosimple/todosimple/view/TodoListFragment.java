@@ -93,7 +93,7 @@ public class TodoListFragment extends ListFragment implements
     @Override
     public void onCreateOptionsMenu(
             Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_actionbar, menu);
+        inflater.inflate(R.menu.menu_list_actionbar, menu);
     }
 
 
