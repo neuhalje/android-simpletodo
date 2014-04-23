@@ -2,11 +2,11 @@ package name.neuhalfen.todosimple.todosimple.view;
 
 import android.app.Fragment;
 import android.app.LoaderManager;
-import android.content.CursorLoader;
-import android.content.Loader;
+import android.content.*;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +15,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import name.neuhalfen.todosimple.todosimple.R;
 import name.neuhalfen.todosimple.todosimple.domain.queries.TodoContentProvider;
+
+import java.util.ArrayList;
 
 
 /**
@@ -94,6 +96,21 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
         return cursorLoader;
     }
 
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        saveTask();
+    }
+
+    private void saveTask() {
+        ContentValues values = new ContentValues();
+        values.put
+                (TodoContentProvider.TodoTable.COLUMN_TITLE, titleText.getText().toString());
+        values.put
+                (TodoContentProvider.TodoTable.COLUMN_DESCRIPTION, descriptionText.getText().toString());
+        getActivity().getContentResolver().update(todoUri, values, null, null);
+    }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
