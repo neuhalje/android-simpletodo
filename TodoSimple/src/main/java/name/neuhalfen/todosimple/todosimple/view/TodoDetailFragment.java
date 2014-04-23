@@ -2,21 +2,22 @@ package name.neuhalfen.todosimple.todosimple.view;
 
 import android.app.Fragment;
 import android.app.LoaderManager;
-import android.content.*;
+import android.content.ContentValues;
+import android.content.CursorLoader;
+import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 import name.neuhalfen.todosimple.todosimple.R;
 import name.neuhalfen.todosimple.todosimple.domain.queries.TodoContentProvider;
-
-import java.util.ArrayList;
 
 
 /**
@@ -73,6 +74,7 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        Crouton.cancelAllCroutons();
         ButterKnife.reset(this);
     }
 
@@ -115,6 +117,7 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         fillData(data);
+        Crouton.makeText(getActivity(), "Loaded " + todoUri.toString(), Style.INFO).show();
     }
 
     @Override
