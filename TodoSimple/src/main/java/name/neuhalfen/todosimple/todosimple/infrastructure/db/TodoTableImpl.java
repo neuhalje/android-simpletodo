@@ -4,7 +4,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import name.neuhalfen.todosimple.todosimple.domain.queries.TodoContentProvider;
 
-class TodoTable implements TodoContentProvider.TodoTable {
+public class TodoTableImpl implements TodoContentProvider.TodoTable {
+    public static final String TABLE_TODOS = "todos";
 
     // Database creation sql statement
     private static final String DATABASE_CREATE = "create table "

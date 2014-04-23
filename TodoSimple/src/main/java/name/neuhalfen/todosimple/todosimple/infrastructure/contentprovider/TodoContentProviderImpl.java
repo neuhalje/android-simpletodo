@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 import name.neuhalfen.todosimple.todosimple.domain.queries.TodoContentProvider;
 import name.neuhalfen.todosimple.todosimple.infrastructure.db.TodoSQLiteHelper;
+import name.neuhalfen.todosimple.todosimple.infrastructure.db.TodoTableImpl;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -49,7 +50,7 @@ public class TodoContentProviderImpl extends ContentProvider implements TodoCont
         checkColumns(projection);
 
         // Set the table
-        queryBuilder.setTables(TodoTable.TABLE_TODOS);
+        queryBuilder.setTables(TodoTableImpl.TABLE_TODOS);
 
         int uriType = sURIMatcher.match(uri);
         switch (uriType) {
@@ -87,7 +88,7 @@ public class TodoContentProviderImpl extends ContentProvider implements TodoCont
         long id = 0;
         switch (uriType) {
             case TODOS:
-                id = sqlDB.insert(TodoTable.TABLE_TODOS, null, values);
+                id = sqlDB.insert(TodoTableImpl.TABLE_TODOS, null, values);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
@@ -103,19 +104,19 @@ public class TodoContentProviderImpl extends ContentProvider implements TodoCont
         int rowsDeleted = 0;
         switch (uriType) {
             case TODOS:
-                rowsDeleted = sqlDB.delete(TodoTable.TABLE_TODOS, selection,
+                rowsDeleted = sqlDB.delete(TodoTableImpl.TABLE_TODOS, selection,
                         selectionArgs);
                 break;
             case TODO_ID:
                 String id = uri.getLastPathSegment();
                 if (TextUtils.isEmpty(selection)) {
                     // FIXME: SQL Injection
-                    rowsDeleted = sqlDB.delete(TodoTable.TABLE_TODOS,
+                    rowsDeleted = sqlDB.delete(TodoTableImpl.TABLE_TODOS,
                             TodoTable.COLUMN_ID + "=" + id,
                             null);
                 } else {
                     // FIXME: SQL Injection
-                    rowsDeleted = sqlDB.delete(TodoTable.TABLE_TODOS,
+                    rowsDeleted = sqlDB.delete(TodoTableImpl.TABLE_TODOS,
                             TodoTable.COLUMN_ID + "=" + id
                                     + " and " + selection,
                             selectionArgs
@@ -138,7 +139,7 @@ public class TodoContentProviderImpl extends ContentProvider implements TodoCont
         int rowsUpdated = 0;
         switch (uriType) {
             case TODOS:
-                rowsUpdated = sqlDB.update(TodoTable.TABLE_TODOS,
+                rowsUpdated = sqlDB.update(TodoTableImpl.TABLE_TODOS,
                         values,
                         selection,
                         selectionArgs);
@@ -147,13 +148,13 @@ public class TodoContentProviderImpl extends ContentProvider implements TodoCont
                 String id = uri.getLastPathSegment();
                 if (TextUtils.isEmpty(selection)) {
                     // FIXME: SQL Injection
-                    rowsUpdated = sqlDB.update(TodoTable.TABLE_TODOS,
+                    rowsUpdated = sqlDB.update(TodoTableImpl.TABLE_TODOS,
                             values,
                             TodoTable.COLUMN_ID + "=" + id,
                             null);
                 } else {
                     // FIXME: SQL Injection
-                    rowsUpdated = sqlDB.update(TodoTable.TABLE_TODOS,
+                    rowsUpdated = sqlDB.update(TodoTableImpl.TABLE_TODOS,
                             values,
                             TodoTable.COLUMN_ID + "=" + id
                                     + " and "

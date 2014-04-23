@@ -15,12 +15,12 @@ public class TodoSQLiteHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        TodoTable.onCreate(db);
+        TodoTableImpl.onCreate(db);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        TodoTable.onUpgrade(db, oldVersion, newVersion);
+        TodoTableImpl.onUpgrade(db, oldVersion, newVersion);
 
     }
 }

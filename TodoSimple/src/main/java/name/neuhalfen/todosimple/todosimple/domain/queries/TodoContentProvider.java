@@ -9,7 +9,6 @@ import android.net.Uri;
  */
 public interface TodoContentProvider {
     public interface TodoTable {
-        public static final String TABLE_TODOS = "todos";
         public static final String COLUMN_ID = "_id";
         /**
          * String
