@@ -11,7 +11,7 @@ Architecture
 * The view accesses the (completely anemic) domain model via the android ContentProvider framework.
 * The domain model currently only consists of the table definition for the Todo table.
 
-
+```text
       .---------.        .--------------------------.        .-----------------------------.
       |         |        |   << android >>          |        |    << contentprovider >>    |
       |  Views  |   ---> | Android ContentProvider  |--->    |       infrastructure        |
@@ -23,6 +23,7 @@ Architecture
       .---------. \/    /  |   << interface >>        |                |
                            |   Todo Table definition  |  <-------------.
                            .--------------------------.
+```
                            
                            
                            
