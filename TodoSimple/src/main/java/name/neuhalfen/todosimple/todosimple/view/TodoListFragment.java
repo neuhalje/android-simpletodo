@@ -87,6 +87,7 @@ public class TodoListFragment extends ListFragment implements
         setHasOptionsMenu(true);
 
         setListAdapter(createDbAdapter());
+        getLoaderManager().initLoader(0, null, this);
     }
 
     @Override
@@ -139,11 +140,9 @@ public class TodoListFragment extends ListFragment implements
         // Fields on the UI to which we map
         int[] to = new int[] {  android.R.id.text1 };
 
-        getLoaderManager().initLoader(0, null, this);
         adapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_activated_1, null, from,
                 to, 0);
 
-        setListAdapter(adapter);
         return adapter;
     }
 
