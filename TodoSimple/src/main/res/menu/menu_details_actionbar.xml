@@ -5,6 +5,11 @@
         android:id="@+id/save_task"
         android:showAsAction="ifRoom"
         android:orderInCategory="10"
-        android:title="save"></item>
+        android:title="save" />
+    <item
+        android:id="@+id/delete_task"
+        android:showAsAction="ifRoom"
+        android:orderInCategory="10"
+        android:title="delete" />
 
 </menu>

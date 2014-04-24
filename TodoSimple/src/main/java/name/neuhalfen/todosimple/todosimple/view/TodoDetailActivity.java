@@ -17,7 +17,7 @@ import name.neuhalfen.todosimple.todosimple.R;
  * This activity is mostly just a 'shell' activity containing nothing
  * more than a {@link TodoDetailFragment}.
  */
-public class TodoDetailActivity extends FragmentActivity {
+public class TodoDetailActivity extends FragmentActivity implements TodoDetailFragment.Callbacks {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,5 +65,10 @@ public class TodoDetailActivity extends FragmentActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onTodoDeleted() {
+        onBackPressed();
     }
 }

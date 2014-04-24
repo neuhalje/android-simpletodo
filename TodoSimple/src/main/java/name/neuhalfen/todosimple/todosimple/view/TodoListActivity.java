@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import name.neuhalfen.todosimple.todosimple.R;
 
 
@@ -14,28 +15,30 @@ import name.neuhalfen.todosimple.todosimple.R;
  * lead to a {@link TodoDetailActivity} representing
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
- * <p>
+ * <p/>
  * The activity makes heavy use of fragments. The list of items is a
  * {@link TodoListFragment} and the item details
  * (if present) is a {@link TodoDetailFragment}.
- * <p>
+ * <p/>
  * This activity also implements the required
  * {@link TodoListFragment.Callbacks} interface
  * to listen for item selections.
  */
 public class TodoListActivity extends Activity
-        implements TodoListFragment.Callbacks {
+        implements TodoListFragment.Callbacks, TodoDetailFragment.Callbacks {
 
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
     private boolean mTwoPane;
+    private TodoDetailFragment detailFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo_list);
+        detailFragment = null;
 
         if (findViewById(R.id.todo_detail_container) != null) {
             // The detail container view will be present only in the
@@ -57,6 +60,7 @@ public class TodoListActivity extends Activity
     /**
      * Callback method from {@link TodoListFragment.Callbacks}
      * indicating that the item with the given ID was selected.
+     *
      * @param id
      */
     @Override
@@ -67,10 +71,10 @@ public class TodoListActivity extends Activity
             // fragment transaction.
             Bundle arguments = new Bundle();
             arguments.putString(TodoDetailFragment.ARG_ITEM_URI, id.toString());
-            TodoDetailFragment fragment = new TodoDetailFragment();
-            fragment.setArguments(arguments);
+            detailFragment = new TodoDetailFragment();
+            detailFragment.setArguments(arguments);
             getFragmentManager().beginTransaction()
-                    .replace(R.id.todo_detail_container, fragment)
+                    .replace(R.id.todo_detail_container, detailFragment)
                     .commit();
 
         } else {
@@ -79,6 +83,17 @@ public class TodoListActivity extends Activity
             Intent detailIntent = new Intent(this, TodoDetailActivity.class);
             detailIntent.putExtra(TodoDetailFragment.ARG_ITEM_URI, id.toString());
             startActivity(detailIntent);
+        }
+    }
+
+    @Override
+    public void onTodoDeleted() {
+        if (mTwoPane) {
+            Log.d("ListFragment", "onTodoDeleted called");
+            getFragmentManager().beginTransaction().remove(detailFragment)
+                    .commit();
+        } else {
+            Log.e("ListFragment", "onTodoDeleted called, though it should not");
         }
     }
 }
