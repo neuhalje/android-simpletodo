@@ -1,5 +1,6 @@
 package name.neuhalfen.todosimple.todosimple.view;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.ContentValues;
@@ -31,6 +32,17 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
      */
     public static final String ARG_ITEM_URI = "item_id";
 
+    public interface Callbacks {
+        public void onTodoDeleted();
+    }
+
+    private Callbacks mCallbacks = sDummyCallbacks;
+    private final static Callbacks sDummyCallbacks = new Callbacks() {
+        @Override
+        public void onTodoDeleted() {
+            //
+        }
+    };
 
     private Uri todoUri;
 
@@ -59,16 +71,46 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
     }
 
     private void fillData(Cursor cursor) {
-        if (cursor != null) {
-            cursor.moveToFirst();
+        final boolean hasView = titleText != null;
 
+        if (!hasView) {
+            // We might be called while tearing down the activity/fragment
+            return;
+        }
+
+        final boolean hasData = (cursor != null) && cursor.moveToFirst();
+
+        if (hasData) {
             titleText.setText(cursor.getString(cursor
                     .getColumnIndexOrThrow(TodoContentProvider.TodoTable.COLUMN_TITLE)));
             descriptionText.setText(cursor.getString(cursor
                     .getColumnIndexOrThrow(TodoContentProvider.TodoTable.COLUMN_DESCRIPTION)));
+        } else {
+            titleText.setText("");
+            descriptionText.setText("");
         }
     }
 
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        // Activities containing this fragment must implement its callbacks.
+        if (!(activity instanceof Callbacks)) {
+            throw new IllegalStateException("Activity must implement fragment's callbacks.");
+        }
+
+        mCallbacks = (Callbacks) activity;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        // Reset the active callbacks interface to the dummy implementation.
+        mCallbacks = sDummyCallbacks;
+    }
 
     @Override
     public void onDestroyView() {
@@ -103,6 +145,10 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
                 saveTask();
                 Crouton.makeText(getActivity(), "Task " + todoUri.toString() + " saved.", Style.CONFIRM).show();
                 return true;
+            case R.id.delete_task:
+                deleteTask();
+                mCallbacks.onTodoDeleted();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -131,6 +177,10 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
         values.put
                 (TodoContentProvider.TodoTable.COLUMN_DESCRIPTION, descriptionText.getText().toString());
         getActivity().getContentResolver().update(todoUri, values, null, null);
+    }
+
+    private void deleteTask() {
+        getActivity().getContentResolver().delete(todoUri, null, null);
     }
 
     @Override
