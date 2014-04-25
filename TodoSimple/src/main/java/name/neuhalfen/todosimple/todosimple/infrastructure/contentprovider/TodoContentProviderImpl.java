@@ -38,7 +38,7 @@ public class TodoContentProviderImpl extends ContentProvider implements TodoCont
     @Override
     public boolean onCreate() {
         database = new TodoSQLiteHelper(getContext());
-        return false;
+        return true;
     }
 
     @Override
