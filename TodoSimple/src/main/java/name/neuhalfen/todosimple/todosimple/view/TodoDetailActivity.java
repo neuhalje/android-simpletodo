@@ -6,6 +6,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import name.neuhalfen.todosimple.todosimple.R;
+import name.neuhalfen.todosimple.todosimple.domain.model.TodoDeletedEvent;
+import name.neuhalfen.todosimple.todosimple.services.GlobalEventBus;
 
 
 /**
@@ -17,7 +19,7 @@ import name.neuhalfen.todosimple.todosimple.R;
  * This activity is mostly just a 'shell' activity containing nothing
  * more than a {@link TodoDetailFragment}.
  */
-public class TodoDetailActivity extends FragmentActivity implements TodoDetailFragment.Callbacks {
+public class TodoDetailActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +69,26 @@ public class TodoDetailActivity extends FragmentActivity implements TodoDetailFr
         return super.onOptionsItemSelected(item);
     }
 
+
     @Override
-    public void onTodoDeleted() {
+    public void onResume() {
+        super.onResume();
+        GlobalEventBus.get().register(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        GlobalEventBus.get().unregister(this);
+    }
+
+    /**
+     * Called by the event bus
+     *
+     * @param event
+     */
+    public void onEventMainThread(TodoDeletedEvent event) {
         onBackPressed();
     }
+
 }

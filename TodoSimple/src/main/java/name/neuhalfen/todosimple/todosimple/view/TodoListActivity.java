@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import name.neuhalfen.todosimple.todosimple.R;
+import name.neuhalfen.todosimple.todosimple.domain.model.TodoDeletedEvent;
+import name.neuhalfen.todosimple.todosimple.services.GlobalEventBus;
 
 
 /**
@@ -25,7 +27,7 @@ import name.neuhalfen.todosimple.todosimple.R;
  * to listen for item selections.
  */
 public class TodoListActivity extends Activity
-        implements TodoListFragment.Callbacks, TodoDetailFragment.Callbacks {
+        implements TodoListFragment.Callbacks {
 
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -87,7 +89,23 @@ public class TodoListActivity extends Activity
     }
 
     @Override
-    public void onTodoDeleted() {
+    public void onResume() {
+        super.onResume();
+        GlobalEventBus.get().register(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        GlobalEventBus.get().unregister(this);
+    }
+
+    /**
+     * Called by the event bus
+     *
+     * @param event
+     */
+    public void onEventMainThread(TodoDeletedEvent event) {
         if (mTwoPane) {
             Log.d("ListFragment", "onTodoDeleted called");
             getFragmentManager().beginTransaction().remove(detailFragment)

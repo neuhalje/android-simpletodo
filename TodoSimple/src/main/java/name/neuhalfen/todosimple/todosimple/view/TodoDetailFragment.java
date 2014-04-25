@@ -1,6 +1,5 @@
 package name.neuhalfen.todosimple.todosimple.view;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.ContentValues;
@@ -31,18 +30,6 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
      * represents.
      */
     public static final String ARG_ITEM_URI = "item_id";
-
-    public interface Callbacks {
-        public void onTodoDeleted();
-    }
-
-    private Callbacks mCallbacks = sDummyCallbacks;
-    private final static Callbacks sDummyCallbacks = new Callbacks() {
-        @Override
-        public void onTodoDeleted() {
-            //
-        }
-    };
 
     private Uri todoUri;
 
@@ -93,26 +80,6 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
 
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
-        // Activities containing this fragment must implement its callbacks.
-        if (!(activity instanceof Callbacks)) {
-            throw new IllegalStateException("Activity must implement fragment's callbacks.");
-        }
-
-        mCallbacks = (Callbacks) activity;
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-
-        // Reset the active callbacks interface to the dummy implementation.
-        mCallbacks = sDummyCallbacks;
-    }
-
-    @Override
     public void onDestroyView() {
         super.onDestroyView();
         Crouton.cancelAllCroutons();
@@ -147,7 +114,6 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
                 return true;
             case R.id.delete_task:
                 deleteTask();
-                mCallbacks.onTodoDeleted();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

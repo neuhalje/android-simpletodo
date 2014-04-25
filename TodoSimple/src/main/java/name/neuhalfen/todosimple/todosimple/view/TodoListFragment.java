@@ -59,6 +59,7 @@ public class TodoListFragment extends ListFragment implements
     public interface Callbacks {
         /**
          * Callback for when an item has been selected.
+         *
          * @param id
          */
         public void onItemSelected(Uri id);
@@ -97,17 +98,16 @@ public class TodoListFragment extends ListFragment implements
     }
 
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // handle item selection
         switch (item.getItemId()) {
             case R.id.add_demo_items:
                 ArrayList<ContentProviderOperation> ops =
-                        	   new ArrayList<ContentProviderOperation>();
+                        new ArrayList<ContentProviderOperation>();
 
 
-                for (int i=1;i<500;i++) {
+                for (int i = 1; i < 500; i++) {
                     ops.add(
                             ContentProviderOperation.newInsert(TodoContentProvider.CONTENT_URI)
                                     .withValue(TodoTable.COLUMN_TITLE, String.format("Todo #%0,10d", i))
@@ -123,7 +123,7 @@ public class TodoListFragment extends ListFragment implements
                 } catch (OperationApplicationException e) {
                     e.printStackTrace();
                 }
-                getLoaderManager().restartLoader(0,null,this);
+                getLoaderManager().restartLoader(0, null, this);
 
                 return true;
             default:
@@ -136,9 +136,9 @@ public class TodoListFragment extends ListFragment implements
 
         // Fields from the database (projection)
         // Must include the _id column for the adapter to work
-        String[] from = new String[] { TodoTable.COLUMN_TITLE};
+        String[] from = new String[]{TodoTable.COLUMN_TITLE};
         // Fields on the UI to which we map
-        int[] to = new int[] {  android.R.id.text1 };
+        int[] to = new int[]{android.R.id.text1};
 
         adapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_activated_1, null, from,
                 to, 0);
@@ -222,11 +222,10 @@ public class TodoListFragment extends ListFragment implements
     }
 
 
-
     // creates a new loader after the initLoader () call
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String[] projection = { TodoTable.COLUMN_ID, TodoTable.COLUMN_TITLE};
+        String[] projection = {TodoTable.COLUMN_ID, TodoTable.COLUMN_TITLE};
         CursorLoader cursorLoader = new CursorLoader(getActivity(),
                 TodoContentProvider.CONTENT_URI, projection, null, null, TodoTable.COLUMN_TITLE);
         return cursorLoader;
@@ -242,5 +241,6 @@ public class TodoListFragment extends ListFragment implements
         // data is not available anymore, delete reference
         adapter.swapCursor(null);
     }
+
 
 }
