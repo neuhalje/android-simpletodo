@@ -8,9 +8,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
+import name.neuhalfen.todosimple.todosimple.domain.model.TodoDeletedEvent;
 import name.neuhalfen.todosimple.todosimple.domain.queries.TodoContentProvider;
 import name.neuhalfen.todosimple.todosimple.infrastructure.db.TodoSQLiteHelper;
 import name.neuhalfen.todosimple.todosimple.infrastructure.db.TodoTableImpl;
+import name.neuhalfen.todosimple.todosimple.services.GlobalEventBus;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -122,6 +124,8 @@ public class TodoContentProviderImpl extends ContentProvider implements TodoCont
                             selectionArgs
                     );
                 }
+
+                GlobalEventBus.get().post(new TodoDeletedEvent());
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
