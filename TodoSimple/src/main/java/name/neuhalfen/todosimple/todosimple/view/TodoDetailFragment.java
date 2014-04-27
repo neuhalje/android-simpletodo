@@ -25,6 +25,21 @@ import name.neuhalfen.todosimple.todosimple.domain.queries.TodoContentProvider;
  * on handsets.
  */
 public class TodoDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    private static enum VIEW_STATE {
+        UNKNOWN,
+        CREATED,
+        HAS_VIEW,
+        BOUND
+    }
+
+    private static enum DATA_STATE {
+        NO_DATA, LOADED,
+    }
+
+    private VIEW_STATE viewState = VIEW_STATE.UNKNOWN;
+    private DATA_STATE dataState = DATA_STATE.NO_DATA;
+
     /**
      * The fragment argument representing the item ID that this fragment
      * represents.
@@ -58,12 +73,13 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
             String uristr = getArguments().getString(ARG_ITEM_URI);
             todoUri = Uri.parse(uristr);
         }
+        viewState = VIEW_STATE.CREATED;
+        dataState = DATA_STATE.NO_DATA;
     }
 
     private void fillData(Cursor cursor) {
-        final boolean hasView = titleText != null;
 
-        if (!hasView) {
+        if (!hasView()) {
             // We might be called while tearing down the activity/fragment
             return;
         }
@@ -79,6 +95,7 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
             titleText.setText("");
             descriptionText.setText("");
         }
+        viewState = VIEW_STATE.BOUND;
     }
 
 
@@ -87,6 +104,7 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
         super.onDestroyView();
         Crouton.cancelAllCroutons();
         ButterKnife.reset(this);
+        viewState = VIEW_STATE.CREATED;
     }
 
     @Override
@@ -97,6 +115,7 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
 
         getLoaderManager().initLoader(0, null, this);
 
+        viewState = VIEW_STATE.HAS_VIEW;
         return rootView;
     }
 
@@ -112,11 +131,15 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
         // handle item selection
         switch (item.getItemId()) {
             case R.id.save_task:
-                saveTask();
-                Crouton.makeText(getActivity(), "Task " + todoUri.toString() + " saved.", Style.CONFIRM).show();
+                if (canSaveTask()) {
+                    saveTask();
+                    Crouton.makeText(getActivity(), "Task " + todoUri.toString() + " saved.", Style.CONFIRM).show();
+                }
                 return true;
             case R.id.delete_task:
-                deleteTask();
+                if (canDeleteTask()) {
+                    deleteTask();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -136,7 +159,21 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
     @Override
     public void onStop() {
         super.onStop();
-        saveTask();
+        if (canSaveTask()) {
+            saveTask();
+        }
+    }
+
+    private boolean canDeleteTask() {
+        return dataState == DATA_STATE.LOADED;
+    }
+
+    private boolean canSaveTask() {
+        return dataState == DATA_STATE.LOADED;
+    }
+
+    private boolean hasView() {
+        return viewState == VIEW_STATE.HAS_VIEW || viewState == VIEW_STATE.BOUND;
     }
 
     private void saveTask() {
@@ -154,6 +191,7 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        dataState = DATA_STATE.LOADED;
         fillData(data);
         Crouton.makeText(getActivity(), "Loaded " + todoUri.toString(), Style.INFO).show();
     }
@@ -161,6 +199,7 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         // data is not available anymore, delete reference
+        dataState = DATA_STATE.NO_DATA;
         fillData(null);
     }
 }
