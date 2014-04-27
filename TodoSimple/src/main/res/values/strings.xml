@@ -8,5 +8,6 @@
     <string name="menu_delete_task">delete</string>
     <string name="edit_title_hint">Title</string>
     <string name="edit_description_hint">description</string>
+    <string name="menu_new_task">New task</string>
 
 </resources>

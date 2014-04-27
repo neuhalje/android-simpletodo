@@ -69,6 +69,8 @@ public class TodoListFragment extends ListFragment implements
          * @param id
          */
         public void onItemSelected(Uri id);
+
+        void onCreateNewTask();
     }
 
     /**
@@ -78,6 +80,10 @@ public class TodoListFragment extends ListFragment implements
     private static Callbacks sDummyCallbacks = new Callbacks() {
         @Override
         public void onItemSelected(Uri id) {
+        }
+
+        @Override
+        public void onCreateNewTask() {
         }
     };
 
@@ -112,6 +118,9 @@ public class TodoListFragment extends ListFragment implements
     public boolean onOptionsItemSelected(MenuItem item) {
         // handle item selection
         switch (item.getItemId()) {
+            case R.id.add_new_task:
+                mCallbacks.onCreateNewTask();
+                return true;
             case R.id.add_demo_items:
                 ArrayList<ContentProviderOperation> ops =
                         new ArrayList<ContentProviderOperation>();

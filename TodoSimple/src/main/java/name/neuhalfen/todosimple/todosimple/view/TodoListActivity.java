@@ -99,6 +99,29 @@ public class TodoListActivity extends Activity
     }
 
     @Override
+    public void onCreateNewTask() {
+        if (mTwoPane) {
+            // In two-pane mode, show the detail view in this activity by
+            // adding or replacing the detail fragment using a
+            // fragment transaction.
+            Bundle arguments = new Bundle();
+            arguments.putString(TodoDetailFragment.ARG_ITEM_URI, TodoDetailFragment.ARG_ITEM_URI__FOR_NEW_TASK);
+            detailFragment = new TodoDetailFragment();
+            detailFragment.setArguments(arguments);
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.todo_detail_container, detailFragment)
+                    .commit();
+        } else {
+            // In single-pane mode, simply start the detail activity
+            // for the selected item ID.
+            Intent detailIntent = new Intent(this, TodoDetailActivity.class);
+            detailIntent.putExtra(TodoDetailFragment.ARG_ITEM_URI, TodoDetailFragment.ARG_ITEM_URI__FOR_NEW_TASK);
+            startActivity(detailIntent);
+        }
+    }
+
+
+    @Override
     public void onResume() {
         super.onResume();
         GlobalEventBus.get().register(this);
