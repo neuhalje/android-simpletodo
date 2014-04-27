@@ -1,9 +1,8 @@
 package name.neuhalfen.todosimple.todosimple.view;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import name.neuhalfen.todosimple.todosimple.R;
 import name.neuhalfen.todosimple.todosimple.domain.model.TodoDeletedEvent;
@@ -19,7 +18,7 @@ import name.neuhalfen.todosimple.todosimple.services.GlobalEventBus;
  * This activity is mostly just a 'shell' activity containing nothing
  * more than a {@link TodoDetailFragment}.
  */
-public class TodoDetailActivity extends FragmentActivity {
+public class TodoDetailActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +62,7 @@ public class TodoDetailActivity extends FragmentActivity {
             //
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
             //
-            NavUtils.navigateUpTo(this, new Intent(this, TodoListActivity.class));
+            navigateUpTo( new Intent(this, TodoListActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);

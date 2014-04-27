@@ -16,13 +16,26 @@
 #   public *;
 #}
 
+###########
 # EventBus
+#
 -keepclassmembers class ** {
     public void onEvent*(**);
 }
 
-#Butterknife
+#With the support lib removed:
+# Warning: de.greenrobot.event.util.ErrorDialogFragmentFactory$Support: can't find referenced method 'void setArguments(android.os.Bundle)' in program class de.greenrobot.event.util.ErrorDialogFragments$Support
+# Warning: de.greenrobot.event.util.ErrorDialogFragments$Support: can't find referenced method 'android.support.v4.app.FragmentActivity getActivity()' in program class de.greenrobot.event.util.ErrorDialogFragments$Support
+# Warning: de.greenrobot.event.util.ErrorDialogFragments$Support: can't find referenced method 'android.os.Bundle getArguments()' in program class de.greenrobot.event.util.ErrorDialogFragments$Support
+# Warning: de.greenrobot.event.util.ErrorDialogManager$SupportManagerFragment: can't find referenced method 'android.support.v4.app.FragmentManager getFragmentManager()' in program class de.greenrobot.event.util.ErrorDialogManager$SupportManagerFragment
+-dontwarn de.greenrobot.event.util.ErrorDialogFragmentFactory$Support
+-dontwarn de.greenrobot.event.util.ErrorDialogFragments$Support
+-dontwarn de.greenrobot.event.util.ErrorDialogManager$SupportManagerFragment
+
+###########
+# Butterknife
 -dontwarn butterknife.internal.**
 -keep class **$$ViewInjector { *; }
 -keepnames class * { @butterknife.InjectView *;}
 
+#
