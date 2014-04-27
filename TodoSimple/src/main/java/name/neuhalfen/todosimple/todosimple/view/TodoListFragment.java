@@ -8,15 +8,21 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Toast;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 import name.neuhalfen.todosimple.todosimple.R;
+import name.neuhalfen.todosimple.todosimple.domain.model.TodoDeletedEvent;
 import name.neuhalfen.todosimple.todosimple.domain.queries.TodoContentProvider;
 import name.neuhalfen.todosimple.todosimple.domain.queries.TodoContentProvider.TodoTable;
+import name.neuhalfen.todosimple.todosimple.services.GlobalEventBus;
 
 import java.util.ArrayList;
 
@@ -86,6 +92,10 @@ public class TodoListFragment extends ListFragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        // default, but important: setting retainInstance to true
+        // breaks querying after a task is deleted.
+        setRetainInstance(false);
 
         setListAdapter(createDbAdapter());
         getLoaderManager().initLoader(0, null, this);
@@ -168,6 +178,7 @@ public class TodoListFragment extends ListFragment implements
         }
 
         mCallbacks = (Callbacks) activity;
+        GlobalEventBus.get().register(this);
     }
 
     @Override
@@ -176,6 +187,8 @@ public class TodoListFragment extends ListFragment implements
 
         // Reset the active callbacks interface to the dummy implementation.
         mCallbacks = sDummyCallbacks;
+        GlobalEventBus.get().unregister(this);
+        Crouton.cancelAllCroutons();
     }
 
     @Override
@@ -242,5 +255,24 @@ public class TodoListFragment extends ListFragment implements
         adapter.swapCursor(null);
     }
 
+    /*
+     * Events
+     */
+
+    /**
+     * Called by the event bus
+     *
+     * @param event
+     */
+    public void onEventMainThread(TodoDeletedEvent event) {
+
+        Activity activity = getActivity();
+        if (null != activity) {
+            Crouton.makeText(activity, "Task deleted.", Style.INFO).show(); // <-- This crouton is not shown (or only for fractions of a second). bug?
+            Toast.makeText(activity, "Task deleted", Toast.LENGTH_SHORT).show();
+        } else {
+            Log.w("ListFragment", "Got delete event but no activity");
+        }
+    }
 
 }
