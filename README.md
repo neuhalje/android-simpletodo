@@ -1,6 +1,8 @@
 android-simpletodo
 ==================
 
+[![Build Status](https://travis-ci.org/neuhalje/android-simpletodo.svg?branch=master)](https://travis-ci.org/neuhalje/android-simpletodo)
+
 TODO app for android (AKA learning android).
 
 
