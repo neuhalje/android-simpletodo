@@ -1,10 +1,12 @@
 package name.neuhalfen.todosimple.todosimple.view;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 import name.neuhalfen.todosimple.todosimple.R;
 import name.neuhalfen.todosimple.todosimple.domain.model.TodoDeletedEvent;
 import name.neuhalfen.todosimple.todosimple.services.GlobalEventBus;
@@ -34,13 +36,14 @@ public class TodoListActivity extends Activity
      * device.
      */
     private boolean mTwoPane;
+
+    @CheckForNull
     private TodoDetailFragment detailFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo_list);
-        detailFragment = null;
 
         if (findViewById(R.id.todo_detail_container) != null) {
             // The detail container view will be present only in the
@@ -49,11 +52,19 @@ public class TodoListActivity extends Activity
             // activity should be in two-pane mode.
             mTwoPane = true;
 
+            FragmentManager fm = getFragmentManager();
+
+
             // In two-pane mode, list items should be given the
             // 'activated' state when touched.
-            ((TodoListFragment) getFragmentManager()
-                    .findFragmentById(R.id.todo_list))
+            final TodoListFragment listFragment = (TodoListFragment) fm
+                    .findFragmentById(R.id.todo_list);
+            listFragment
                     .setActivateOnItemClick(true);
+
+            // Restoring the detail fragment, when it exists
+            // Important: The fragment has to call setRetainInstance() in onCreate
+            detailFragment = (TodoDetailFragment) fm.findFragmentById(R.id.todo_detail_container);
         }
 
         // TODO: If exposing deep links into your app, handle intents here.
@@ -78,7 +89,6 @@ public class TodoListActivity extends Activity
             getFragmentManager().beginTransaction()
                     .replace(R.id.todo_detail_container, detailFragment)
                     .commit();
-
         } else {
             // In single-pane mode, simply start the detail activity
             // for the selected item ID.
@@ -108,8 +118,12 @@ public class TodoListActivity extends Activity
     public void onEventMainThread(TodoDeletedEvent event) {
         if (mTwoPane) {
             Log.d("ListFragment", "onTodoDeleted called");
-            getFragmentManager().beginTransaction().remove(detailFragment)
-                    .commit();
+            final boolean hasFragment = (null != detailFragment);
+
+            if (hasFragment) {
+                getFragmentManager().beginTransaction().remove(detailFragment)
+                        .commit();
+            }
         } else {
             Log.e("ListFragment", "onTodoDeleted called, though it should not");
         }

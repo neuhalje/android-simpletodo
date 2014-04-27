@@ -51,6 +51,9 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
+        // Retain this fragment across configuration changes.
+        setRetainInstance(true);
+
         if (getArguments().containsKey(ARG_ITEM_URI)) {
             String uristr = getArguments().getString(ARG_ITEM_URI);
             todoUri = Uri.parse(uristr);
