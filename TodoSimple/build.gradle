@@ -12,6 +12,11 @@ repositories {
     mavenCentral()
 }
 
+if (project.hasProperty("MyProject.local")
+        && new File(project.property("MyProject.local") + "/signing.gradle").exists()) {
+    apply from: project.property("MyProject.local") + "/signing.gradle";
+}
+
 android {
     compileSdkVersion 19
     buildToolsVersion '19.0.3'
