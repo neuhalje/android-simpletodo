@@ -20,3 +20,11 @@
 -keepclassmembers class ** {
     public void onEvent*(**);
 }
+
+#Butterknife
+-dontwarn butterknife.internal.**
+-keep class **$$ViewInjector { *; }
+-keepnames class * { @butterknife.InjectView *;}
+
+# Findbugs references javax.annotation.* but is not evaluated at runtime
+-dontwarn edu.umd.cs.findbugs.annotations.*
