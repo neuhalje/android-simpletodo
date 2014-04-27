@@ -1,6 +1,7 @@
 package name.neuhalfen.todosimple.todosimple.infrastructure.contentprovider;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
@@ -86,7 +87,6 @@ public class TodoContentProviderImpl extends ContentProvider implements TodoCont
     public Uri insert(Uri uri, ContentValues values) {
         int uriType = sURIMatcher.match(uri);
         SQLiteDatabase sqlDB = database.getWritableDatabase();
-        int rowsDeleted = 0;
         long id = 0;
         switch (uriType) {
             case TODOS:
@@ -95,8 +95,9 @@ public class TodoContentProviderImpl extends ContentProvider implements TodoCont
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
-        getContext().getContentResolver().notifyChange(uri, null);
-        return Uri.parse(BASE_PATH + "/" + id);
+        Uri newUri = ContentUris.withAppendedId(CONTENT_URI, id);
+        getContext().getContentResolver().notifyChange(newUri, null);
+        return newUri;
     }
 
     @Override
