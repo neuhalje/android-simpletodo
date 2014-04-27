@@ -3,6 +3,10 @@
 
     <string name="app_name">Todo Simple</string>
     <string name="title_todo_detail">Todo Detail</string>
-    <string name="add_demo_tasks">Add demo</string>
+    <string name="menu_add_demo_tasks">Add demo</string>
+    <string name="menu_save_task">save</string>
+    <string name="menu_delete_task">delete</string>
+    <string name="edit_title_hint">Title</string>
+    <string name="edit_description_hint">description</string>
 
 </resources>
