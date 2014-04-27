@@ -186,6 +186,7 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
     }
 
     private void deleteTask() {
+        dataState = DATA_STATE.NO_DATA;
         getActivity().getContentResolver().delete(todoUri, null, null);
     }
 
