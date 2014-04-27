@@ -26,6 +26,7 @@ import name.neuhalfen.todosimple.todosimple.domain.queries.TodoContentProvider;
  */
 public class TodoDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
+
     private static enum VIEW_STATE {
         UNKNOWN,
         CREATED,
@@ -34,7 +35,7 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
     }
 
     private static enum DATA_STATE {
-        NO_DATA, LOADED,
+        NO_DATA, LOADED, NEW_TASK
     }
 
     private VIEW_STATE viewState = VIEW_STATE.UNKNOWN;
@@ -45,6 +46,10 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
      * represents.
      */
     public static final String ARG_ITEM_URI = "item_id";
+    /**
+     * If the #ARG_ITEM_URI == #ARG_ITEM_URI__FOR_NEW_TASK, then a new todo is created
+     */
+    public static final String ARG_ITEM_URI__FOR_NEW_TASK = "NEW TASK";
 
     private Uri todoUri;
 
@@ -69,12 +74,18 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
         // Retain this fragment across configuration changes.
         setRetainInstance(true);
 
-        if (getArguments().containsKey(ARG_ITEM_URI)) {
-            String uristr = getArguments().getString(ARG_ITEM_URI);
-            todoUri = Uri.parse(uristr);
-        }
-        viewState = VIEW_STATE.CREATED;
+        // figure out, what we need to do data wise
         dataState = DATA_STATE.NO_DATA;
+
+        final String uriStr = getArguments().getString(ARG_ITEM_URI);
+        final boolean isNewTaskUri = ARG_ITEM_URI__FOR_NEW_TASK.equals(uriStr);
+        if (isNewTaskUri) {
+            todoUri = null;
+        } else {
+            todoUri = Uri.parse(uriStr);
+        }
+
+        viewState = VIEW_STATE.CREATED;
     }
 
     private void fillData(Cursor cursor) {
@@ -113,11 +124,16 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
         View rootView = inflater.inflate(R.layout.fragment_todo_detail, container, false);
         ButterKnife.inject(this, rootView);
 
-        getLoaderManager().initLoader(0, null, this);
+        if (isEditExistingTask()) {
+            getLoaderManager().initLoader(0, null, this);
+        } else {
+            dataState = DATA_STATE.NEW_TASK;
+        }
 
         viewState = VIEW_STATE.HAS_VIEW;
         return rootView;
     }
+
 
     @Override
     public void onCreateOptionsMenu(
@@ -169,11 +185,15 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
     }
 
     private boolean canSaveTask() {
-        return dataState == DATA_STATE.LOADED;
+        return dataState == DATA_STATE.LOADED || dataState == DATA_STATE.NEW_TASK;
     }
 
     private boolean hasView() {
         return viewState == VIEW_STATE.HAS_VIEW || viewState == VIEW_STATE.BOUND;
+    }
+
+    private boolean isEditExistingTask() {
+        return todoUri != null;
     }
 
     private void saveTask() {
@@ -182,7 +202,13 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
                 (TodoContentProvider.TodoTable.COLUMN_TITLE, titleText.getText().toString());
         values.put
                 (TodoContentProvider.TodoTable.COLUMN_DESCRIPTION, descriptionText.getText().toString());
-        getActivity().getContentResolver().update(todoUri, values, null, null);
+
+        if (isEditExistingTask()) {
+            getActivity().getContentResolver().update(todoUri, values, null, null);
+        } else {
+            todoUri = getActivity().getContentResolver().insert(TodoContentProvider.CONTENT_URI, values);
+            dataState = DATA_STATE.LOADED;
+        }
     }
 
     private void deleteTask() {
