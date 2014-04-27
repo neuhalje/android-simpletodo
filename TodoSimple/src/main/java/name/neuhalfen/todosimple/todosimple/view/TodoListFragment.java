@@ -18,12 +18,13 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
+import name.neuhalfen.myscala.domain.model.Commands;
+import name.neuhalfen.myscala.domain.model.Task;
 import name.neuhalfen.todosimple.todosimple.R;
 import name.neuhalfen.todosimple.todosimple.domain.model.TodoDeletedEvent;
 import name.neuhalfen.todosimple.todosimple.domain.queries.TodoContentProvider;
 import name.neuhalfen.todosimple.todosimple.domain.queries.TodoContentProvider.TodoTable;
 import name.neuhalfen.todosimple.todosimple.services.GlobalEventBus;
-import name.neuhalfen.todosimple.xxx.XXX;
 
 import java.util.ArrayList;
 
@@ -120,7 +121,9 @@ public class TodoListFragment extends ListFragment implements
         // handle item selection
         switch (item.getItemId()) {
             case R.id.add_new_task:
-                Toast.makeText(getActivity(), new XXX().foo("test"), Toast.LENGTH_SHORT).show();
+                Task task = Task.newTask(Commands.createTask("new task"));
+
+                Toast.makeText(getActivity(), task._description(), Toast.LENGTH_SHORT).show();
                 mCallbacks.onCreateNewTask();
                 return true;
             case R.id.add_demo_items:
