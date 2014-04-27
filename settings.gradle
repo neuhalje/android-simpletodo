@@ -1,1 +1,1 @@
-include ':TodoSimple'
+include ':TodoSimple', ':libraries:todo-domain'
