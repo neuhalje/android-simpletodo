@@ -5,6 +5,6 @@
         android:id="@+id/add_demo_items"
         android:showAsAction="ifRoom"
         android:orderInCategory="10"
-        android:title="@string/add_demo_tasks"></item>
+        android:title="@string/menu_add_demo_tasks"/>
 
 </menu>

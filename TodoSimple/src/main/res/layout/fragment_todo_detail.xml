@@ -13,7 +13,7 @@
         android:enabled="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:hint="Title"
+        android:hint="@string/edit_title_hint"
         android:inputType="text"
         android:padding="16dp" />
 
@@ -25,7 +25,7 @@
         android:enabled="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:hint="description"
+        android:hint="@string/edit_description_hint"
         android:inputType="text"
         android:padding="16dp" />
 
