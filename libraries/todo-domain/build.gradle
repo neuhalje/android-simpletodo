@@ -1,1 +1,19 @@
-apply plugin: 'java'
+buildscript {
+apply plugin: 'scala'
+
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.github.maiflai:gradle-scalatest:0.3'
+    }
+}
+
+apply plugin: 'scalatest'
+
+dependencies {
+    compile 'org.scala-lang:scala-library:2.11.+'
+    testCompile 'org.scalatest:scalatest_2.11:2.1.4+'
+    testRuntime 'org.pegdown:pegdown:1.1.0'
+}
+
