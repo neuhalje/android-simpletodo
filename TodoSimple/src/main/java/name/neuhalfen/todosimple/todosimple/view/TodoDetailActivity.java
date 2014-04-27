@@ -3,6 +3,7 @@ package name.neuhalfen.todosimple.todosimple.view;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import name.neuhalfen.todosimple.todosimple.R;
 import name.neuhalfen.todosimple.todosimple.domain.model.TodoDeletedEvent;
@@ -55,14 +56,7 @@ public class TodoDetailActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            // This ID represents the Home or Up button. In the case of this
-            // activity, the Up button is shown. Use NavUtils to allow users
-            // to navigate up one level in the application structure. For
-            // more details, see the Navigation pattern on Android Design:
-            //
-            // http://developer.android.com/design/patterns/navigation.html#up-vs-back
-            //
-            navigateUpTo( new Intent(this, TodoListActivity.class));
+            NavUtils.navigateUpTo(this, new Intent(this, TodoListActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);
