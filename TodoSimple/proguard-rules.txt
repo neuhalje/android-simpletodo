@@ -39,3 +39,36 @@
 -keepnames class * { @butterknife.InjectView *;}
 
 #
+
+
+#############
+# Scala
+#
+# scala
+#
+
+-keepclassmembers class * { ** MODULE$; }
+
+-keepclassmembernames class scala.concurrent.forkjoin.ForkJoinPool {
+long ctl;
+}
+
+-keepclassmembernames class scala.concurrent.forkjoin.ForkJoinPool$WorkQueue {
+int runState;
+}
+
+-keepclassmembernames class scala.concurrent.forkjoin.LinkedTransferQueue {
+scala.concurrent.forkjoin.LinkedTransferQueue$Node head;
+scala.concurrent.forkjoin.LinkedTransferQueue$Node tail;
+int sweepVotes;
+}
+
+-keepclassmembernames class scala.concurrent.forkjoin.LinkedTransferQueue$Node {
+java.lang.Object item;
+scala.concurrent.forkjoin.LinkedTransferQueue$Node next;
+java.lang.Thread waiter;
+}
+
+-dontnote scala.xml.**
+-dontnote scala.concurrent.forkjoin.ForkJoinPool
+-dontwarn scala.**
