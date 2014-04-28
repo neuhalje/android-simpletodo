@@ -16,9 +16,7 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
-import dagger.Module;
 import dagger.ObjectGraph;
-import dagger.Provides;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 import name.neuhalfen.myscala.domain.application.TaskManagingApplication;
@@ -47,14 +45,6 @@ import java.util.ArrayList;
 public class TodoListFragment extends ListFragment implements
         LoaderManager.LoaderCallbacks<Cursor> {
 
-
-    @Module(injects = TodoListFragment.class)
-    public static class TaskDomainModule {
-        @Provides
-        TaskManagingApplication provideTaskManagementApplication() {
-            return new TaskManagingApplication();
-        }
-    }
 
     @Inject
     TaskManagingApplication taskApp;
