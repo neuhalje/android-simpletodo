@@ -1,9 +1,13 @@
 buildscript {
     repositories {
         mavenCentral()
+        maven {
+            url "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:0.9.+'
+        classpath "com.jimdo.gradle:gradle-apt-plugin:0.4-SNAPSHOT"
     }
 }
 apply plugin: 'android'
@@ -20,12 +24,8 @@ if (project.hasProperty("MyProject.local")
     apply from: project.property("MyProject.local") + "/signing.gradle";
 }
 
-/**
- * Used for dagger-compiler
- */
-configurations {
-    preprocess
-}
+apply plugin: 'apt'
+
 
 android {
     defaultConfig {
@@ -49,41 +49,22 @@ android {
 }
 
 dependencies {
-    compile 'com.squareup.dagger:dagger:1.2.1'
-    preprocess 'com.squareup.dagger:dagger-compiler:1.2.1'
+    def daggerVersion="1.2.1"
+    def butterknifeVersion="5.0.0+"
+
+    compile "com.squareup.dagger:dagger:${daggerVersion}"
+    apt "com.squareup.dagger:dagger-compiler:${daggerVersion}"
+
     compile project(':libraries:todo-domain')
     compile 'com.android.support:support-v4:19.1+'
-    compile 'com.jakewharton:butterknife:5.0.0+'
+
+    compile "com.jakewharton:butterknife:${butterknifeVersion}"
+    apt "com.jakewharton:butterknife:${butterknifeVersion}"
+
     compile 'de.keyboardsurfer.android.widget:crouton:1.8.4+'
     compile 'de.greenrobot:eventbus:2.2.0+'
     compile 'net.sourceforge.findbugs:annotations:1.3.2'
     compile 'com.google.code.findbugs:jsr305:2.0.3'
     compile fileTree(dir: 'libs', include: ['*.jar'])
-}
-
-/**
- * Used for dagger-compiler
- */
-android.applicationVariants.all { variant ->
-    //Where to place the generated code
-    def output=file("${project.buildDir}/source/dagger_gen/${variant.dirName}")
-    variant.ext.set("dagger_gen_${variant.dirName}", output)
-
-    println "******   DAGGER Compile ****"
-    println "variant  : ${variant.name}"
-    println "manifest : ${variant.processResources.manifestFile}"
-    println "output   : ${output}"
-    println "****************************"
-
-
-    //Do the actual preprocessor things
-    variant.javaCompile.doFirst {
-        File out = variant.ext.get("dagger_gen_${variant.dirName}")
-        out.mkdirs()
-        variant.javaCompile.options.compilerArgs += [
-                '-processorpath', configurations.preprocess.getAsPath(),
-                '-s', out
-        ]
-    }
 }
 
