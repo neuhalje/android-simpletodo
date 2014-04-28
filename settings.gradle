@@ -1,1 +1,1 @@
-include ':TodoSimple', ':libraries:todo-domain'
+include ':libraries:todo-domain', 'android-application'
