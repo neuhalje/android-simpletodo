@@ -1,7 +1,6 @@
 package name.neuhalfen.todosimple.android.view;
 
 import android.app.Activity;
-import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.*;
 import android.database.Cursor;
@@ -16,7 +15,6 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
-import dagger.ObjectGraph;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 import name.neuhalfen.myscala.domain.application.TaskManagingApplication;
@@ -24,6 +22,7 @@ import name.neuhalfen.myscala.domain.model.Commands;
 import name.neuhalfen.myscala.domain.model.CreateTaskCommand;
 import name.neuhalfen.myscala.domain.model.Task;
 import name.neuhalfen.todosimple.android.R;
+import name.neuhalfen.todosimple.android.di.DIListFragment;
 import name.neuhalfen.todosimple.android.domain.model.TodoDeletedEvent;
 import name.neuhalfen.todosimple.android.domain.queries.TodoContentProvider;
 import name.neuhalfen.todosimple.android.domain.queries.TodoContentProvider.TodoTable;
@@ -42,7 +41,7 @@ import java.util.ArrayList;
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  */
-public class TodoListFragment extends ListFragment implements
+public class TodoListFragment extends DIListFragment implements
         LoaderManager.LoaderCallbacks<Cursor> {
 
 
@@ -113,9 +112,6 @@ public class TodoListFragment extends ListFragment implements
         // default, but important: setting retainInstance to true
         // breaks querying after a task is deleted.
         setRetainInstance(false);
-
-        ObjectGraph objectGraph = ObjectGraph.create(new TaskDomainModule());
-        objectGraph.inject(this);
 
         setListAdapter(createDbAdapter());
         getLoaderManager().initLoader(0, null, this);

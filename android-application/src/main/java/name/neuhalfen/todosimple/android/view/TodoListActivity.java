@@ -1,6 +1,5 @@
 package name.neuhalfen.todosimple.android.view;
 
-import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.net.Uri;
@@ -8,8 +7,12 @@ import android.os.Bundle;
 import android.util.Log;
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 import name.neuhalfen.todosimple.android.R;
+import name.neuhalfen.todosimple.android.di.DIActivity;
 import name.neuhalfen.todosimple.android.domain.model.TodoDeletedEvent;
 import name.neuhalfen.todosimple.android.services.GlobalEventBus;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -28,7 +31,7 @@ import name.neuhalfen.todosimple.android.services.GlobalEventBus;
  * {@link TodoListFragment.Callbacks} interface
  * to listen for item selections.
  */
-public class TodoListActivity extends Activity
+public class TodoListActivity extends DIActivity
         implements TodoListFragment.Callbacks {
 
     /**
@@ -131,6 +134,14 @@ public class TodoListActivity extends Activity
     protected void onPause() {
         super.onPause();
         GlobalEventBus.get().unregister(this);
+    }
+
+    @Override
+    protected List<Object> getModules() {
+        List<Object> modules = new ArrayList<Object>();
+        modules.addAll(super.getModules());
+        modules.add(new TodoListModule());
+        return modules;
     }
 
     /**

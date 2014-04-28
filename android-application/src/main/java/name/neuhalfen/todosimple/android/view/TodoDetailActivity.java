@@ -75,6 +75,7 @@ public class TodoDetailActivity extends Activity {
         GlobalEventBus.get().unregister(this);
     }
 
+
     /**
      * Called by the event bus
      *
