@@ -20,6 +20,13 @@ if (project.hasProperty("MyProject.local")
     apply from: project.property("MyProject.local") + "/signing.gradle";
 }
 
+/**
+ * Used for dagger-compiler
+ */
+configurations {
+    preprocess
+}
+
 android {
     defaultConfig {
         versionCode 1
@@ -27,7 +34,7 @@ android {
     }
     buildTypes {
         release {
-            runProguard true
+            runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
@@ -42,8 +49,8 @@ android {
 }
 
 dependencies {
-    //provided 'com.squareup.dagger:dagger-compiler:1.2.+'
-    compile 'com.squareup.dagger:dagger:1.2.+'
+    compile 'com.squareup.dagger:dagger:1.2.1'
+    preprocess 'com.squareup.dagger:dagger-compiler:1.2.1'
     compile project(':libraries:todo-domain')
     compile 'com.android.support:support-v4:19.1+'
     compile 'com.jakewharton:butterknife:5.0.0+'
@@ -53,3 +60,30 @@ dependencies {
     compile 'com.google.code.findbugs:jsr305:2.0.3'
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }
+
+/**
+ * Used for dagger-compiler
+ */
+android.applicationVariants.all { variant ->
+    //Where to place the generated code
+    def output=file("${project.buildDir}/source/dagger_gen/${variant.dirName}")
+    variant.ext.set("dagger_gen_${variant.dirName}", output)
+
+    println "******   DAGGER Compile ****"
+    println "variant  : ${variant.name}"
+    println "manifest : ${variant.processResources.manifestFile}"
+    println "output   : ${output}"
+    println "****************************"
+
+
+    //Do the actual preprocessor things
+    variant.javaCompile.doFirst {
+        File out = variant.ext.get("dagger_gen_${variant.dirName}")
+        out.mkdirs()
+        variant.javaCompile.options.compilerArgs += [
+                '-processorpath', configurations.preprocess.getAsPath(),
+                '-s', out
+        ]
+    }
+}
+

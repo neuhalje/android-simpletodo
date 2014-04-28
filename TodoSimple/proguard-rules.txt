@@ -47,6 +47,9 @@
 # ------------
 
 
+-dontshrink
+-dontobfuscate
+
 -keepattributes *Annotation*
 
 -keepclassmembers,allowobfuscation class * {
@@ -59,9 +62,11 @@
 -keep class **$$InjectAdapter
 -keep class **$$StaticInjection
 
--keepnames !abstract class coffee.*
-
 -keepnames class dagger.Lazy
+
+-dontwarn dagger.internal.codegen.**﻿
+
+-keepnames !abstract class name.neuhalfen.*
 
 #############
 # Scala
