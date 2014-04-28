@@ -125,7 +125,7 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_todo_detail, container, false);
         ButterKnife.inject(this, rootView);
-        Log.i("BUTTER", String.format("injected: %b" , descriptionText != null));
+        Log.i("BUTTER", String.format("injected: %b", descriptionText != null));
 
         if (isEditExistingTask()) {
             getLoaderManager().initLoader(0, null, this);
