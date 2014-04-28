@@ -7,6 +7,7 @@ buildscript {
     }
 }
 apply plugin: 'android'
+apply from: "${rootDir}/android_common.gradle"
 
 repositories {
     mavenCentral()
@@ -20,11 +21,7 @@ if (project.hasProperty("MyProject.local")
 }
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion '19.0.3'
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 19
         versionCode 1
         versionName "1.0"
     }
