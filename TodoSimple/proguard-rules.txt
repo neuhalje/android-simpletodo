@@ -18,7 +18,8 @@
 
 ###########
 # EventBus
-#
+# ------------
+
 -keepclassmembers class ** {
     public void onEvent*(**);
 }
@@ -32,20 +33,39 @@
 -dontwarn de.greenrobot.event.util.ErrorDialogFragments$Support
 -dontwarn de.greenrobot.event.util.ErrorDialogManager$SupportManagerFragment
 
-###########
+################
 # Butterknife
+# ------------
+
 -dontwarn butterknife.internal.**
 -keep class **$$ViewInjector { *; }
 -keepnames class * { @butterknife.InjectView *;}
 
-#
 
+################
+# Dagger
+# ------------
+
+
+-keepattributes *Annotation*
+
+-keepclassmembers,allowobfuscation class * {
+    @javax.inject.* *;
+    @dagger.* *;
+    <init>();
+}
+
+-keep class **$$ModuleAdapter
+-keep class **$$InjectAdapter
+-keep class **$$StaticInjection
+
+-keepnames !abstract class coffee.*
+
+-keepnames class dagger.Lazy
 
 #############
 # Scala
-#
-# scala
-#
+# ------------
 
 -keepclassmembers class * { ** MODULE$; }
 
