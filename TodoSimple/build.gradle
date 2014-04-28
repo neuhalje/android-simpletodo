@@ -12,6 +12,8 @@ repositories {
     mavenCentral()
 }
 
+// Signing of the release build with keys in an external configuration
+// Configured in gradle.properties
 if (project.hasProperty("MyProject.local")
         && new File(project.property("MyProject.local") + "/signing.gradle").exists()) {
     apply from: project.property("MyProject.local") + "/signing.gradle";
