@@ -16,9 +16,14 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
+import dagger.Module;
+import dagger.ObjectGraph;
+import dagger.Provides;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
+import name.neuhalfen.myscala.domain.application.TaskManagingApplication;
 import name.neuhalfen.myscala.domain.model.Commands;
+import name.neuhalfen.myscala.domain.model.CreateTaskCommand;
 import name.neuhalfen.myscala.domain.model.Task;
 import name.neuhalfen.todosimple.todosimple.R;
 import name.neuhalfen.todosimple.todosimple.domain.model.TodoDeletedEvent;
@@ -26,6 +31,7 @@ import name.neuhalfen.todosimple.todosimple.domain.queries.TodoContentProvider;
 import name.neuhalfen.todosimple.todosimple.domain.queries.TodoContentProvider.TodoTable;
 import name.neuhalfen.todosimple.todosimple.services.GlobalEventBus;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 
 
@@ -40,6 +46,19 @@ import java.util.ArrayList;
  */
 public class TodoListFragment extends ListFragment implements
         LoaderManager.LoaderCallbacks<Cursor> {
+
+
+    @Module(injects = TodoListFragment.class)
+    public static class TaskDomainModule {
+        @Provides
+        TaskManagingApplication provideTaskManagementApplication() {
+            return new TaskManagingApplication();
+        }
+    }
+
+    @Inject
+    TaskManagingApplication taskApp;
+
     private SimpleCursorAdapter adapter;
 
     /**
@@ -105,6 +124,9 @@ public class TodoListFragment extends ListFragment implements
         // breaks querying after a task is deleted.
         setRetainInstance(false);
 
+        ObjectGraph objectGraph = ObjectGraph.create(new TaskDomainModule());
+        objectGraph.inject(this);
+
         setListAdapter(createDbAdapter());
         getLoaderManager().initLoader(0, null, this);
     }
@@ -121,7 +143,9 @@ public class TodoListFragment extends ListFragment implements
         // handle item selection
         switch (item.getItemId()) {
             case R.id.add_new_task:
-                Task task = Task.newTask(Commands.createTask("new task"));
+                CreateTaskCommand createTaskCommand = Commands.createTask("new task");
+                taskApp.executeCommand(createTaskCommand);
+                Task task = taskApp.loadTask(createTaskCommand.aggregateRootId()).get();
 
                 Toast.makeText(getActivity(), task._description(), Toast.LENGTH_SHORT).show();
                 mCallbacks.onCreateNewTask();
