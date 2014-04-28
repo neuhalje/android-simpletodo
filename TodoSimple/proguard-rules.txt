@@ -47,9 +47,6 @@
 # ------------
 
 
--dontshrink
--dontobfuscate
-
 -keepattributes *Annotation*
 
 -keepclassmembers,allowobfuscation class * {
