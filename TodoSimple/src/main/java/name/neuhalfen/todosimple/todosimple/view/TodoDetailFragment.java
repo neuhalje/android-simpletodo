@@ -8,6 +8,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.*;
 import android.widget.EditText;
 import butterknife.ButterKnife;
@@ -115,6 +116,7 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
         super.onDestroyView();
         Crouton.cancelAllCroutons();
         ButterKnife.reset(this);
+        Log.i("BUTTER", String.format("reset: %b" , descriptionText != null));
         viewState = VIEW_STATE.CREATED;
     }
 
@@ -123,14 +125,17 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_todo_detail, container, false);
         ButterKnife.inject(this, rootView);
+        Log.i("BUTTER", String.format("injected: %b" , descriptionText != null));
 
         if (isEditExistingTask()) {
             getLoaderManager().initLoader(0, null, this);
+            viewState = VIEW_STATE.HAS_VIEW;
         } else {
+            // TODO: This asymmetry between edit and new is to be resolved..
             dataState = DATA_STATE.NEW_TASK;
+            viewState = VIEW_STATE.BOUND;
         }
 
-        viewState = VIEW_STATE.HAS_VIEW;
         return rootView;
     }
 
@@ -185,7 +190,7 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
     }
 
     private boolean canSaveTask() {
-        return dataState == DATA_STATE.LOADED || dataState == DATA_STATE.NEW_TASK;
+        return (dataState == DATA_STATE.LOADED || dataState == DATA_STATE.NEW_TASK) && (viewState == VIEW_STATE.BOUND);
     }
 
     private boolean hasView() {
