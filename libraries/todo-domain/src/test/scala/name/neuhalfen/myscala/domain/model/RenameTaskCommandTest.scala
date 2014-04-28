@@ -10,6 +10,7 @@ class RenameTaskCommandTest extends UnitSpec with TaskTestTrait {
     task.handle(Commands.renameTask(task,"new description"))
     for (evt <- task.uncommittedEVTs) evt match {
       case TaskRenamedEvent(eventId, aggregateRootId, oldAggregateVersion, newAggregateVersion, newDescription) => assert(newDescription == "new description")
+      case _ => fail("Unecpected event")
     }
   }
 
