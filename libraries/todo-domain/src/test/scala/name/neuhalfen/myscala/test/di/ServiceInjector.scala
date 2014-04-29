@@ -1,4 +1,4 @@
-package name.neuhalfen.myscala.domain.application
+package name.neuhalfen.myscala.test.di
 
 import com.google.inject.Guice
 
@@ -11,9 +11,11 @@ trait ServiceInjector {
 
 // helper companion object
 object ServiceInjector {
-  private val injector = Guice.createInjector(new DependencyModule)
+  val injector = Guice.createInjector(new TestDependencyModule)
 
   def inject(obj: AnyRef) = injector.injectMembers(obj)
+
+   def getInstance[T](clazz:Class[T]) :T  = injector.getInstance(clazz)
 }
 
 
