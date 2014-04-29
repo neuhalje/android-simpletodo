@@ -2,7 +2,6 @@ package name.neuhalfen.todosimple.android.infrastructure.db;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-import de.greenrobot.event.EventBus;
 import name.neuhalfen.myscala.domain.infrastructure.Transaction;
 import name.neuhalfen.myscala.domain.infrastructure.TransactionRollbackException;
 import name.neuhalfen.todosimple.android.di.ForApplication;
@@ -13,9 +12,13 @@ public class SQLiteToTransactionAdapter implements Transaction {
 
     @Inject
     @ForApplication
-    TodoSQLiteHelper  sqllite;
+    TodoSQLiteHelper sqllite;
 
-    SQLiteDatabase db;
+    private SQLiteDatabase db;
+
+    public SQLiteDatabase getDb() {
+        return db;
+    }
 
     @Override
     public void beginTransaction() {
