@@ -140,7 +140,7 @@ public class TodoListActivity extends DIActivity
     protected List<Object> getModules() {
         List<Object> modules = new ArrayList<Object>();
         modules.addAll(super.getModules());
-        modules.add(new TodoListModule());
+        modules.add(new TodoViewModule());
         return modules;
     }
 

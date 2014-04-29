@@ -5,10 +5,11 @@ import name.neuhalfen.todosimple.android.AndroidApplicationModule;
 
 @Module(
         injects = {
-                TodoListFragment.class, TodoListActivity.class
+                TodoListFragment.class,   TodoDetailFragment.class,
+                TodoListActivity.class, TodoDetailActivity.class
         },
         addsTo = AndroidApplicationModule.class,
         library = true
 )
-public class TodoListModule {
+public class TodoViewModule {
 }
