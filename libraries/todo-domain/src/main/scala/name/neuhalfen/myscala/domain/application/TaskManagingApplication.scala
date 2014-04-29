@@ -1,7 +1,6 @@
 package name.neuhalfen.myscala.domain.application
 
-import name.neuhalfen.myscala.domain.model.Command
-import name.neuhalfen.myscala.domain.model.Task
+import name.neuhalfen.myscala.domain.model.{Event, Command, Task}
 import java.util.UUID
 import javax.inject.Inject
 import name.neuhalfen.myscala.domain.infrastructure.{TransactionRollbackException, Transaction, EventPublisher, EventStore}
@@ -11,6 +10,9 @@ import scala.Some
 
 class TaskManagingApplication @Inject()(eventStore: EventStore, eventPublishing: EventPublisher, tx: Transaction) {
 
+  /*
+   TODO: make execute command return the unpublished events, and kill publishEventsAfterCommit
+   */
   def executeCommand(command: Command): Unit = {
 
     try {
@@ -27,16 +29,24 @@ class TaskManagingApplication @Inject()(eventStore: EventStore, eventPublishing:
       eventStore.appendEvents(task.id, task.uncommittedEVTs)
       eventPublishing.publishEventsInTransaction(task.uncommittedEVTs.asJava)
       tx.commit()
-      eventPublishing.publishEventsAfterCommit(task.uncommittedEVTs.asJava)
+      publishEventsAfterCommitIgnoreExceptions(task.uncommittedEVTs.asJava)
     } catch {
       // FIXME: Make error reports better ...
       case e: TransactionRollbackException => throw new RuntimeException(e)
       case e: IllegalArgumentException => tx.rollback(); throw e
-      case e: Any  => tx.rollback(); throw new RuntimeException(e)
+      case e: Any => tx.rollback(); throw new RuntimeException(e)
     }
     //task.markCommitted
   }
 
+
+  def publishEventsAfterCommitIgnoreExceptions(events: List[Event]) {
+    try {
+      eventPublishing.publishEventsAfterCommit(events)
+    } catch {
+      case e: Exception => // Swallow the exception
+    }
+  }
 
   def loadTask(taskId: UUID): Option[Task] = {
     val events = eventStore.loadEvents(taskId)
