@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
+import de.greenrobot.event.EventBus;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 import name.neuhalfen.myscala.domain.application.TaskManagingApplication;
@@ -27,7 +28,6 @@ import name.neuhalfen.todosimple.android.di.ForApplication;
 import name.neuhalfen.todosimple.android.domain.model.TodoDeletedEvent;
 import name.neuhalfen.todosimple.android.domain.queries.TodoContentProvider;
 import name.neuhalfen.todosimple.android.domain.queries.TodoContentProvider.TodoTable;
-import name.neuhalfen.todosimple.android.services.GlobalEventBus;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -49,6 +49,11 @@ public class TodoListFragment extends DIListFragment implements
     @Inject
     @ForApplication
     TaskManagingApplication taskApp;
+
+
+    @Inject
+    @ForApplication
+    EventBus eventBus;
 
     private SimpleCursorAdapter adapter;
 
@@ -204,7 +209,7 @@ public class TodoListFragment extends DIListFragment implements
         }
 
         mCallbacks = (Callbacks) activity;
-        GlobalEventBus.get().register(this);
+        eventBus.register(this);
     }
 
     @Override
@@ -213,7 +218,7 @@ public class TodoListFragment extends DIListFragment implements
 
         // Reset the active callbacks interface to the dummy implementation.
         mCallbacks = sDummyCallbacks;
-        GlobalEventBus.get().unregister(this);
+        eventBus.unregister(this);
         Crouton.cancelAllCroutons();
     }
 

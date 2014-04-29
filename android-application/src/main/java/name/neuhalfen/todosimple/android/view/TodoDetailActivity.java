@@ -5,9 +5,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
+import de.greenrobot.event.EventBus;
 import name.neuhalfen.todosimple.android.R;
+import name.neuhalfen.todosimple.android.di.DIActivity;
+import name.neuhalfen.todosimple.android.di.ForApplication;
 import name.neuhalfen.todosimple.android.domain.model.TodoDeletedEvent;
-import name.neuhalfen.todosimple.android.services.GlobalEventBus;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -15,11 +21,15 @@ import name.neuhalfen.todosimple.android.services.GlobalEventBus;
  * activity is only used on handset devices. On tablet-size devices,
  * item details are presented side-by-side with a list of items
  * in a {@link TodoListActivity}.
- * <p>
+ * <p/>
  * This activity is mostly just a 'shell' activity containing nothing
  * more than a {@link TodoDetailFragment}.
  */
-public class TodoDetailActivity extends Activity {
+public class TodoDetailActivity extends DIActivity {
+
+    @Inject
+    @ForApplication
+    EventBus eventBus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,15 +76,22 @@ public class TodoDetailActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
-        GlobalEventBus.get().register(this);
+        eventBus.register(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        GlobalEventBus.get().unregister(this);
+        eventBus.unregister(this);
     }
 
+    @Override
+    protected List<Object> getModules() {
+        List<Object> modules = new ArrayList<Object>();
+        modules.addAll(super.getModules());
+        modules.add(new TodoViewModule());
+        return modules;
+    }
 
     /**
      * Called by the event bus

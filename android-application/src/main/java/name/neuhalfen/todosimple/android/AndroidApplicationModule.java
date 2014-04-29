@@ -3,6 +3,7 @@ package name.neuhalfen.todosimple.android;
 import android.content.Context;
 import dagger.Module;
 import dagger.Provides;
+import de.greenrobot.event.EventBus;
 import name.neuhalfen.myscala.domain.application.TaskManagingApplication;
 import name.neuhalfen.todosimple.android.di.ForApplication;
 
@@ -34,6 +35,14 @@ public class AndroidApplicationModule {
     TaskManagingApplication provideTaskManagementApplication() {
         return new TaskManagingApplication();
     }
+
+    @Singleton
+    @Provides
+    @ForApplication
+    EventBus provideEventBus() {
+        return  new EventBus();
+    }
+
 
     /*
     @Provides @Singleton LocationManager provideLocationManager() {
