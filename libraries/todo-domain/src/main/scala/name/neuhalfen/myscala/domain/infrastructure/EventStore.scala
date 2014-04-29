@@ -1,4 +1,4 @@
-package name.neuhalfen.myscala.domain.application
+package name.neuhalfen.myscala.domain.infrastructure
 
 import java.util.UUID
 import name.neuhalfen.myscala.domain.model.Event

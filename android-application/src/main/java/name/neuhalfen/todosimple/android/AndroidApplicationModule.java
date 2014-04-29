@@ -4,9 +4,9 @@ import android.content.Context;
 import dagger.Module;
 import dagger.Provides;
 import de.greenrobot.event.EventBus;
-import name.neuhalfen.myscala.domain.application.EventStore;
 import name.neuhalfen.myscala.domain.application.TaskManagingApplication;
-import name.neuhalfen.myscala.domain.infrastructure.MemoryEventStore;
+import name.neuhalfen.myscala.domain.infrastructure.EventStore;
+import name.neuhalfen.myscala.domain.infrastructure.impl.MemoryEventStore;
 import name.neuhalfen.todosimple.android.di.ForApplication;
 import name.neuhalfen.todosimple.android.infrastructure.contentprovider.TodoContentProviderImpl;
 

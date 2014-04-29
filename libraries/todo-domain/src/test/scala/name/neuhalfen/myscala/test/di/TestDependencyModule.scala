@@ -1,9 +1,9 @@
 package name.neuhalfen.myscala.test.di
 
-import name.neuhalfen.myscala.domain.infrastructure.MemoryEventStore
+import name.neuhalfen.myscala.domain.infrastructure.EventStore
 import com.google.inject.Module
 import com.google.inject.Binder
-import name.neuhalfen.myscala.domain.application.EventStore
+import name.neuhalfen.myscala.domain.infrastructure.impl.MemoryEventStore
 
 
 class TestDependencyModule extends Module {

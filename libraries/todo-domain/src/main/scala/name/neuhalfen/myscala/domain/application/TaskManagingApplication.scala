@@ -4,6 +4,7 @@ import name.neuhalfen.myscala.domain.model.Command
 import name.neuhalfen.myscala.domain.model.Task
 import java.util.UUID
 import javax.inject.Inject
+import name.neuhalfen.myscala.domain.infrastructure.EventStore
 
 
 class TaskManagingApplication @Inject() (eventStore: EventStore ) {
