@@ -19,6 +19,7 @@ import de.greenrobot.event.EventBus;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 import name.neuhalfen.myscala.domain.application.TaskManagingApplication;
+import name.neuhalfen.myscala.domain.infrastructure.EventPublisher;
 import name.neuhalfen.myscala.domain.model.Commands;
 import name.neuhalfen.myscala.domain.model.CreateTaskCommand;
 import name.neuhalfen.myscala.domain.model.Task;
@@ -49,6 +50,10 @@ public class TodoListFragment extends DIListFragment implements
     @Inject
     @ForApplication
     TaskManagingApplication taskApp;
+
+    @Inject
+    @ForApplication
+    EventPublisher testPublisher;
 
 
     @Inject
