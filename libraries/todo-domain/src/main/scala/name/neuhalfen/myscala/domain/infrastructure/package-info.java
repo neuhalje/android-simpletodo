@@ -1,4 +1,4 @@
 /**
- * Implementations of infrastructure services defined in the application layer
+ * infrastructure services used in the domain
  */
 package name.neuhalfen.myscala.domain.infrastructure;
