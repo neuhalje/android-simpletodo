@@ -1,25 +1,30 @@
 package name.neuhalfen.todosimple.android.infrastructure.contentprovider;
 
-import android.content.ContentProvider;
-import android.content.ContentUris;
-import android.content.ContentValues;
-import android.content.UriMatcher;
+import android.content.*;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
+import de.greenrobot.event.EventBus;
+import name.neuhalfen.todosimple.android.di.ForApplication;
+import name.neuhalfen.todosimple.android.di.Injector;
 import name.neuhalfen.todosimple.android.domain.model.TodoDeletedEvent;
 import name.neuhalfen.todosimple.android.domain.queries.TodoContentProvider;
 import name.neuhalfen.todosimple.android.infrastructure.db.TodoSQLiteHelper;
 import name.neuhalfen.todosimple.android.infrastructure.db.TodoTableImpl;
-import name.neuhalfen.todosimple.android.services.GlobalEventBus;
 
+import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 public class TodoContentProviderImpl extends ContentProvider implements TodoContentProvider {
+
+    @Inject
+            @ForApplication
+    EventBus eventBus;
 
     // database
     private TodoSQLiteHelper database;
@@ -39,7 +44,18 @@ public class TodoContentProviderImpl extends ContentProvider implements TodoCont
     @Override
     public boolean onCreate() {
         database = new TodoSQLiteHelper(getContext());
-        return true;
+
+        Context applicationContext = getContext().getApplicationContext();
+        if (applicationContext instanceof  Injector) {
+            Injector injector = (Injector) applicationContext;
+            injector.inject(this);
+            return true;
+        }else{
+            // DIE!!!!
+            Log.wtf("TodoContentProviderImpl", String.format("applicationContext (%s) is no Injector", applicationContext.getClass().toString()));
+            // We'll never get here bc/ Log.wtf kills the app.
+            return false;
+        }
     }
 
     @Override
@@ -126,7 +142,7 @@ public class TodoContentProviderImpl extends ContentProvider implements TodoCont
                     );
                 }
 
-                GlobalEventBus.get().post(new TodoDeletedEvent());
+                eventBus.post(new TodoDeletedEvent());
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);

@@ -5,12 +5,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import de.greenrobot.event.EventBus;
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 import name.neuhalfen.todosimple.android.R;
 import name.neuhalfen.todosimple.android.di.DIActivity;
+import name.neuhalfen.todosimple.android.di.ForApplication;
 import name.neuhalfen.todosimple.android.domain.model.TodoDeletedEvent;
-import name.neuhalfen.todosimple.android.services.GlobalEventBus;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +41,11 @@ public class TodoListActivity extends DIActivity
      * device.
      */
     private boolean mTwoPane;
+
+    @Inject
+    @ForApplication
+    EventBus eventBus;
+
 
     @CheckForNull
     private TodoDetailFragment detailFragment;
@@ -127,13 +134,13 @@ public class TodoListActivity extends DIActivity
     @Override
     public void onResume() {
         super.onResume();
-        GlobalEventBus.get().register(this);
+        eventBus.register(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        GlobalEventBus.get().unregister(this);
+        eventBus.unregister(this);
     }
 
     @Override

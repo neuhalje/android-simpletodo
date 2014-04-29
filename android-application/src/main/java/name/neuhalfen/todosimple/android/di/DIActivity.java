@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Base activity for DI.
  */
-public class DIActivity extends Activity {
+public class DIActivity extends Activity implements Injector {
     private ObjectGraph activityGraph;
 
     @Override

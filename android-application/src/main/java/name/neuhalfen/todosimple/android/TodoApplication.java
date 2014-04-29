@@ -2,12 +2,14 @@ package name.neuhalfen.todosimple.android;
 
 import android.app.Application;
 import dagger.ObjectGraph;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import name.neuhalfen.todosimple.android.di.Injector;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class TodoApplication
-        extends Application {
+        extends Application implements Injector {
     private ObjectGraph applicationGraph;
 
     @Override
@@ -23,7 +25,16 @@ public class TodoApplication
         );
     }
 
+    @NonNull
     public ObjectGraph getApplicationGraph() {
+        if (null == applicationGraph) {
+            throw new IllegalStateException("Application DI graph not yet created!");
+        }
         return applicationGraph;
+    }
+
+    @Override
+    public void inject(Object object) {
+        getApplicationGraph().inject(object);
     }
 }
