@@ -1,6 +1,5 @@
 package name.neuhalfen.todosimple.android.view;
 
-import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
@@ -15,8 +14,17 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
+import name.neuhalfen.myscala.domain.application.TaskManagingApplication;
+import name.neuhalfen.myscala.domain.model.Command;
+import name.neuhalfen.myscala.domain.model.CreateTaskCommand;
+import name.neuhalfen.myscala.domain.model.RenameTaskCommand;
 import name.neuhalfen.todosimple.android.R;
+import name.neuhalfen.todosimple.android.di.DIFragment;
+import name.neuhalfen.todosimple.android.di.ForApplication;
 import name.neuhalfen.todosimple.android.domain.queries.TodoContentProvider;
+
+import javax.inject.Inject;
+import java.util.UUID;
 
 
 /**
@@ -25,8 +33,12 @@ import name.neuhalfen.todosimple.android.domain.queries.TodoContentProvider;
  * in two-pane mode (on tablets) or a {@link TodoDetailActivity}
  * on handsets.
  */
-public class TodoDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class TodoDetailFragment extends DIFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
+
+    @Inject
+    @ForApplication
+    TaskManagingApplication taskApp;
 
     private static enum VIEW_STATE {
         UNKNOWN,
@@ -202,6 +214,18 @@ public class TodoDetailFragment extends Fragment implements LoaderManager.Loader
     }
 
     private void saveTask() {
+        // FIXME:  This should be the way
+        final Command cmd;
+        if (isEditExistingTask()) {
+            cmd = new RenameTaskCommand(UUID.randomUUID(), UUID.fromString("0DC4011C-BE19-4C21-B11B-E11B0E5D0502"), 1, titleText.getText().toString());
+        } else {
+            cmd = new CreateTaskCommand(UUID.randomUUID(), UUID.fromString("0DC4011C-BE19-4C21-B11B-E11B0E5D0502"), titleText.getText().toString(), 0);
+        }
+        taskApp.executeCommand(cmd);
+
+
+        // FIXME: this is deprecated
+
         ContentValues values = new ContentValues();
         values.put
                 (TodoContentProvider.TodoTable.COLUMN_TITLE, titleText.getText().toString());

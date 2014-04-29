@@ -20,9 +20,6 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 import name.neuhalfen.myscala.domain.application.TaskManagingApplication;
 import name.neuhalfen.myscala.domain.infrastructure.EventPublisher;
-import name.neuhalfen.myscala.domain.model.Commands;
-import name.neuhalfen.myscala.domain.model.CreateTaskCommand;
-import name.neuhalfen.myscala.domain.model.Task;
 import name.neuhalfen.todosimple.android.R;
 import name.neuhalfen.todosimple.android.di.DIListFragment;
 import name.neuhalfen.todosimple.android.di.ForApplication;
@@ -141,11 +138,6 @@ public class TodoListFragment extends DIListFragment implements
         // handle item selection
         switch (item.getItemId()) {
             case R.id.add_new_task:
-                CreateTaskCommand createTaskCommand = Commands.createTask("new task");
-                taskApp.executeCommand(createTaskCommand);
-                Task task = taskApp.loadTask(createTaskCommand.aggregateRootId()).get();
-
-                Toast.makeText(getActivity(), task._description(), Toast.LENGTH_SHORT).show();
                 mCallbacks.onCreateNewTask();
                 return true;
             case R.id.add_demo_items:

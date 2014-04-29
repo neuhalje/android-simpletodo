@@ -7,19 +7,16 @@ import de.greenrobot.event.EventBus;
 import name.neuhalfen.myscala.domain.application.TaskManagingApplication;
 import name.neuhalfen.myscala.domain.infrastructure.EventPublisher;
 import name.neuhalfen.myscala.domain.infrastructure.EventStore;
-import name.neuhalfen.myscala.domain.infrastructure.Transaction;
-import name.neuhalfen.myscala.domain.infrastructure.impl.MemoryEventStore;
 import name.neuhalfen.todosimple.android.di.ForApplication;
 import name.neuhalfen.todosimple.android.infrastructure.AndroidEventPublisher;
+import name.neuhalfen.todosimple.android.infrastructure.AndroidEventStore;
 import name.neuhalfen.todosimple.android.infrastructure.contentprovider.TodoContentProviderImpl;
 import name.neuhalfen.todosimple.android.infrastructure.db.SQLiteToTransactionAdapter;
 import name.neuhalfen.todosimple.android.infrastructure.db.TodoSQLiteHelper;
 
 import javax.inject.Singleton;
 
-//@Module(library = true, injects = {TodoContentProviderImpl.class, AndroidEventPublisher.class}, includes = AndroidApplicationModule.ForDomainModule.class)
-//@Module(library = true, injects = {TaskManagingApplication.class, TodoContentProviderImpl.class}, includes = AndroidApplicationModule.EventBusModule.class)
-@Module(library = true, complete = true, injects = { TodoContentProviderImpl.class, AndroidEventPublisher.class, SQLiteToTransactionAdapter.class}, includes = AndroidApplicationModule.EventBusModule.class)
+@Module(library = true, complete = true, injects = {AndroidEventStore.class, TodoContentProviderImpl.class, AndroidEventPublisher.class, SQLiteToTransactionAdapter.class}, includes = AndroidApplicationModule.EventBusModule.class)
 public class AndroidApplicationModule {
     private final TodoApplication application;
 
@@ -41,7 +38,7 @@ public class AndroidApplicationModule {
     @Singleton
     @Provides
     @ForApplication
-    TaskManagingApplication provideTaskManagementApplication(@ForApplication EventStore eventStore, @ForApplication EventPublisher eventPublisher, @ForApplication Transaction tx) {
+    TaskManagingApplication provideTaskManagementApplication(@ForApplication EventStore eventStore, @ForApplication EventPublisher eventPublisher, @ForApplication SQLiteToTransactionAdapter tx) {
         return new TaskManagingApplication(eventStore, eventPublisher, tx);
     }
 
@@ -72,8 +69,8 @@ public class AndroidApplicationModule {
     @Singleton
     @Provides
     @ForApplication
-    EventStore provideEventStore() {
-        return new MemoryEventStore();
+    EventStore provideEventStore(AndroidEventStore es) {
+        return es;
     }
 
     @Singleton
@@ -91,7 +88,7 @@ public class AndroidApplicationModule {
     @Singleton
     @Provides
     @ForApplication
-    Transaction provideTransaction(SQLiteToTransactionAdapter t) {
+    SQLiteToTransactionAdapter provideTransaction(SQLiteToTransactionAdapter t) {
         return t;
     }
 
