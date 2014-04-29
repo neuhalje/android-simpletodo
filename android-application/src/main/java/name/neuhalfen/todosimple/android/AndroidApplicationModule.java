@@ -5,14 +5,21 @@ import dagger.Module;
 import dagger.Provides;
 import de.greenrobot.event.EventBus;
 import name.neuhalfen.myscala.domain.application.TaskManagingApplication;
+import name.neuhalfen.myscala.domain.infrastructure.EventPublisher;
 import name.neuhalfen.myscala.domain.infrastructure.EventStore;
+import name.neuhalfen.myscala.domain.infrastructure.Transaction;
 import name.neuhalfen.myscala.domain.infrastructure.impl.MemoryEventStore;
 import name.neuhalfen.todosimple.android.di.ForApplication;
+import name.neuhalfen.todosimple.android.infrastructure.AndroidEventPublisher;
 import name.neuhalfen.todosimple.android.infrastructure.contentprovider.TodoContentProviderImpl;
+import name.neuhalfen.todosimple.android.infrastructure.db.SQLiteToTransactionAdapter;
+import name.neuhalfen.todosimple.android.infrastructure.db.TodoSQLiteHelper;
 
 import javax.inject.Singleton;
 
-@Module(library = true, injects = {TodoContentProviderImpl.class}, includes = AndroidApplicationModule.ForDomainModule.class)
+//@Module(library = true, injects = {TodoContentProviderImpl.class, AndroidEventPublisher.class}, includes = AndroidApplicationModule.ForDomainModule.class)
+//@Module(library = true, injects = {TaskManagingApplication.class, TodoContentProviderImpl.class}, includes = AndroidApplicationModule.EventBusModule.class)
+@Module(library = true, complete = true, injects = { TodoContentProviderImpl.class, AndroidEventPublisher.class, SQLiteToTransactionAdapter.class}, includes = AndroidApplicationModule.EventBusModule.class)
 public class AndroidApplicationModule {
     private final TodoApplication application;
 
@@ -24,8 +31,8 @@ public class AndroidApplicationModule {
      * Allow the application context to be injected but require that it be annotated with
      * {@link ForApplication @Annotation} to explicitly differentiate it from an activity context.
      */
-    @Provides
     @Singleton
+    @Provides
     @ForApplication
     Context provideApplicationContext() {
         return application;
@@ -34,8 +41,16 @@ public class AndroidApplicationModule {
     @Singleton
     @Provides
     @ForApplication
-    TaskManagingApplication provideTaskManagementApplication(EventStore eventStore) {
-        return new TaskManagingApplication(eventStore );
+    TaskManagingApplication provideTaskManagementApplication(@ForApplication EventStore eventStore, @ForApplication EventPublisher eventPublisher, @ForApplication Transaction tx) {
+        return new TaskManagingApplication(eventStore, eventPublisher, tx);
+    }
+
+
+    @Singleton
+    @Provides
+            @ForApplication
+    TodoSQLiteHelper provideSQLiteHelper() {
+        return new TodoSQLiteHelper(application);
     }
 
     @Module(library = true)
@@ -48,19 +63,39 @@ public class AndroidApplicationModule {
         }
     }
 
-    /**
-     * All DIs needed in the domain model
-     */
-    @Module(injects = {TaskManagingApplication.class},includes = EventBusModule.class)
-    static class ForDomainModule {
-
-        @Singleton
-        @Provides
-        EventStore provideEventStore() {
-            return new MemoryEventStore();
-        }
-
+    //     /**
+//     * All DIs needed in the domain model
+//     */
+//    @Module(injects = {TaskManagingApplication.class},includes = EventBusModule.class, library = true)
+//    static class ForDomainModule {
+//
+    @Singleton
+    @Provides
+    @ForApplication
+    EventStore provideEventStore() {
+        return new MemoryEventStore();
     }
+
+    @Singleton
+    @Provides
+    @ForApplication
+    EventPublisher provideEventPublisher(AndroidEventPublisher p) {
+        return p;
+    }
+
+    /**
+     * --> Single Threaded!
+     *
+     * @return
+     */
+    @Singleton
+    @Provides
+    @ForApplication
+    Transaction provideTransaction(SQLiteToTransactionAdapter t) {
+        return t;
+    }
+
+    //}
 
     /*
     @Provides @Singleton LocationManager provideLocationManager() {
