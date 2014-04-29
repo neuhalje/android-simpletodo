@@ -4,13 +4,15 @@ import android.content.Context;
 import dagger.Module;
 import dagger.Provides;
 import de.greenrobot.event.EventBus;
+import name.neuhalfen.myscala.domain.application.EventStore;
 import name.neuhalfen.myscala.domain.application.TaskManagingApplication;
+import name.neuhalfen.myscala.domain.infrastructure.MemoryEventStore;
 import name.neuhalfen.todosimple.android.di.ForApplication;
 import name.neuhalfen.todosimple.android.infrastructure.contentprovider.TodoContentProviderImpl;
 
 import javax.inject.Singleton;
 
-@Module(library = true, injects = {TodoContentProviderImpl.class})
+@Module(library = true, injects = {TodoContentProviderImpl.class,TaskManagingApplication.class})
 public class AndroidApplicationModule {
     private final TodoApplication application;
 
@@ -29,12 +31,17 @@ public class AndroidApplicationModule {
         return application;
     }
 
-
     @Singleton
     @Provides
     @ForApplication
-    TaskManagingApplication provideTaskManagementApplication() {
-        return new TaskManagingApplication();
+    TaskManagingApplication provideTaskManagementApplication(EventStore eventStore) {
+        return new TaskManagingApplication(eventStore );
+    }
+
+    @Singleton
+    @Provides
+    EventStore provideEventStore() {
+        return new MemoryEventStore();
     }
 
     @Singleton
