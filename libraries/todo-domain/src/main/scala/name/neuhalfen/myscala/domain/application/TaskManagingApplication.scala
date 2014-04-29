@@ -31,7 +31,7 @@ class TaskManagingApplication @Inject()(eventStore: EventStore, eventPublishing:
     } catch {
       // FIXME: Make error reports better ...
       case e: TransactionRollbackException => throw new RuntimeException(e)
-      case e: IllegalArgumentException => throw e
+      case e: IllegalArgumentException => tx.rollback(); throw e
       case e: Any  => tx.rollback(); throw new RuntimeException(e)
     }
     //task.markCommitted
