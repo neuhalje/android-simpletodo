@@ -24,5 +24,6 @@ trait EventPublisher {
    *
    * @param events
    */
+  @Deprecated
   def publishEventsAfterCommit(events: java.util.List[Event]): Unit
 }
