@@ -209,6 +209,11 @@ public class TodoListFragment extends DIListFragment implements
         }
 
         mCallbacks = (Callbacks) activity;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         eventBus.register(this);
     }
 
