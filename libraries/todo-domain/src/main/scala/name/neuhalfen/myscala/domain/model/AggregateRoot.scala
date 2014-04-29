@@ -5,7 +5,7 @@ trait EventSourced[ES <: EventSourced[ES, EVT], EVT] {
 
   def applyEvent: EVT => ES
 
-  def unhandled(event: EVT): ES = error("event " + event + " does not apply to " + this)
+  def unhandled(event: EVT): ES = sys.error("event " + event + " does not apply to " + this)
 }
 
 
