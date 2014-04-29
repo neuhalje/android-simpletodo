@@ -2,13 +2,15 @@ package name.neuhalfen.myscala.domain.application
 
 import name.neuhalfen.myscala.domain.model.Command
 import name.neuhalfen.myscala.domain.model.Task
-import name.neuhalfen.myscala.domain.infrastructure.MemoryEventStore
 import java.util.UUID
+import javax.inject.Inject
+import scala.annotation.meta.field
 
 
-class TaskManagingApplication {
-  // TODO: FIXME: Use DI
-  val eventStore = new MemoryEventStore()
+class TaskManagingApplication() {
+
+  @(Inject@field)
+  protected var eventStore: EventStore = _
 
   def executeCommand(command: Command): Unit = {
     val aggregateId = command.aggregateRootId

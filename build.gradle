@@ -14,6 +14,13 @@ allprojects {
         mavenCentral()
     }
 
-    project.ext.shareddeps = [ eventbus: ['de.greenrobot:eventbus:2.2.0+'],  ]
+    def daggerVersion = "1.2.1"
+
+    project.ext.shareddeps = [
+            eventbus  : ['de.greenrobot:eventbus:2.2.0+'],
+            dagger_rt : ["com.squareup.dagger:dagger:${daggerVersion}"],
+            dagger_apt: ["com.squareup.dagger:dagger-compiler:${daggerVersion}"]
+    ]
+
 }
 

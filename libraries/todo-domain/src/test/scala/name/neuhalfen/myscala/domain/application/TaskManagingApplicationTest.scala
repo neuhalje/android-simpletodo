@@ -7,12 +7,12 @@ import name.neuhalfen.myscala.domain.model.CreateTaskCommand
 class TaskManagingApplicationTest extends UnitSpec {
 
   "The task application service " should " return None for a non existing task" in {
-    val tasksApp = new TaskManagingApplication
+    val tasksApp = new TaskManagingApplication with ServiceInjector
     tasksApp.loadTask(UnitSpec.TASK_ID_NON_EXISTING) should be('empty)
   }
 
   it should " return the task for an existing task" in {
-    val tasksApp = new TaskManagingApplication
+    val tasksApp = new TaskManagingApplication with ServiceInjector
     val createTaskCommand: CreateTaskCommand = Commands.createTask("task")
     tasksApp.executeCommand(createTaskCommand)
 
@@ -20,7 +20,7 @@ class TaskManagingApplicationTest extends UnitSpec {
   }
 
   it should " update a task " in {
-    val tasksApp = new TaskManagingApplication
+    val tasksApp = new TaskManagingApplication with ServiceInjector
 
     val createTaskCommand: CreateTaskCommand = Commands.createTask("task")
     tasksApp.executeCommand(createTaskCommand)
@@ -32,7 +32,7 @@ class TaskManagingApplicationTest extends UnitSpec {
   }
 
   it should "fail, when the command targets the wrong version" in {
-    val tasksApp = new TaskManagingApplication
+    val tasksApp = new TaskManagingApplication with ServiceInjector
 
     val createTaskCommand: CreateTaskCommand = Commands.createTask("task")
     tasksApp.executeCommand(createTaskCommand)
