@@ -1,5 +1,7 @@
 buildscript {
-apply plugin: 'scala'
+    apply plugin: 'scala'
+    project.targetCompatibility = 6
+    project.sourceCompatibility = 6
 
     repositories {
         mavenCentral()
@@ -14,8 +16,19 @@ apply plugin: 'scalatest'
 dependencies {
     compile 'org.scala-lang:scala-library:2.11.+'
     compile project.ext.shareddeps['eventbus']
-    compile project.ext.shareddeps['dagger_rt']
+
+    //testCompile 'com.google.inject:guice:3.0'
+    testCompile 'com.google.inject:guice:4.0-beta4'
+    compile 'javax.inject:javax.inject:1'
+
     testCompile 'org.scalatest:scalatest_2.11:2.1.4+'
+
     testRuntime 'org.pegdown:pegdown:1.1.0'
 }
+
+//compileJava.compileClasspath += configurations.codeGen
+
+//Do the actual codeGen things
+
+
 
