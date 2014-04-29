@@ -13,6 +13,7 @@ apply plugin: 'scalatest'
 
 dependencies {
     compile 'org.scala-lang:scala-library:2.11.+'
+    compile project.ext.shareddeps['eventbus']
     testCompile 'org.scalatest:scalatest_2.11:2.1.4+'
     testRuntime 'org.pegdown:pegdown:1.1.0'
 }
