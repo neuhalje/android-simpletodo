@@ -13,4 +13,7 @@ allprojects {
     repositories {
         mavenCentral()
     }
+
+    project.ext.shareddeps = [ eventbus: ['de.greenrobot:eventbus:2.2.0+'],  ]
 }
+
