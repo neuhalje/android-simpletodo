@@ -23,6 +23,7 @@ import name.neuhalfen.myscala.domain.model.CreateTaskCommand;
 import name.neuhalfen.myscala.domain.model.Task;
 import name.neuhalfen.todosimple.android.R;
 import name.neuhalfen.todosimple.android.di.DIListFragment;
+import name.neuhalfen.todosimple.android.di.ForApplication;
 import name.neuhalfen.todosimple.android.domain.model.TodoDeletedEvent;
 import name.neuhalfen.todosimple.android.domain.queries.TodoContentProvider;
 import name.neuhalfen.todosimple.android.domain.queries.TodoContentProvider.TodoTable;
@@ -46,6 +47,7 @@ public class TodoListFragment extends DIListFragment implements
 
 
     @Inject
+    @ForApplication
     TaskManagingApplication taskApp;
 
     private SimpleCursorAdapter adapter;
