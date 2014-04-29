@@ -4,13 +4,9 @@ import name.neuhalfen.myscala.domain.model.Command
 import name.neuhalfen.myscala.domain.model.Task
 import java.util.UUID
 import javax.inject.Inject
-import scala.annotation.meta.field
 
 
-class TaskManagingApplication() {
-
-  @(Inject@field)
-  protected var eventStore: EventStore = _
+class TaskManagingApplication @Inject() (eventStore: EventStore ) {
 
   def executeCommand(command: Command): Unit = {
     val aggregateId = command.aggregateRootId

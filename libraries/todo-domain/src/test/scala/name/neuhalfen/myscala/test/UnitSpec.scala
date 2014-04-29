@@ -2,6 +2,8 @@ package name.neuhalfen.myscala.test
 
 import org.scalatest._
 import java.util.UUID
+import com.google.inject.{Guice, Injector}
+import name.neuhalfen.myscala.test.di.ServiceInjector
 
 
 object UnitSpec {
@@ -22,9 +24,17 @@ object UnitSpec {
 
 /**
  * Baseclass for all unit tests.
+ * Supports @Inject. Injected vars are recreated for each test method
  */
 abstract class UnitSpec extends FlatSpec with Matchers with
-OptionValues with Inside with Inspectors
+OptionValues with Inside with Inspectors with BeforeAndAfter
 {
+  var injector: Injector = _
+
+  before {
+
+    injector = ServiceInjector.injector
+    injector.injectMembers(this)
+  }
 
 }
