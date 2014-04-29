@@ -15,8 +15,7 @@ public class TodoApplication
     @Override
     public void onCreate() {
         super.onCreate();
-
-        applicationGraph = ObjectGraph.create(getModules().toArray());
+        // inject(this)
     }
 
     protected List<Object> getModules() {
@@ -26,9 +25,11 @@ public class TodoApplication
     }
 
     @NonNull
-    public ObjectGraph getApplicationGraph() {
+    public synchronized ObjectGraph getApplicationGraph() {
         if (null == applicationGraph) {
-            throw new IllegalStateException("Application DI graph not yet created!");
+            // Cannot be done in onCreate bc/ the ContentProvider is initialized BEFORE Application::onCreate is called.
+            // The CP must use the event bus, so here we are with an ugly "get and do something" solution
+            applicationGraph = ObjectGraph.create(getModules().toArray());
         }
         return applicationGraph;
     }

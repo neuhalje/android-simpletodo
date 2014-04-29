@@ -6,10 +6,11 @@ import dagger.Provides;
 import de.greenrobot.event.EventBus;
 import name.neuhalfen.myscala.domain.application.TaskManagingApplication;
 import name.neuhalfen.todosimple.android.di.ForApplication;
+import name.neuhalfen.todosimple.android.infrastructure.contentprovider.TodoContentProviderImpl;
 
 import javax.inject.Singleton;
 
-@Module(library = true)
+@Module(library = true, injects = {TodoContentProviderImpl.class})
 public class AndroidApplicationModule {
     private final TodoApplication application;
 
@@ -40,7 +41,7 @@ public class AndroidApplicationModule {
     @Provides
     @ForApplication
     EventBus provideEventBus() {
-        return  new EventBus();
+        return new EventBus();
     }
 
 
