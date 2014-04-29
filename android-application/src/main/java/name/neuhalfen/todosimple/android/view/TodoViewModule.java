@@ -9,7 +9,7 @@ import name.neuhalfen.todosimple.android.AndroidApplicationModule;
                 TodoListActivity.class, TodoDetailActivity.class
         },
         addsTo = AndroidApplicationModule.class,
-        library = true
+        library = false, complete = true
 )
 public class TodoViewModule {
 }
