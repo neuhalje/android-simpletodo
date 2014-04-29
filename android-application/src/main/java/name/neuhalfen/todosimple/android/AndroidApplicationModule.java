@@ -30,6 +30,7 @@ public class AndroidApplicationModule {
 
     @Singleton
     @Provides
+    @ForApplication
     TaskManagingApplication provideTaskManagementApplication() {
         return new TaskManagingApplication();
     }
