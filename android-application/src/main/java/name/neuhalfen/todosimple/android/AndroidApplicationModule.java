@@ -12,7 +12,7 @@ import name.neuhalfen.todosimple.android.infrastructure.contentprovider.TodoCont
 
 import javax.inject.Singleton;
 
-@Module(library = true, injects = {TodoContentProviderImpl.class,TaskManagingApplication.class})
+@Module(library = true, injects = {TodoContentProviderImpl.class}, includes = AndroidApplicationModule.ForDomainModule.class)
 public class AndroidApplicationModule {
     private final TodoApplication application;
 
@@ -38,19 +38,29 @@ public class AndroidApplicationModule {
         return new TaskManagingApplication(eventStore );
     }
 
-    @Singleton
-    @Provides
-    EventStore provideEventStore() {
-        return new MemoryEventStore();
+    @Module(library = true)
+    static class EventBusModule {
+        @Singleton
+        @Provides
+        @ForApplication
+        EventBus provideEventBus() {
+            return new EventBus();
+        }
     }
 
-    @Singleton
-    @Provides
-    @ForApplication
-    EventBus provideEventBus() {
-        return new EventBus();
-    }
+    /**
+     * All DIs needed in the domain model
+     */
+    @Module(injects = {TaskManagingApplication.class},includes = EventBusModule.class)
+    static class ForDomainModule {
 
+        @Singleton
+        @Provides
+        EventStore provideEventStore() {
+            return new MemoryEventStore();
+        }
+
+    }
 
     /*
     @Provides @Singleton LocationManager provideLocationManager() {
