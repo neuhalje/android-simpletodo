@@ -20,9 +20,9 @@ class TaskBasicCommandAndEventHandlingTest extends UnitSpec with TaskTestTrait {
   }
 
   "Running a command " should " return only a Events with the correct aggregate" in {
-    val task = createUncommitedTaskViaCreateTaskCommand()
+    var task = createUncommitedTaskViaCreateTaskCommand()
     val tc = new RenameTaskCommand(COMMAND_ID_TWO, task.id, task.version, "change the description")
-    task.handle(tc)
+    task = task.handle(tc)
     for (evt <- task.uncommittedEVTs) {
       assert(evt.aggregateRootId == task.id)
     }
