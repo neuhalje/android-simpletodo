@@ -61,6 +61,8 @@ dependencies {
     compile project(':libraries:todo-domain')
     compile 'com.android.support:support-v4:19.1+'
 
+    compile 'com.google.guava:guava:17.0'
+
     compile "com.jakewharton:butterknife:${butterknifeVersion}"
     apt "com.jakewharton:butterknife:${butterknifeVersion}"
 
