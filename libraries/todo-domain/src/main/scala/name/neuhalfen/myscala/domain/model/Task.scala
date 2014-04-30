@@ -52,14 +52,18 @@ case class Task(
     require(command.aggregateRootId == id, s"wrong aggregate root '${command.aggregateRootId}', should be '$id'")
     require(command.aggregateRootVersion == version, s"wrong aggregate version ${command.aggregateRootVersion}, should be $version")
 
-    applyEvent(new TaskRenamedEvent(UUID.randomUUID(), id, version, version + 1, command.newDescription))
+    if (_description.equals(command.newDescription)) {
+      this
+    } else {
+      applyEvent(new TaskRenamedEvent(UUID.randomUUID(), id, version, version + 1, command.newDescription))
+    }
   }
 
   override def applyEvent = {
     case event: Event => {
       // The guard needs to let through "task created" events.
       val taskIsNew = (id == null)
-      require(event.aggregateRootId == id || taskIsNew , s"wrong aggregate root '${event.aggregateRootId}', should be '$id'")
+      require(event.aggregateRootId == id || taskIsNew, s"wrong aggregate root '${event.aggregateRootId}', should be '$id'")
       require(event.originalAggregateRootVersion == version, s"wrong aggregate version ${event.originalAggregateRootVersion}, should be $version")
 
       event match {
