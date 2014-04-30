@@ -14,6 +14,7 @@ test {
 
 dependencies {
     testCompile project(':android-application')
+    testCompile project(':libraries:todo-domain')
     testCompile androidProjectClassesDependency(project(':android-application'), 'debug')
     testCompile 'junit:junit:4.11'
     testCompile 'org.robolectric:robolectric:2.2'
