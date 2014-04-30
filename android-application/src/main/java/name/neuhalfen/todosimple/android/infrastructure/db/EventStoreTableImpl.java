@@ -26,7 +26,7 @@ public class EventStoreTableImpl {
 
         public static String[] ALL_COLUMNS = {COLUMN_AGGREGATE_ID, COLUMN_AGGREGATE_VERSION, COLUMN_EVENT, COLUMN_ID};
 
-        int TABLE_VERSION = 1;
+        int TABLE_VERSION = 2;
     }
 
     public static final String TABLE_EVENT = "event";
@@ -35,7 +35,7 @@ public class EventStoreTableImpl {
     private static final String DATABASE_CREATE_TABLE = "create table "
             + TABLE_EVENT + "(" + Table.COLUMN_ID
             + " integer primary key autoincrement, "
-            + Table.COLUMN_AGGREGATE_ID + " text not null unique,"
+            + Table.COLUMN_AGGREGATE_ID + " text not null,"
             + Table.COLUMN_AGGREGATE_VERSION + " not null,"
             + Table.COLUMN_EVENT + " text not null"
             + ");";
