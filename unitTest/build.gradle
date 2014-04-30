@@ -16,8 +16,11 @@ test {
 }
 
 dependencies {
-    testCompile project(':android-application')
+
+    testCompile project.ext.shareddeps['dagger_rt']
+    //apt project.ext.shareddeps['dagger_apt']
     testCompile project(':libraries:todo-domain')
+    testCompile project(':android-application')
     testCompile androidProjectClassesDependency(project(':android-application'), 'debug')
     testCompile 'junit:junit:4.11'
     testCompile 'org.robolectric:robolectric:2.2'
@@ -64,6 +67,7 @@ def androidSdkDependency(androidProject) {
 def androidProjectClassesDependency(androidProject, variant) {
     return files([androidProject.buildDir, 'classes', variant].join(File.separator))
 }
+
 
 /**
  * Returns the directory that contains the AndroidManifest.xml for the specified project source set.

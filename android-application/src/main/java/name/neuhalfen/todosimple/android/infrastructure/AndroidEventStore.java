@@ -8,6 +8,7 @@ import name.neuhalfen.myscala.domain.model.Event;
 import name.neuhalfen.todosimple.android.di.ForApplication;
 import name.neuhalfen.todosimple.android.infrastructure.db.EventStoreTableImpl;
 import name.neuhalfen.todosimple.android.infrastructure.db.SQLiteToTransactionAdapter;
+import name.neuhalfen.todosimple.android.infrastructure.json.EventJsonSerializer;
 import scala.Option;
 import scala.collection.Iterator;
 import scala.collection.Seq;
@@ -38,13 +39,17 @@ public class AndroidEventStore implements EventStore {
             return Option.apply(null);
         } else {
 
-            int columnIndexEvent = cursor.getColumnIndexOrThrow(EventStoreTableImpl.Table.COLUMN_EVENT);
-            scala.collection.mutable.MutableList<Event> events = new MutableList<Event>();
-            //events.appendElem();
-            String eventJson = cursor.getString(columnIndexEvent);
-            Event event = serializer.parseEvent(eventJson);
-            events.appendElem(event);
-            return Option.apply(events.toSeq());
+            try {
+                int columnIndexEvent = cursor.getColumnIndexOrThrow(EventStoreTableImpl.Table.COLUMN_EVENT);
+                scala.collection.mutable.MutableList<Event> events = new MutableList<Event>();
+                //events.appendElem();
+                String eventJson = cursor.getString(columnIndexEvent);
+                Event event = serializer.parseEvent(eventJson);
+                events.appendElem(event);
+                return Option.apply(events.toSeq());
+            } catch (EventJsonSerializer.EventJsonSerializeException e) {
+                throw new IOException(e);
+            }
         }
     }
 
@@ -62,6 +67,8 @@ public class AndroidEventStore implements EventStore {
                 EventStoreTableImpl.record(db, aggregateId, event.newAggregateRootVersion(), eventJson);
             }
         } catch (SQLException e) {
+            throw new IOException(e);
+        } catch (EventJsonSerializer.EventJsonSerializeException e) {
             throw new IOException(e);
         }
     }
