@@ -40,7 +40,7 @@ class TaskManagingApplication @Inject()(eventStore: EventStore, eventPublishing:
   }
 
 
-  def publishEventsAfterCommitIgnoreExceptions(events: List[Event]) {
+  def publishEventsAfterCommitIgnoreExceptions(events: java.util.List[Event]) {
     try {
       eventPublishing.publishEventsAfterCommit(events)
     } catch {
