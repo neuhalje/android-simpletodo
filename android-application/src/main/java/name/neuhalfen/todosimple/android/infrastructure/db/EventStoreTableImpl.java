@@ -26,7 +26,7 @@ public class EventStoreTableImpl {
 
         public static String[] ALL_COLUMNS = {COLUMN_AGGREGATE_ID, COLUMN_AGGREGATE_VERSION, COLUMN_EVENT, COLUMN_ID};
 
-        int TABLE_VERSION = 2;
+        int TABLE_VERSION = 3;
     }
 
     public static final String TABLE_EVENT = "event";
@@ -42,7 +42,6 @@ public class EventStoreTableImpl {
 
     private static final String DATABASE_CREATE_INDEX = String.format("create unique index idx_agg_vers on %s(%s,%s); ", TABLE_EVENT, Table.COLUMN_AGGREGATE_ID, Table.COLUMN_AGGREGATE_VERSION);
 
-    private static final String DATABASE_CREATE = DATABASE_CREATE_TABLE + DATABASE_CREATE_INDEX;
 
     public static void record(SQLiteDatabase db, UUID aggregate, int newAggregateVersion, String event) throws SQLException{
         ContentValues values = new ContentValues();
@@ -58,7 +57,8 @@ public class EventStoreTableImpl {
     }
 
     public static void onCreate(SQLiteDatabase database) {
-        database.execSQL(DATABASE_CREATE);
+        database.execSQL(DATABASE_CREATE_TABLE);
+        database.execSQL(DATABASE_CREATE_INDEX);
 
     }
 
