@@ -23,6 +23,6 @@ public class TodoSQLiteHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         TodoTableImpl.onUpgrade(db, oldVersion, newVersion);
-        EventStoreTableImpl.onCreate(db);
+        EventStoreTableImpl.onUpgrade(db, oldVersion, newVersion);
     }
 }
