@@ -7,6 +7,7 @@ class CreateTaskCommandTest extends UnitSpec with TaskTestTrait {
 
   "Creating a task " should " return only a TaskCreatedEvent with the correct description" in {
     val task = createUncommitedTaskViaCreateTaskCommand()
+    assert(task.uncommittedEVTs.size == 1)
 
     for (evt <- task.uncommittedEVTs) evt match {
       case TaskCreatedEvent(eventId, aggregateRootId, oldAggregateVersion, newAggregateVersion, newDescription) => assert(newDescription == "fresh")
