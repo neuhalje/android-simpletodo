@@ -43,9 +43,11 @@ public class AndroidEventStore implements EventStore {
                 int columnIndexEvent = cursor.getColumnIndexOrThrow(EventStoreTableImpl.Table.COLUMN_EVENT);
                 scala.collection.mutable.MutableList<Event> events = new MutableList<Event>();
                 //events.appendElem();
-                String eventJson = cursor.getString(columnIndexEvent);
-                Event event = serializer.parseEvent(eventJson);
-                events.appendElem(event);
+                while (cursor.moveToNext()) {
+                    String eventJson = cursor.getString(columnIndexEvent);
+                    Event event = serializer.parseEvent(eventJson);
+                    events.appendElem(event);
+                }
                 return Option.apply(events.toSeq());
             } catch (EventJsonSerializer.EventJsonSerializeException e) {
                 throw new IOException(e);
