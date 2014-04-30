@@ -1,7 +1,6 @@
 package name.neuhalfen.todosimple.android.view;
 
 import android.app.LoaderManager;
-import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
@@ -10,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
 import android.widget.EditText;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
@@ -64,6 +64,7 @@ public class TodoDetailFragment extends DIFragment implements LoaderManager.Load
      */
     public static final String ARG_ITEM_URI__FOR_NEW_TASK = "NEW TASK";
 
+    // FIXME: Handling of the URI is still not good ( uri vs aggregate root id)
     private Uri todoUri;
 
     @InjectView(R.id.todo_edit_title)
@@ -71,6 +72,12 @@ public class TodoDetailFragment extends DIFragment implements LoaderManager.Load
 
     @InjectView(R.id.todo_edit_description)
     EditText descriptionText;
+
+    @InjectView(R.id.todo_detail_uuid)
+    TextView uuidText;
+
+    @InjectView(R.id.todo_detail_version)
+    TextView versionText;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -115,9 +122,15 @@ public class TodoDetailFragment extends DIFragment implements LoaderManager.Load
                     .getColumnIndexOrThrow(TodoContentProvider.TodoTable.COLUMN_TITLE)));
             descriptionText.setText(cursor.getString(cursor
                     .getColumnIndexOrThrow(TodoContentProvider.TodoTable.COLUMN_DESCRIPTION)));
+            versionText.setText(String.valueOf( cursor.getInt(cursor
+                    .getColumnIndexOrThrow(TodoContentProvider.TodoTable.COLUMN_AGGREGATE_VERSION))));
+            uuidText.setText(cursor.getString(cursor
+                    .getColumnIndexOrThrow(TodoContentProvider.TodoTable.COLUMN_AGGREGATE_ID)));
         } else {
             titleText.setText("");
             descriptionText.setText("");
+            versionText.setText("");
+            uuidText.setText("");
         }
         viewState = VIEW_STATE.BOUND;
     }
@@ -166,7 +179,6 @@ public class TodoDetailFragment extends DIFragment implements LoaderManager.Load
             case R.id.save_task:
                 if (canSaveTask()) {
                     saveTask();
-                    Crouton.makeText(getActivity(), "Task " + todoUri.toString() + " saved.", Style.CONFIRM).show();
                 }
                 return true;
             case R.id.delete_task:
@@ -182,7 +194,7 @@ public class TodoDetailFragment extends DIFragment implements LoaderManager.Load
     // creates a new loader after the initLoader () call
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String[] projection = {TodoContentProvider.TodoTable.COLUMN_ID, TodoContentProvider.TodoTable.COLUMN_TITLE, TodoContentProvider.TodoTable.COLUMN_DESCRIPTION};
+        String[] projection = {TodoContentProvider.TodoTable.COLUMN_ID, TodoContentProvider.TodoTable.COLUMN_AGGREGATE_ID,TodoContentProvider.TodoTable.COLUMN_AGGREGATE_VERSION,TodoContentProvider.TodoTable.COLUMN_TITLE, TodoContentProvider.TodoTable.COLUMN_DESCRIPTION};
         CursorLoader cursorLoader = new CursorLoader(getActivity(),
                 todoUri, projection, null, null, null);
         return cursorLoader;
@@ -214,33 +226,21 @@ public class TodoDetailFragment extends DIFragment implements LoaderManager.Load
     }
 
     private void saveTask() {
-        // FIXME:  This should be the way
         final Command cmd;
         if (isEditExistingTask()) {
-            cmd = new RenameTaskCommand(UUID.randomUUID(), UUID.fromString("0DC4011C-BE19-4C21-B11B-E11B0E5D0502"), 1, titleText.getText().toString());
+            cmd = new RenameTaskCommand(UUID.randomUUID(), UUID.fromString( uuidText.getText().toString()) , Integer.parseInt( versionText.getText().toString()), titleText.getText().toString());
         } else {
-            cmd = new CreateTaskCommand(UUID.randomUUID(), UUID.fromString("0DC4011C-BE19-4C21-B11B-E11B0E5D0502"), titleText.getText().toString(), 0);
+            cmd = new CreateTaskCommand(UUID.randomUUID(), UUID.randomUUID(), titleText.getText().toString(), 0);
         }
-        taskApp.executeCommand(cmd);
-
-
-        // FIXME: this is deprecated
-
-        ContentValues values = new ContentValues();
-        values.put
-                (TodoContentProvider.TodoTable.COLUMN_TITLE, titleText.getText().toString());
-        values.put
-                (TodoContentProvider.TodoTable.COLUMN_DESCRIPTION, descriptionText.getText().toString());
-
-        if (isEditExistingTask()) {
-            getActivity().getContentResolver().update(todoUri, values, null, null);
-        } else {
-            todoUri = getActivity().getContentResolver().insert(TodoContentProvider.CONTENT_URI, values);
-            dataState = DATA_STATE.LOADED;
+        try {
+            taskApp.executeCommand(cmd);
+        }catch(Exception e){
+            Crouton.makeText(getActivity(),e.toString(), Style.ALERT).show();
         }
     }
 
     private void deleteTask() {
+        // FIXME: Command
         dataState = DATA_STATE.NO_DATA;
         getActivity().getContentResolver().delete(todoUri, null, null);
     }
@@ -249,7 +249,6 @@ public class TodoDetailFragment extends DIFragment implements LoaderManager.Load
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         dataState = DATA_STATE.LOADED;
         fillData(data);
-        Crouton.makeText(getActivity(), "Loaded " + todoUri.toString(), Style.INFO).show();
     }
 
     @Override

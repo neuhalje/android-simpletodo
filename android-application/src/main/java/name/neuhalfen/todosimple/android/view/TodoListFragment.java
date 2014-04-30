@@ -20,6 +20,8 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 import name.neuhalfen.myscala.domain.application.TaskManagingApplication;
 import name.neuhalfen.myscala.domain.infrastructure.EventPublisher;
+import name.neuhalfen.myscala.domain.model.Commands;
+import name.neuhalfen.myscala.domain.model.CreateTaskCommand;
 import name.neuhalfen.todosimple.android.R;
 import name.neuhalfen.todosimple.android.di.DIListFragment;
 import name.neuhalfen.todosimple.android.di.ForApplication;
@@ -47,10 +49,6 @@ public class TodoListFragment extends DIListFragment implements
     @Inject
     @ForApplication
     TaskManagingApplication taskApp;
-
-    @Inject
-    @ForApplication
-    EventPublisher testPublisher;
 
 
     @Inject
@@ -141,25 +139,10 @@ public class TodoListFragment extends DIListFragment implements
                 mCallbacks.onCreateNewTask();
                 return true;
             case R.id.add_demo_items:
-                ArrayList<ContentProviderOperation> ops =
-                        new ArrayList<ContentProviderOperation>();
-
 
                 for (int i = 1; i < 500; i++) {
-                    ops.add(
-                            ContentProviderOperation.newInsert(TodoContentProvider.CONTENT_URI)
-                                    .withValue(TodoTable.COLUMN_TITLE, String.format("Todo #%0,10d", i))
-                                    .withValue(TodoTable.COLUMN_DESCRIPTION, String.format("Described as #%0,10d", i))
-                                    .withYieldAllowed(true)
-                                    .build()
-                    );
-                }
-                try {
-                    getActivity().getContentResolver().applyBatch(TodoContentProvider.AUTHORITY, ops);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                } catch (OperationApplicationException e) {
-                    e.printStackTrace();
+                    CreateTaskCommand createTaskCommand = Commands.createTask(String.format("Todo #%0,10d", i));
+                    taskApp.executeCommand(createTaskCommand);
                 }
                 getLoaderManager().restartLoader(0, null, this);
 

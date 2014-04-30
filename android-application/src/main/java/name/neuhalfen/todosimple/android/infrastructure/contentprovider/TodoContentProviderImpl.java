@@ -192,11 +192,9 @@ public class TodoContentProviderImpl extends ContentProvider implements TodoCont
     }
 
     private void checkColumns(String[] projection) {
-        String[] available = {TodoTable.COLUMN_TITLE,TodoTable.COLUMN_DESCRIPTION,
-                TodoTable.COLUMN_ID};
         if (projection != null) {
             Set<String> requestedColumns = new HashSet<String>(Arrays.asList(projection));
-            Set<String> availableColumns = new HashSet<String>(Arrays.asList(available));
+            Set<String> availableColumns = new HashSet<String>(Arrays.asList(TodoTable.ALL_COLUMNS));
             // check if all columns which are requested are available
             if (!availableColumns.containsAll(requestedColumns)) {
                 throw new IllegalArgumentException("Unknown columns in projection");
