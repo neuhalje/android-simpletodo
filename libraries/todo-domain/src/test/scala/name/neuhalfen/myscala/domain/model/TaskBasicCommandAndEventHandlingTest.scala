@@ -10,17 +10,17 @@ class TaskBasicCommandAndEventHandlingTest extends UnitSpec with TaskTestTrait {
 
 
   "A task " should " report its id" in {
-    val task = createTaskViaCreateTaskCommand()
+    val task = createUncommitedTaskViaCreateTaskCommand()
     assert(task.id == TASK_ID_ONE)
   }
 
   it should "have a toString that includes the id" in {
-    val task = createTaskViaCreateTaskCommand()
+    val task = createUncommitedTaskViaCreateTaskCommand()
     task.toString() should include(task.id.toString())
   }
 
   "Running a command " should " return only a Events with the correct aggregate" in {
-    val task = createTaskViaCreateTaskCommand()
+    val task = createUncommitedTaskViaCreateTaskCommand()
     val tc = new RenameTaskCommand(COMMAND_ID_TWO, task.id, task.version, "change the description")
     task.handle(tc)
     for (evt <- task.uncommittedEVTs) {
@@ -29,7 +29,7 @@ class TaskBasicCommandAndEventHandlingTest extends UnitSpec with TaskTestTrait {
   }
 
   "Running a command " should " return events with ascending versions " in {
-    var task = createTaskViaCreateTaskCommand()
+    var task = createUncommitedTaskViaCreateTaskCommand()
     val tc = new RenameTaskCommand(COMMAND_ID_TWO, task.id, task.version, "change the description")
 
     var versionBeforeEvent = 0
@@ -45,7 +45,7 @@ class TaskBasicCommandAndEventHandlingTest extends UnitSpec with TaskTestTrait {
   }
 
   it should "fail, if the version of the aggregate does not match the version in the command" in {
-    val task = createTaskViaCreateTaskCommand()
+    val task = createUncommitedTaskViaCreateTaskCommand()
     val tc = new RenameTaskCommand(COMMAND_ID_TWO, task.id, task.version + 1, "change the description")
     an[IllegalArgumentException] should be thrownBy task.handle(tc)
   }
@@ -53,7 +53,7 @@ class TaskBasicCommandAndEventHandlingTest extends UnitSpec with TaskTestTrait {
 
 
   it should "fail, if the the aggregate does not match the command" in {
-    val task = createTaskViaCreateTaskCommand()
+    val task = createUncommitedTaskViaCreateTaskCommand()
     val tc = new RenameTaskCommand(COMMAND_ID_TWO, TASK_ID_ZERO, task.version + 1, "change the description")
     an[IllegalArgumentException] should be thrownBy task.handle(tc)
   }
