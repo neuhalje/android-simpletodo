@@ -10,6 +10,7 @@ import name.neuhalfen.myscala.domain.infrastructure.EventStore;
 import name.neuhalfen.todosimple.android.di.ForApplication;
 import name.neuhalfen.todosimple.android.infrastructure.AndroidEventPublisher;
 import name.neuhalfen.todosimple.android.infrastructure.AndroidEventStore;
+import name.neuhalfen.todosimple.android.infrastructure.EventJsonSerializer;
 import name.neuhalfen.todosimple.android.infrastructure.contentprovider.TodoContentProviderImpl;
 import name.neuhalfen.todosimple.android.infrastructure.db.SQLiteToTransactionAdapter;
 import name.neuhalfen.todosimple.android.infrastructure.db.TodoSQLiteHelper;
@@ -90,6 +91,11 @@ public class AndroidApplicationModule {
     @ForApplication
     SQLiteToTransactionAdapter provideTransaction(SQLiteToTransactionAdapter t) {
         return t;
+    }
+
+    @Provides
+    EventJsonSerializer provideEventJsonSerializer() {
+        return new EventJsonSerializer();
     }
 
     //}

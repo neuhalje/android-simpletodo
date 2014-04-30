@@ -1,7 +1,7 @@
 package name.neuhalfen.myscala.domain.infrastructure
 
 import name.neuhalfen.myscala.domain.model.Event
-
+import java.io.IOException
 
 
 /**
@@ -15,6 +15,7 @@ trait EventPublisher {
    *
    * @param events
    */
+  @throws(classOf[IOException])
   def publishEventsInTransaction(events: java.util.List[Event]): Unit
 
   /**

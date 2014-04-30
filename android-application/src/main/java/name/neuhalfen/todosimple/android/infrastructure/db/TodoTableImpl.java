@@ -11,6 +11,8 @@ public class TodoTableImpl implements TodoContentProvider.TodoTable {
     private static final String DATABASE_CREATE = "create table "
             + TABLE_TODOS + "(" + COLUMN_ID
             + " integer primary key autoincrement, "
+            + COLUMN_AGGREGATE_ID + " text not null unique,"
+            + COLUMN_AGGREGATE_VERSION + " not null,"
             + COLUMN_TITLE + " text not null,"
             + COLUMN_DESCRIPTION + " text not null"
             +");";
