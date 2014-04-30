@@ -2,7 +2,8 @@ package name.neuhalfen.todosimple.android.infrastructure;
 
 import name.neuhalfen.myscala.domain.model.Event;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static name.neuhalfen.todosimple.helper.Preconditions.checkNotNull;
+
 
 public class EventJsonSerializer {
     public Event parseEvent(String eventJson) {
