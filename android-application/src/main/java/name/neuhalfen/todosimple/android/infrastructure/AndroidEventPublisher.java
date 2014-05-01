@@ -1,7 +1,9 @@
 package name.neuhalfen.todosimple.android.infrastructure;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.util.Log;
 import de.greenrobot.event.EventBus;
 import name.neuhalfen.myscala.domain.infrastructure.EventPublisher;
@@ -9,6 +11,7 @@ import name.neuhalfen.myscala.domain.model.Event;
 import name.neuhalfen.myscala.domain.model.TaskCreatedEvent;
 import name.neuhalfen.myscala.domain.model.TaskRenamedEvent;
 import name.neuhalfen.todosimple.android.di.ForApplication;
+import name.neuhalfen.todosimple.android.domain.queries.TodoContentProvider;
 import name.neuhalfen.todosimple.android.infrastructure.db.SQLiteToTransactionAdapter;
 import name.neuhalfen.todosimple.android.infrastructure.db.TodoTableImpl;
 
@@ -28,24 +31,12 @@ public class AndroidEventPublisher implements EventPublisher {
     @ForApplication
     EventBus eventBus;
 
+    @Inject
+    @ForApplication
+    Context context;
+
     @Override
     public void publishEventsInTransaction(List<Event> events) {
-        /*
-        TODO:  Update the view table
-
-        ContentValues values = new ContentValues();
-        values.put
-                (TodoContentProvider.TodoTable.COLUMN_TITLE, titleText.getText().toString());
-        values.put
-                (TodoContentProvider.TodoTable.COLUMN_DESCRIPTION, descriptionText.getText().toString());
-
-        if (isEditExistingTask()) {
-            getActivity().getContentResolver().update(todoUri, values, null, null);
-        } else {
-            todoUri = getActivity().getContentResolver().insert(TodoContentProvider.CONTENT_URI, values);
-            dataState = DATA_STATE.LOADED;
-        }
-        */
 
         final SQLiteDatabase db = txAdapter.getDb();
 
@@ -64,7 +55,9 @@ public class AndroidEventPublisher implements EventPublisher {
 
                 long id = db.insert(TodoTableImpl.TABLE_TODOS, null, values);
 
-                // TODO: getContext().getContentResolver().notifyChange(newUri, null);
+                Uri uriWithId = TodoContentProvider.Factory.forContenProvider_Id(id);
+                context.getContentResolver().notifyChange(uriWithId, null);
+
             } else if (event instanceof TaskRenamedEvent) {
                 final TaskRenamedEvent evt = (TaskRenamedEvent) event;
                 // FIXME: add title to event/domain
@@ -81,7 +74,6 @@ public class AndroidEventPublisher implements EventPublisher {
                     txAdapter.rollback();
                     throw new RuntimeException("Could not update view, maybe a race condition with the version?");
                 }
-                // TODO: getContext().getContentResolver().notifyChange(newUri, null);
             } else {
                 Log.e(LOG_TAG, "Unknown event:" + event.toString());
             }
@@ -92,6 +84,8 @@ public class AndroidEventPublisher implements EventPublisher {
     public void publishEventsAfterCommit(List<Event> events) {
         for (Event event : events) {
             eventBus.post(event);
+            Uri uriWithAggregateId = TodoContentProvider.Factory.forAggregateId(event.aggregateRootId());
+            context.getContentResolver().notifyChange(uriWithAggregateId, null);
         }
     }
 }
