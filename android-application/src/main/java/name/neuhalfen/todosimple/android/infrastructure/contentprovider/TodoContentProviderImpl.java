@@ -23,22 +23,24 @@ import java.util.Set;
 public class TodoContentProviderImpl extends ContentProvider implements TodoContentProvider {
 
     @Inject
-            @ForApplication
+    @ForApplication
     EventBus eventBus;
 
     // database
     private TodoSQLiteHelper database;
 
     // used for the UriMacher
-    private static final int TODOS = 10;
-    private static final int TODO_ID = 20;
+    static final int TODOS = 10;
+    static final int TODO_AGGREGATE_ID = 30;
+    static final int TODO_ID = 20;
 
 
-    private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+    static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
         sURIMatcher.addURI(AUTHORITY, BASE_PATH, TODOS);
         sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/#", TODO_ID);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/*", TODO_AGGREGATE_ID);
     }
 
     @Override
@@ -46,11 +48,11 @@ public class TodoContentProviderImpl extends ContentProvider implements TodoCont
         database = new TodoSQLiteHelper(getContext());
 
         Context applicationContext = getContext().getApplicationContext();
-        if (applicationContext instanceof  Injector) {
+        if (applicationContext instanceof Injector) {
             Injector injector = (Injector) applicationContext;
             injector.inject(this);
             return true;
-        }else{
+        } else {
             // DIE!!!!
             Log.wtf("TodoContentProviderImpl", String.format("applicationContext (%s) is no Injector", applicationContext.getClass().toString()));
             // We'll never get here bc/ Log.wtf kills the app.
@@ -80,6 +82,11 @@ public class TodoContentProviderImpl extends ContentProvider implements TodoCont
                 // FIXME: SQL Injection
                 queryBuilder.appendWhere(TodoTable.COLUMN_ID + "="
                         + uri.getLastPathSegment());
+                break;
+            case TODO_AGGREGATE_ID:
+                // FIXME: SQL Injection
+                queryBuilder.appendWhere(TodoTable.COLUMN_AGGREGATE_ID + "='"
+                        + uri.getLastPathSegment() + "'");
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
@@ -144,6 +151,25 @@ public class TodoContentProviderImpl extends ContentProvider implements TodoCont
 
                 eventBus.post(new TodoDeletedEvent());
                 break;
+            case TODO_AGGREGATE_ID:
+                String aggregateId = uri.getLastPathSegment();
+                if (TextUtils.isEmpty(selection)) {
+                    // FIXME: SQL Injection
+                    rowsDeleted = sqlDB.delete(TodoTableImpl.TABLE_TODOS,
+                            TodoTable.COLUMN_AGGREGATE_ID + "='" + aggregateId + "'",
+                            null);
+                } else {
+                    // FIXME: SQL Injection
+                    rowsDeleted = sqlDB.delete(TodoTableImpl.TABLE_TODOS,
+                            TodoTable.COLUMN_AGGREGATE_ID + "='" + aggregateId + "'"
+                                    + " and " + selection,
+                            selectionArgs
+                    );
+                }
+
+                eventBus.post(new TodoDeletedEvent());
+                break;
+
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
@@ -178,6 +204,25 @@ public class TodoContentProviderImpl extends ContentProvider implements TodoCont
                     rowsUpdated = sqlDB.update(TodoTableImpl.TABLE_TODOS,
                             values,
                             TodoTable.COLUMN_ID + "=" + id
+                                    + " and "
+                                    + selection,
+                            selectionArgs
+                    );
+                }
+                break;
+            case TODO_AGGREGATE_ID:
+                String aggregateId = uri.getLastPathSegment();
+                if (TextUtils.isEmpty(selection)) {
+                    // FIXME: SQL Injection
+                    rowsUpdated = sqlDB.update(TodoTableImpl.TABLE_TODOS,
+                            values,
+                            TodoTable.COLUMN_AGGREGATE_ID + "='" + aggregateId + "'",
+                            null);
+                } else {
+                    // FIXME: SQL Injection
+                    rowsUpdated = sqlDB.update(TodoTableImpl.TABLE_TODOS,
+                            values,
+                            TodoTable.COLUMN_AGGREGATE_ID + "='" + aggregateId + "'"
                                     + " and "
                                     + selection,
                             selectionArgs

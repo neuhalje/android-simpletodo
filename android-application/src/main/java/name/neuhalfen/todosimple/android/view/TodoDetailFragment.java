@@ -76,6 +76,9 @@ public class TodoDetailFragment extends DIFragment implements LoaderManager.Load
     @InjectView(R.id.todo_detail_uuid)
     TextView uuidText;
 
+    @InjectView(R.id.todo_detail_uri)
+    TextView uriText;
+
     @InjectView(R.id.todo_detail_version)
     TextView versionText;
 
@@ -100,13 +103,30 @@ public class TodoDetailFragment extends DIFragment implements LoaderManager.Load
         final String uriStr = getArguments().getString(ARG_ITEM_URI);
         final boolean isNewTaskUri = ARG_ITEM_URI__FOR_NEW_TASK.equals(uriStr);
         if (isNewTaskUri) {
-            todoUri = null;
+            updateUri(null);
         } else {
-            todoUri = Uri.parse(uriStr);
+            updateUri(Uri.parse(uriStr));
         }
 
         viewState = VIEW_STATE.CREATED;
     }
+
+    private void updateUri(Uri uri) {
+        this.todoUri = uri;
+
+        if (hasView()) {
+            if (null == uri) {
+                uriText.setText("N/A");
+                Log.i("URI", "none");
+            } else {
+                final String text = uri.toString();
+                uriText.setText(text);
+                Log.i("URI", text);
+            }
+        }
+
+    }
+
 
     private void fillData(Cursor cursor) {
 
@@ -127,6 +147,7 @@ public class TodoDetailFragment extends DIFragment implements LoaderManager.Load
             uuidText.setText(cursor.getString(cursor
                     .getColumnIndexOrThrow(TodoContentProvider.TodoTable.COLUMN_AGGREGATE_ID)));
         } else {
+            updateUri(null);
             titleText.setText("");
             descriptionText.setText("");
             versionText.setText("");
@@ -234,6 +255,8 @@ public class TodoDetailFragment extends DIFragment implements LoaderManager.Load
         }
         try {
             taskApp.executeCommand(cmd);
+            updateUri(TodoContentProvider.Factory.forAggregateId(cmd.aggregateRootId()));
+            getLoaderManager().initLoader(0, null, this);
         }catch(Exception e){
             Crouton.makeText(getActivity(),e.toString(), Style.ALERT).show();
         }
