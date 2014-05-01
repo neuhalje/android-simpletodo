@@ -137,6 +137,7 @@ public class TodoDetailFragment extends DIFragment implements LoaderManager.Load
 
         final boolean hasData = (cursor != null) && cursor.moveToFirst();
 
+        updateUri(todoUri);
         if (hasData) {
             titleText.setText(cursor.getString(cursor
                     .getColumnIndexOrThrow(TodoContentProvider.TodoTable.COLUMN_TITLE)));
@@ -147,7 +148,6 @@ public class TodoDetailFragment extends DIFragment implements LoaderManager.Load
             uuidText.setText(cursor.getString(cursor
                     .getColumnIndexOrThrow(TodoContentProvider.TodoTable.COLUMN_AGGREGATE_ID)));
         } else {
-            updateUri(null);
             titleText.setText("");
             descriptionText.setText("");
             versionText.setText("");
