@@ -6,8 +6,7 @@
  */
 
 apply plugin: 'java'
-targetCompatibility = 1.6
-sourceCompatibility = 1.6
+apply from: "${rootDir}/java_common.gradle"
 
 
 test {
