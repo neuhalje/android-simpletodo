@@ -1,0 +1,8 @@
+/*
+ include right after
+  apply plugin: 'android'
+ or
+  apply plugin: 'java'
+*/
+targetCompatibility = 7
+sourceCompatibility = 6

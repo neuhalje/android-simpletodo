@@ -1,7 +1,6 @@
 buildscript {
     apply plugin: 'scala'
-    project.targetCompatibility = 6
-    project.sourceCompatibility = 6
+    apply from: "${rootDir}/java_common.gradle"
 
     repositories {
         mavenCentral()
