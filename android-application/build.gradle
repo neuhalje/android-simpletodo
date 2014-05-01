@@ -11,11 +11,9 @@ buildscript {
     }
 }
 apply plugin: 'android'
-project.targetCompatibility = 6
-project.sourceCompatibility = 6
 
 apply from: "${rootDir}/android_common.gradle"
-
+apply from: "${rootDir}/java_common.gradle"
 
 repositories {
     mavenCentral()
