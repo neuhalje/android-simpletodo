@@ -2,11 +2,11 @@ package name.neuhalfen.todosimple.android.view;
 
 import android.app.Activity;
 import android.app.LoaderManager;
-import android.content.*;
+import android.content.CursorLoader;
+import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,7 +19,6 @@ import de.greenrobot.event.EventBus;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 import name.neuhalfen.myscala.domain.application.TaskManagingApplication;
-import name.neuhalfen.myscala.domain.infrastructure.EventPublisher;
 import name.neuhalfen.myscala.domain.model.Commands;
 import name.neuhalfen.myscala.domain.model.CreateTaskCommand;
 import name.neuhalfen.todosimple.android.R;
@@ -30,7 +29,7 @@ import name.neuhalfen.todosimple.android.domain.queries.TodoContentProvider;
 import name.neuhalfen.todosimple.android.domain.queries.TodoContentProvider.TodoTable;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
+import java.util.UUID;
 
 
 /**
@@ -214,7 +213,9 @@ public class TodoListFragment extends DIListFragment implements
         // Notify the active callbacks interface (the activity, if the
         // fragment is attached to one) that an item has been selected.
 
-        Uri todoUri = ContentUris.withAppendedId(TodoContentProvider.CONTENT_URI, id);
+        Cursor cursor = (Cursor) listView.getAdapter().getItem(position);
+        String aggregateId = cursor.getString(cursor.getColumnIndex(TodoTable.COLUMN_AGGREGATE_ID));
+        Uri todoUri = TodoContentProvider.Factory.forAggregateId(UUID.fromString(aggregateId));
 
         mCallbacks.onItemSelected(todoUri);
     }
@@ -254,7 +255,8 @@ public class TodoListFragment extends DIListFragment implements
     // creates a new loader after the initLoader () call
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String[] projection = {TodoTable.COLUMN_ID, TodoTable.COLUMN_TITLE};
+        String[] projection = {TodoTable.COLUMN_ID, TodoTable.COLUMN_TITLE, TodoTable.COLUMN_AGGREGATE_ID};
+        ;
         CursorLoader cursorLoader = new CursorLoader(getActivity(),
                 TodoContentProvider.CONTENT_URI, projection, null, null, TodoTable.COLUMN_TITLE);
         return cursorLoader;
