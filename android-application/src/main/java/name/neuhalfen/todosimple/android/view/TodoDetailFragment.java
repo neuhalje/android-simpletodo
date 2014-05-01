@@ -179,13 +179,11 @@ public class TodoDetailFragment extends DIFragment implements LoaderManager.Load
             case R.id.save_task:
                 if (canSaveTask()) {
                     saveTask();
-                    getLoaderManager().restartLoader(0, null, this);
                 }
                 return true;
             case R.id.delete_task:
                 if (canDeleteTask()) {
                     deleteTask();
-                    getLoaderManager().restartLoader(0, null, this);
                 }
                 return true;
             default:
