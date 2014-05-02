@@ -26,7 +26,7 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2014-05-01 21:30:34 +0000</string>
+	<string>2014-05-02 20:15:00 +0000</string>
 	<key>Modifier</key>
 	<string>Jens Neuhalfen</string>
 	<key>NotesVisible</key>
@@ -167,7 +167,7 @@ notifies view}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{108, 180}, {132, 13}}</string>
+					<string>{{99, 180}, {150, 13}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -219,11 +219,11 @@ notifies view}</string>
 						<key>Text</key>
 						<string>{\rtf1\ansi\ansicpg1252\cocoartf1265\cocoasubrtf190
 \cocoascreenfonts1{\fonttbl\f0\fswiss\fcharset0 Helvetica-Light;\f1\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;\red102\green102\blue102;}
+{\colortbl;\red255\green255\blue255;\red76\green76\blue76;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720
 
-\f0\fs22 \cf2 ...android.
-\f1\b \cf2 infrastructure}</string>
+\f0\fs22 \cf2 ....infrastructure.db.
+\f1\b \cf2 dbviews}</string>
 						<key>VerticalPad</key>
 						<integer>0</integer>
 					</dict>
@@ -288,7 +288,7 @@ notifies view}</string>
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720
 
 \f0\fs22 \cf2 ...android.
-\f1\b \cf2 view}</string>
+\f1\b view}</string>
 						<key>VerticalPad</key>
 						<integer>0</integer>
 					</dict>
@@ -353,7 +353,7 @@ notifies view}</string>
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720
 
 \f0\fs22 \cf2 ...android.
-\f1\b \cf2 infrastructure}</string>
+\f1\b infrastructure}</string>
 						<key>VerticalPad</key>
 						<integer>0</integer>
 					</dict>
@@ -418,7 +418,7 @@ notifies view}</string>
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720
 
 \f0\fs22 \cf2 ...myscala.
-\f1\b \cf2 domain}</string>
+\f1\b domain}</string>
 						<key>VerticalPad</key>
 						<integer>0</integer>
 					</dict>
@@ -478,7 +478,7 @@ notifies view}</string>
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720
 
 \f0\fs22 \cf2 ...domain.
-\f1\b \cf2 infrastructure}</string>
+\f1\b infrastructure}</string>
 						<key>VerticalPad</key>
 						<integer>0</integer>
 					</dict>
@@ -678,7 +678,7 @@ notifies view}</string>
 					<key>OrthogonalBarPoint</key>
 					<string>{0, 0}</string>
 					<key>OrthogonalBarPosition</key>
-					<real>0.0</real>
+					<real>-1</real>
 					<key>Points</key>
 					<array>
 						<string>{772.05451744408128, 262.66985655808594}</string>
@@ -1142,8 +1142,8 @@ notifies view}</string>
 					<real>15.777167320251465</real>
 					<key>Points</key>
 					<array>
-						<string>{663.82575608219599, 429.92830679241763}</string>
-						<string>{727.1800923026608, 410.66507172095703}</string>
+						<string>{663.82575608219611, 429.92830679241757}</string>
+						<string>{727.18009230266068, 410.66507172095703}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -1186,7 +1186,7 @@ notifies view}</string>
 					<key>Points</key>
 					<array>
 						<string>{663.83602002101804, 467.42688425100346}</string>
-						<string>{727.1801020703698, 481.16506315744141}</string>
+						<string>{727.18010207036923, 481.16506315744141}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -1442,8 +1442,8 @@ via eventbus}</string>
 					<real>-1</real>
 					<key>Points</key>
 					<array>
-						<string>{172.81730769230771, 412.89325842696621}</string>
-						<string>{172.81730769230765, 326.53370786516848}</string>
+						<string>{168.23076923076917, 412.39325842646991}</string>
+						<string>{168.23076923076911, 326.53370786516848}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -1583,9 +1583,9 @@ queries}</string>
 					<real>-1</real>
 					<key>Points</key>
 					<array>
-						<string>{101.63461538461543, 451.44662921348305}</string>
+						<string>{84.461538461538368, 451.44662921348305}</string>
 						<string>{36, 270}</string>
-						<string>{101.63461538461537, 162.55337078651689}</string>
+						<string>{84.461538461538325, 162.55337078651689}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -1629,8 +1629,8 @@ queries}</string>
 					<real>-1</real>
 					<key>Points</key>
 					<array>
-						<string>{172.81730769230765, 248.92696629257833}</string>
-						<string>{172.81730769230765, 201.10674157303373}</string>
+						<string>{168.23076923076911, 249.42696629213481}</string>
+						<string>{168.23076923076911, 201.10674157303373}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -1770,7 +1770,7 @@ queries}</string>
 					<real>-1</real>
 					<key>Points</key>
 					<array>
-						<string>{244.49999999716027, 287.98033707865164}</string>
+						<string>{252.4999999970789, 287.98033707865164}</string>
 						<string>{531.41363362155278, 287.98033707865164}</string>
 					</array>
 					<key>Style</key>
@@ -1802,7 +1802,7 @@ queries}</string>
 					<array>
 						<dict>
 							<key>Bounds</key>
-							<string>{{75.750000000000014, 170.50882825040125}, {43.141025641025635, 14.686998394863558}}</string>
+							<string>{{53.999999999999872, 170.50882825040125}, {50.769230769230809, 14.686998394863558}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>ID</key>
@@ -1820,7 +1820,7 @@ queries}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{75.750000000000014, 139.91091492776897}, {43.141025641025635, 14.686998394863558}}</string>
+							<string>{{53.999999999999872, 139.91091492776897}, {50.769230769230809, 14.686998394863558}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>ID</key>
@@ -1838,7 +1838,7 @@ queries}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{101.63461538461537, 124.00000000000006}, {142.36538461538456, 77.106741573033688}}</string>
+							<string>{{84.461538461538325, 124.00000000000006}, {167.53846153846158, 77.106741573033688}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>ID</key>
@@ -1878,7 +1878,7 @@ queries}</string>
 					<array>
 						<dict>
 							<key>Bounds</key>
-							<string>{{75.750000000000014, 295.93579454253603}, {43.141025641025635, 14.686998394863554}}</string>
+							<string>{{53.999999999999872, 295.93579454253603}, {50.769230769230809, 14.686998394863554}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>ID</key>
@@ -1896,7 +1896,7 @@ queries}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{75.750000000000014, 265.33788121990364}, {43.141025641025635, 14.686998394863554}}</string>
+							<string>{{53.999999999999872, 265.33788121990364}, {50.769230769230809, 14.686998394863554}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>ID</key>
@@ -1914,7 +1914,7 @@ queries}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{101.63461538461537, 249.42696629213481}, {142.36538461538456, 77.106741573033645}}</string>
+							<string>{{84.461538461538325, 249.42696629213481}, {167.53846153846158, 77.106741573033645}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>ID</key>
@@ -1965,8 +1965,8 @@ queries}</string>
 					<real>-1</real>
 					<key>Points</key>
 					<array>
-						<string>{244, 451.44662921348305}</string>
-						<string>{519.84688371690459, 451.7378032931187}</string>
+						<string>{252, 451.44662921348305}</string>
+						<string>{519.84688372566848, 451.73601423273908}</string>
 					</array>
 					<key>Style</key>
 					<dict>
@@ -2210,7 +2210,7 @@ queries}</string>
 					<array>
 						<dict>
 							<key>Bounds</key>
-							<string>{{75.750000000000043, 459.40208667736749}, {43.141025641025642, 14.686998394863551}}</string>
+							<string>{{53.999999999999908, 459.40208667736749}, {50.769230769230816, 14.686998394863551}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>ID</key>
@@ -2228,7 +2228,7 @@ queries}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{75.750000000000043, 428.8041733547351}, {43.141025641025642, 14.686998394863551}}</string>
+							<string>{{53.999999999999908, 428.8041733547351}, {50.769230769230816, 14.686998394863551}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>ID</key>
@@ -2246,7 +2246,7 @@ queries}</string>
 						</dict>
 						<dict>
 							<key>Bounds</key>
-							<string>{{101.63461538461542, 412.89325842696621}, {142.36538461538458, 77.106741573033631}}</string>
+							<string>{{84.461538461538368, 412.89325842696621}, {167.5384615384616, 77.106741573033631}}</string>
 							<key>Class</key>
 							<string>ShapedGraphic</string>
 							<key>ID</key>

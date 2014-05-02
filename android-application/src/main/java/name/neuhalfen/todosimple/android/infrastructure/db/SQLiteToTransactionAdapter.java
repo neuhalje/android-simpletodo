@@ -71,6 +71,10 @@ public class SQLiteToTransactionAdapter implements Transaction {
     @Override
     public void rollback() {
         Log.i("TX", "rollback");
+        if (state == TX_STATE.ABORTED) {
+            return;
+        }
+
         if (state.isTxInClosedState()) {
             throw new IllegalStateException("commit: Transaction is in closed state:" + state);
         }
