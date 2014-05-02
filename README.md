@@ -5,6 +5,10 @@ android-simpletodo
 
 TODO app for android (AKA learning android and learning scala).
 
+Gradle project structure
+===========================
+
+![Structural](website/gradle-projects.png "Structure of the buildfiles")
 
 Architecture
 ==============
