@@ -21,7 +21,7 @@ import name.neuhalfen.myscala.domain.model.RenameTaskCommand;
 import name.neuhalfen.todosimple.android.R;
 import name.neuhalfen.todosimple.android.di.DIFragment;
 import name.neuhalfen.todosimple.android.di.ForApplication;
-import name.neuhalfen.todosimple.android.domain.queries.TodoContentProvider;
+import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoContentProvider;
 
 import javax.inject.Inject;
 import java.util.UUID;

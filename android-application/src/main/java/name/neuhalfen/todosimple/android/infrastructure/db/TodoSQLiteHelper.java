@@ -3,7 +3,7 @@ package name.neuhalfen.todosimple.android.infrastructure.db;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import name.neuhalfen.todosimple.android.domain.queries.TodoContentProvider;
+import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoContentProvider;
 
 public class TodoSQLiteHelper extends SQLiteOpenHelper {
 

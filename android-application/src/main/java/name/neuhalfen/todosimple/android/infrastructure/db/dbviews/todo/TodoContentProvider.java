@@ -1,4 +1,4 @@
-package name.neuhalfen.todosimple.android.domain.queries;
+package name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo;
 
 import android.content.ContentResolver;
 import android.net.Uri;

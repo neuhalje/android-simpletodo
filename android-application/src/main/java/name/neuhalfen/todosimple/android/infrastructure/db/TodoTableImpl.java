@@ -2,7 +2,7 @@ package name.neuhalfen.todosimple.android.infrastructure.db;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-import name.neuhalfen.todosimple.android.domain.queries.TodoContentProvider;
+import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoContentProvider;
 
 public class TodoTableImpl implements TodoContentProvider.TodoTable {
     public static final String TABLE_TODOS = "todos";
