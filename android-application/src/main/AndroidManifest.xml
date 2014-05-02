@@ -28,7 +28,7 @@
 
         <provider
             android:exported="false"
-            android:name=".infrastructure.contentprovider.TodoContentProviderImpl"
+            android:name=".infrastructure.db.dbviews.todo.TodoContentProviderImpl"
             android:authorities="name.neuhalfen.todosimple.android.TODOS" />
     </application>
 

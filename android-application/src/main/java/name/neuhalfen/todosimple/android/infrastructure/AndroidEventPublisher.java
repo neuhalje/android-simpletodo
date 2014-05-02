@@ -6,7 +6,7 @@ import de.greenrobot.event.EventBus;
 import name.neuhalfen.myscala.domain.infrastructure.EventPublisher;
 import name.neuhalfen.myscala.domain.model.Event;
 import name.neuhalfen.todosimple.android.di.ForApplication;
-import name.neuhalfen.todosimple.android.domain.queries.TodoContentProvider;
+import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoContentProvider;
 import name.neuhalfen.todosimple.android.infrastructure.db.SQLiteToTransactionAdapter;
 import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.DatabaseViewManager;
 

@@ -1,8 +1,6 @@
-package name.neuhalfen.todosimple.android.infrastructure.contentprovider
-
+package name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo
 import android.content.UriMatcher
 import android.net.Uri
-import name.neuhalfen.todosimple.android.domain.queries.TodoContentProvider
 import pl.polidea.robospock.RoboSpecification
 
 import static name.neuhalfen.todosimple.helper.TestConstants.uuid1

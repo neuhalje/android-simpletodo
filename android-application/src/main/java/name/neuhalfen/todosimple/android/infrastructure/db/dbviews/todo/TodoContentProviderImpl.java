@@ -1,4 +1,4 @@
-package name.neuhalfen.todosimple.android.infrastructure.contentprovider;
+package name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo;
 
 import android.content.*;
 import android.database.Cursor;
@@ -11,7 +11,6 @@ import de.greenrobot.event.EventBus;
 import name.neuhalfen.todosimple.android.di.ForApplication;
 import name.neuhalfen.todosimple.android.di.Injector;
 import name.neuhalfen.todosimple.android.domain.model.TodoDeletedEvent;
-import name.neuhalfen.todosimple.android.domain.queries.TodoContentProvider;
 import name.neuhalfen.todosimple.android.infrastructure.db.TodoSQLiteHelper;
 import name.neuhalfen.todosimple.android.infrastructure.db.TodoTableImpl;
 

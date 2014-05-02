@@ -25,8 +25,8 @@ import name.neuhalfen.todosimple.android.R;
 import name.neuhalfen.todosimple.android.di.DIListFragment;
 import name.neuhalfen.todosimple.android.di.ForApplication;
 import name.neuhalfen.todosimple.android.domain.model.TodoDeletedEvent;
-import name.neuhalfen.todosimple.android.domain.queries.TodoContentProvider;
-import name.neuhalfen.todosimple.android.domain.queries.TodoContentProvider.TodoTable;
+import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoContentProvider;
+import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoContentProvider.TodoTable;
 
 import javax.inject.Inject;
 import java.util.UUID;

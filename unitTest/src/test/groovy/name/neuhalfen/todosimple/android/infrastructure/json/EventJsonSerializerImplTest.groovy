@@ -1,5 +1,4 @@
 package name.neuhalfen.todosimple.android.infrastructure.json
-
 import name.neuhalfen.myscala.domain.model.Event
 import name.neuhalfen.myscala.domain.model.TaskCreatedEvent
 import name.neuhalfen.myscala.domain.model.TaskRenamedEvent
@@ -8,9 +7,6 @@ import pl.polidea.robospock.RoboSpecification
 import static name.neuhalfen.todosimple.helper.TestConstants.uuid1
 import static name.neuhalfen.todosimple.helper.TestConstants.uuid2
 
-/**
- * Created by jens on 01/05/14.
- */
 class EventJsonSerializerImplTest
         extends RoboSpecification {
 

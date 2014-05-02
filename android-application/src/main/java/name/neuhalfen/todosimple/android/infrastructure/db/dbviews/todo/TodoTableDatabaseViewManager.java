@@ -1,4 +1,4 @@
-package name.neuhalfen.todosimple.android.infrastructure.db.dbviews;
+package name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -8,13 +8,13 @@ import android.util.Log;
 import name.neuhalfen.myscala.domain.model.Event;
 import name.neuhalfen.myscala.domain.model.TaskCreatedEvent;
 import name.neuhalfen.myscala.domain.model.TaskRenamedEvent;
-import name.neuhalfen.todosimple.android.domain.queries.TodoContentProvider;
 import name.neuhalfen.todosimple.android.infrastructure.db.SQLiteToTransactionAdapter;
 import name.neuhalfen.todosimple.android.infrastructure.db.TodoTableImpl;
+import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.DatabaseViewManager;
 
 import java.util.List;
 
-import static name.neuhalfen.todosimple.android.domain.queries.TodoContentProvider.TodoTable.*;
+import static name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoContentProvider.TodoTable.*;
 
 public class TodoTableDatabaseViewManager implements DatabaseViewManager {
     private final static String LOG_TAG = "TodoTableDatabaseView";
