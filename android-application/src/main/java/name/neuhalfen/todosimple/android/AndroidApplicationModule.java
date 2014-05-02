@@ -10,13 +10,18 @@ import name.neuhalfen.myscala.domain.infrastructure.EventStore;
 import name.neuhalfen.todosimple.android.di.ForApplication;
 import name.neuhalfen.todosimple.android.infrastructure.AndroidEventPublisher;
 import name.neuhalfen.todosimple.android.infrastructure.AndroidEventStore;
-import name.neuhalfen.todosimple.android.infrastructure.json.EventJsonSerializer;
-import name.neuhalfen.todosimple.android.infrastructure.json.EventJsonSerializerImpl;
 import name.neuhalfen.todosimple.android.infrastructure.contentprovider.TodoContentProviderImpl;
 import name.neuhalfen.todosimple.android.infrastructure.db.SQLiteToTransactionAdapter;
 import name.neuhalfen.todosimple.android.infrastructure.db.TodoSQLiteHelper;
+import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.DatabaseViewManager;
+import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.TodoTableDatabaseViewManager;
+import name.neuhalfen.todosimple.android.infrastructure.json.EventJsonSerializer;
+import name.neuhalfen.todosimple.android.infrastructure.json.EventJsonSerializerImpl;
 
 import javax.inject.Singleton;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Module(library = true, complete = true, injects = {AndroidEventStore.class, TodoContentProviderImpl.class, AndroidEventPublisher.class, SQLiteToTransactionAdapter.class}, includes = AndroidApplicationModule.EventBusModule.class)
 public class AndroidApplicationModule {
@@ -47,7 +52,7 @@ public class AndroidApplicationModule {
 
     @Singleton
     @Provides
-            @ForApplication
+    @ForApplication
     TodoSQLiteHelper provideSQLiteHelper() {
         return new TodoSQLiteHelper(application);
     }
@@ -99,7 +104,13 @@ public class AndroidApplicationModule {
         return new EventJsonSerializerImpl();
     }
 
-    //}
+    @Provides
+    @ForApplication
+    Collection<DatabaseViewManager> provideDatabaseViewUpdaters() {
+        List<DatabaseViewManager> views = new ArrayList<DatabaseViewManager>();
+        views.add(new TodoTableDatabaseViewManager());
+        return views;
+    }
 
     /*
     @Provides @Singleton LocationManager provideLocationManager() {
