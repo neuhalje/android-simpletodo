@@ -10,6 +10,7 @@ Gradle project structure
 
 ![Structural](website/gradle-projects.png "Structure of the buildfiles")
 
+
 Architecture
 ==============
 
@@ -52,3 +53,26 @@ Branching & Feature Developement
 Is done via [gitflow](http://nvie.com/posts/a-successful-git-branching-model/). Also look [here](http://danielkummer.github.io/git-flow-cheatsheet/) for a nice cheat sheet.
                            
                            
+CAVEATS
+=========
+
+Build errors for [unitTest](./unitTest)
+----------------------------------------
+
+Sometimes the classs in the android project cannot be found (see below). Re-running `./gradlew clean check` often helps.
+
+```text
+:unitTest:compileTestJava UP-TO-DATE
+:unitTest:compileTestGroovy
+startup failed:
+.../unitTest/src/test/groovy/name/neuhalfen/todosimple/android/infrastructure/json/EventJsonSerializerImplTest.groovy: 16: unable to resolve class EventJsonSerializer
+ @ line 16, column 29.
+           EventJsonSerializer sut = new EventJsonSerializerImpl();
+```
+
+Running/Debugging `unitTest`
+---------------------
+
+Running `unitTest` in IntelliJ fails with `IncompatibleClassChangeException`s. Debugging the gradle task `:unitTest:check` works though (sometimes the task has to run twice):
+
+![IntelliJ configuration](website/IntelliJ_Run-unitTests.png)
