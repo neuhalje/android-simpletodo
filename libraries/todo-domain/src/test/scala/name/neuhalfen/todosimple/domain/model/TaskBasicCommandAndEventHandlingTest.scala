@@ -28,7 +28,7 @@ class TaskBasicCommandAndEventHandlingTest extends UnitSpec with TaskTestTrait {
     }
   }
 
-  "Running a command " should " return events with ascending versions " in {
+  it should " return events with ascending versions " in {
     var task = createUncommitedTaskViaCreateTaskCommand()
     val tc = new RenameTaskCommand(COMMAND_ID_TWO, task.id, task.version, "change the description")
 
