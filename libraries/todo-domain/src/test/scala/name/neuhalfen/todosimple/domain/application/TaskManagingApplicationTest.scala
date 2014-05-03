@@ -29,7 +29,9 @@ class TaskManagingApplicationTest extends UnitSpec {
     val renameTaskCommand = Commands.renameTask(tasksApp.loadTask(createTaskCommand.aggregateRootId).get, "renamed task")
     tasksApp.executeCommand(renameTaskCommand)
 
-    tasksApp.loadTask(createTaskCommand.aggregateRootId).get.taskSummary should be(TaskSummary(renameTaskCommand.aggregateRootId, renameTaskCommand.aggregateRootVersion + 1, "renamed task"))
+    val t = tasksApp.loadTask(createTaskCommand.aggregateRootId).get
+    t._description should be("renamed task")
+    t.version should be(renameTaskCommand.aggregateRootVersion + 1)
   }
 
   it should "fail, when the command targets the wrong version" in {

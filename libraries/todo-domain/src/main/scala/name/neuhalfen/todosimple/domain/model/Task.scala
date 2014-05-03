@@ -19,9 +19,6 @@ object Task extends AggregateFactory[Task, Event] {
   override def newInstance = new Task(null, 0, List[Event](), "", TaskState.NOT_CREATED)
 }
 
-case class TaskSummary(aggregateId: UUID, version: Int, description: String)
-
-
 case class Task(
                  _aggregateId: UUID,
                  _version: Int,
@@ -33,13 +30,6 @@ case class Task(
   def id = _aggregateId
 
   def version = _version
-
-
-  /**
-   * @return immutable summary of the task (mainly used for testing)
-   */
-  def taskSummary: TaskSummary = TaskSummary(id, version, _description)
-
 
   def handle(command: Command): Task = {
     command match {
