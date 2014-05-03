@@ -3,6 +3,7 @@ package name.neuhalfen.todosimple.android;
 import android.app.Application;
 import dagger.ObjectGraph;
 import edu.umd.cs.findbugs.annotations.NonNull;
+import name.neuhalfen.todosimple.android.di.AndroidApplicationModule;
 import name.neuhalfen.todosimple.android.di.Injector;
 
 import java.util.Arrays;

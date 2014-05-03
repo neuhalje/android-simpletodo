@@ -1,22 +1,22 @@
-package name.neuhalfen.todosimple.android;
+package name.neuhalfen.todosimple.android.di;
 
 import android.content.Context;
 import dagger.Module;
 import dagger.Provides;
 import de.greenrobot.event.EventBus;
-import name.neuhalfen.todosimple.domain.application.TaskManagingApplication;
-import name.neuhalfen.todosimple.domain.infrastructure.EventPublisher;
-import name.neuhalfen.todosimple.domain.infrastructure.EventStore;
-import name.neuhalfen.todosimple.android.di.ForApplication;
+import name.neuhalfen.todosimple.android.TodoApplication;
 import name.neuhalfen.todosimple.android.infrastructure.AndroidEventPublisher;
 import name.neuhalfen.todosimple.android.infrastructure.AndroidEventStore;
-import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoContentProviderImpl;
 import name.neuhalfen.todosimple.android.infrastructure.db.SQLiteToTransactionAdapter;
 import name.neuhalfen.todosimple.android.infrastructure.db.TodoSQLiteHelper;
 import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.DatabaseViewManager;
+import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoContentProviderImpl;
 import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoTableDatabaseViewManager;
 import name.neuhalfen.todosimple.android.infrastructure.json.EventJsonSerializer;
 import name.neuhalfen.todosimple.android.infrastructure.json.EventJsonSerializerImpl;
+import name.neuhalfen.todosimple.domain.application.TaskManagingApplication;
+import name.neuhalfen.todosimple.domain.infrastructure.EventPublisher;
+import name.neuhalfen.todosimple.domain.infrastructure.EventStore;
 
 import javax.inject.Singleton;
 import java.util.ArrayList;
