@@ -1,6 +1,6 @@
 package name.neuhalfen.todosimple.android.infrastructure.json;
 
-import name.neuhalfen.myscala.domain.model.Event;
+import name.neuhalfen.todosimple.domain.model.Event;
 import org.json.JSONException;
 
 public interface EventJsonSerializer<T extends Event> {
