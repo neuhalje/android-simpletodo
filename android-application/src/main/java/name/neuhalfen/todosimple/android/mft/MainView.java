@@ -1,10 +1,11 @@
-package name.neuhalfen.todosimple.android;
+package name.neuhalfen.todosimple.android.mft;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import mortar.Mortar;
+import name.neuhalfen.todosimple.android.R;
 
 import javax.inject.Inject;
 
