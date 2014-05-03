@@ -29,7 +29,9 @@
         <provider
             android:exported="false"
             android:name=".infrastructure.db.dbviews.todo.TodoContentProviderImpl"
-            android:authorities="name.neuhalfen.todosimple.android.TODOS" />
+            android:authorities="name.neuhalfen.todosimple.android.TODOS" >
+            <!-- Write is not supported -->
+        </provider>
     </application>
 
 

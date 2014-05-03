@@ -18,15 +18,15 @@ import android.widget.Toast;
 import de.greenrobot.event.EventBus;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
-import name.neuhalfen.todosimple.domain.application.TaskManagingApplication;
-import name.neuhalfen.todosimple.domain.model.Commands;
-import name.neuhalfen.todosimple.domain.model.CreateTaskCommand;
 import name.neuhalfen.todosimple.android.R;
 import name.neuhalfen.todosimple.android.di.DIListFragment;
 import name.neuhalfen.todosimple.android.di.ForApplication;
-import name.neuhalfen.todosimple.android.domain.model.TodoDeletedEvent;
 import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoContentProvider;
 import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoContentProvider.TodoTable;
+import name.neuhalfen.todosimple.domain.application.TaskManagingApplication;
+import name.neuhalfen.todosimple.domain.model.Commands;
+import name.neuhalfen.todosimple.domain.model.CreateTaskCommand;
+import name.neuhalfen.todosimple.domain.model.TaskDeletedEvent;
 
 import javax.inject.Inject;
 import java.util.UUID;
@@ -282,7 +282,7 @@ public class TodoListFragment extends DIListFragment implements
      *
      * @param event
      */
-    public void onEventMainThread(TodoDeletedEvent event) {
+    public void onEventMainThread(TaskDeletedEvent event) {
 
         Activity activity = getActivity();
         if (null != activity) {

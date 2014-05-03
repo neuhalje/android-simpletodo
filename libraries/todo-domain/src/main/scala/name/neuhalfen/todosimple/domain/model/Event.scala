@@ -18,5 +18,9 @@ case class TaskRenamedEvent(id: UUID, aggregateRootId: UUID, originalAggregateRo
   override def toString: String = super.toString() + s", description: $newDescription"
 }
 
+case class TaskDeletedEvent(id: UUID, aggregateRootId: UUID, originalAggregateRootVersion: Int, newAggregateRootVersion: Int) extends Event {
+  override def toString: String = super.toString()
+}
+
 
 

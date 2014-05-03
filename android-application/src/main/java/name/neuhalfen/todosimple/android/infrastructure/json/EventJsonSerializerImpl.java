@@ -2,6 +2,7 @@ package name.neuhalfen.todosimple.android.infrastructure.json;
 
 import name.neuhalfen.todosimple.domain.model.Event;
 import name.neuhalfen.todosimple.domain.model.TaskCreatedEvent;
+import name.neuhalfen.todosimple.domain.model.TaskDeletedEvent;
 import name.neuhalfen.todosimple.domain.model.TaskRenamedEvent;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -117,11 +118,29 @@ public class EventJsonSerializerImpl implements EventJsonSerializer<Event> {
             return new TaskRenamedEvent(UUID.fromString(eventId), UUID.fromString(aggregateId), originalAggregateVersion, newAggregateVersion, newDescription);
         }
     }
+    private final static class TaskDeletedEventSerializer extends BaseEventSerializer<TaskDeletedEvent> {
+
+        public void serializeEvent(JSONObject dest, TaskDeletedEvent event) throws JSONException {
+            super.serializeEvent(dest, event);
+        }
+
+        @Override
+        public TaskDeletedEvent parseEvent(JSONObject eventJson) throws JSONException {
+            final String aggregateId = eventJson.getString(AGGREGATEID);
+            final String eventId = eventJson.getString(EVENTID);
+            final int newAggregateVersion = eventJson.getInt(NEW_AGGREGATE_VERSION);
+            final int originalAggregateVersion = eventJson.getInt(ORIGINAL_AGGREGATE_VERSION);
+
+
+            return new TaskDeletedEvent(UUID.fromString(eventId), UUID.fromString(aggregateId), originalAggregateVersion, newAggregateVersion);
+        }
+    }
 
     private final static Map<String, BaseEventSerializer<?>> map = new HashMap<String, BaseEventSerializer<?>>();
 
     {
         map.put(TaskCreatedEvent.class.getSimpleName(), new TaskCreatedEventSerializer());
         map.put(TaskRenamedEvent.class.getSimpleName(), new TaskRenamedEventSerializer());
+        map.put(TaskDeletedEvent.class.getSimpleName(), new TaskDeletedEventSerializer());
     }
 }
