@@ -1,10 +1,12 @@
-package name.neuhalfen.todosimple.android;
+package name.neuhalfen.todosimple.android.mft;
 
 import android.app.Activity;
 import android.os.Bundle;
 import mortar.Mortar;
 import mortar.MortarActivityScope;
 import mortar.MortarScope;
+import name.neuhalfen.todosimple.android.R;
+import name.neuhalfen.todosimple.android.TodoApplication;
 
 public class HelloActivity extends Activity {
     private MortarActivityScope activityScope;

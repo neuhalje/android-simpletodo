@@ -1,4 +1,4 @@
-package name.neuhalfen.todosimple.android;
+package name.neuhalfen.todosimple.android.mft;
 
 import android.os.Bundle;
 import mortar.Blueprint;
