@@ -1,6 +1,5 @@
 package name.neuhalfen.todosimple.android.view;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -9,7 +8,7 @@ import de.greenrobot.event.EventBus;
 import name.neuhalfen.todosimple.android.R;
 import name.neuhalfen.todosimple.android.di.DIActivity;
 import name.neuhalfen.todosimple.android.di.ForApplication;
-import name.neuhalfen.todosimple.android.domain.model.TodoDeletedEvent;
+import name.neuhalfen.todosimple.domain.model.TaskDeletedEvent;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -98,7 +97,7 @@ public class TodoDetailActivity extends DIActivity {
      *
      * @param event
      */
-    public void onEventMainThread(TodoDeletedEvent event) {
+    public void onEventMainThread(TaskDeletedEvent event) {
         onBackPressed();
     }
 
