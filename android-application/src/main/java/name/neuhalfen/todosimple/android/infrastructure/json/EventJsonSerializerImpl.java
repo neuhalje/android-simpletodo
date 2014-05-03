@@ -1,8 +1,8 @@
 package name.neuhalfen.todosimple.android.infrastructure.json;
 
-import name.neuhalfen.myscala.domain.model.Event;
-import name.neuhalfen.myscala.domain.model.TaskCreatedEvent;
-import name.neuhalfen.myscala.domain.model.TaskRenamedEvent;
+import name.neuhalfen.todosimple.domain.model.Event;
+import name.neuhalfen.todosimple.domain.model.TaskCreatedEvent;
+import name.neuhalfen.todosimple.domain.model.TaskRenamedEvent;
 import org.json.JSONException;
 import org.json.JSONObject;
 

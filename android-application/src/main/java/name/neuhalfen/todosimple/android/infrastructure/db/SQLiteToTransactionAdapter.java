@@ -2,8 +2,8 @@ package name.neuhalfen.todosimple.android.infrastructure.db;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-import name.neuhalfen.myscala.domain.infrastructure.Transaction;
-import name.neuhalfen.myscala.domain.infrastructure.TransactionRollbackException;
+import name.neuhalfen.todosimple.domain.infrastructure.Transaction;
+import name.neuhalfen.todosimple.domain.infrastructure.TransactionRollbackException;
 import name.neuhalfen.todosimple.android.di.ForApplication;
 
 import javax.inject.Inject;

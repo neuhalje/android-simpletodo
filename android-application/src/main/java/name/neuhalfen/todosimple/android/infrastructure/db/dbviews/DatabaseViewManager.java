@@ -1,7 +1,7 @@
 package name.neuhalfen.todosimple.android.infrastructure.db.dbviews;
 
 import android.content.Context;
-import name.neuhalfen.myscala.domain.model.Event;
+import name.neuhalfen.todosimple.domain.model.Event;
 import name.neuhalfen.todosimple.android.infrastructure.db.SQLiteToTransactionAdapter;
 
 import java.util.List;
