@@ -1,4 +1,5 @@
-package name.neuhalfen.todosimple.android.infrastructure.json
+package name.neuhalfen.todosimple.android.infrastructure.db.eventstore.json
+
 import name.neuhalfen.todosimple.domain.model.Event
 import name.neuhalfen.todosimple.domain.model.TaskCreatedEvent
 import name.neuhalfen.todosimple.domain.model.TaskDeletedEvent

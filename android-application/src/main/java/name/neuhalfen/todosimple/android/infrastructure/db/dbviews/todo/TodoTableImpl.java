@@ -1,8 +1,8 @@
-package name.neuhalfen.todosimple.android.infrastructure.db;
+package name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoContentProvider;
+import name.neuhalfen.todosimple.android.infrastructure.db.TodoSQLiteHelper;
 
 public class TodoTableImpl implements TodoContentProvider.TodoTable {
     public static final String TABLE_TODOS = "todos";
@@ -15,7 +15,7 @@ public class TodoTableImpl implements TodoContentProvider.TodoTable {
             + COLUMN_AGGREGATE_VERSION + " not null,"
             + COLUMN_TITLE + " text not null,"
             + COLUMN_DESCRIPTION + " text not null"
-            +");";
+            + ");";
 
 
     public static void onCreate(SQLiteDatabase database) {

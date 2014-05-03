@@ -5,13 +5,12 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Log;
+import name.neuhalfen.todosimple.android.infrastructure.db.SQLiteToTransactionAdapter;
+import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.DatabaseViewManager;
 import name.neuhalfen.todosimple.domain.model.Event;
 import name.neuhalfen.todosimple.domain.model.TaskCreatedEvent;
 import name.neuhalfen.todosimple.domain.model.TaskDeletedEvent;
 import name.neuhalfen.todosimple.domain.model.TaskRenamedEvent;
-import name.neuhalfen.todosimple.android.infrastructure.db.SQLiteToTransactionAdapter;
-import name.neuhalfen.todosimple.android.infrastructure.db.TodoTableImpl;
-import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.DatabaseViewManager;
 
 import java.util.List;
 

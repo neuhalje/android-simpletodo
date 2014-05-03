@@ -3,12 +3,12 @@ package name.neuhalfen.todosimple.android.infrastructure;
 import android.content.Context;
 import android.net.Uri;
 import de.greenrobot.event.EventBus;
-import name.neuhalfen.todosimple.domain.infrastructure.EventPublisher;
-import name.neuhalfen.todosimple.domain.model.Event;
 import name.neuhalfen.todosimple.android.di.ForApplication;
-import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoContentProvider;
 import name.neuhalfen.todosimple.android.infrastructure.db.SQLiteToTransactionAdapter;
 import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.DatabaseViewManager;
+import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoContentProvider;
+import name.neuhalfen.todosimple.domain.infrastructure.EventPublisher;
+import name.neuhalfen.todosimple.domain.model.Event;
 
 import javax.inject.Inject;
 import java.util.Collection;
@@ -36,8 +36,8 @@ public class AndroidEventPublisher implements EventPublisher {
 
     @Override
     public void publishEventsInTransaction(List<Event> events) {
-        for (DatabaseViewManager view : dbViews) {
-            view.updateDBViewTables(context, txAdapter, Collections.unmodifiableList(events));
+        for (DatabaseViewManager dbView : dbViews) {
+            dbView.updateDBViewTables(context, txAdapter, Collections.unmodifiableList(events));
         }
     }
 
