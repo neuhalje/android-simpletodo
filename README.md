@@ -15,13 +15,19 @@ Architecture
 
 ![Structural](website/structural.png "Structure of the application")
 
+
+Validation
+-----------
+
+No validation yet.
+
 Dependency Injection
 --------------------
 
 Domain, and android app use `@Inject` to mark injectable objects. The DI implementation used in the app is [Dagger](http://square.github.io/dagger/). The DI implementation used by the domain tests (scala) is [Guice](https://code.google.com/p/google-guice/), as Dagger won't work with scala.
 
 Communication
-===============
+----------------
 
 ### View internal
 Fragments rely on callbacks to communicate with the hosting activity.
@@ -33,8 +39,16 @@ Views send commands to the domain.
 Views query the ContentProvider abstraction.
 
 ### Events
-* The content provider publishes some events (e.g. changes to the view table).
+* The content provider publishes some events (e.g. changes to the view table). These are handled by the views themselves.
 * The domain (the implementation in the android project) posts events to a global eventbus
-                           
+
+Releases
+===========
+- currently undecided on how to release.
+
+Branching & Feature Developement
+---------------------
+
+Is done via [gitflow](http://nvie.com/posts/a-successful-git-branching-model/). Also look [here](http://danielkummer.github.io/git-flow-cheatsheet/) for a nice cheat sheet.
                            
                            
