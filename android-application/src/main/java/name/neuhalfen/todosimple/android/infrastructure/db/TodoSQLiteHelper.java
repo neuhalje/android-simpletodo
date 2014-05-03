@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoContentProvider;
+import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoTableImpl;
+import name.neuhalfen.todosimple.android.infrastructure.db.eventstore.EventStoreTableImpl;
 
 public class TodoSQLiteHelper extends SQLiteOpenHelper {
 

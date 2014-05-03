@@ -1,9 +1,10 @@
-package name.neuhalfen.todosimple.android.infrastructure.db;
+package name.neuhalfen.todosimple.android.infrastructure.db.eventstore;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import name.neuhalfen.todosimple.android.infrastructure.db.TodoSQLiteHelper;
 
 import java.sql.SQLException;
 import java.util.UUID;

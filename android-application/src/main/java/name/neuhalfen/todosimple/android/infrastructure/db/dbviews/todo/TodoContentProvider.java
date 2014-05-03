@@ -46,8 +46,6 @@ public interface TodoContentProvider {
 
         private Factory() {
         }
-
-        ;
     }
 
 

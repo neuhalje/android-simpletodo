@@ -13,7 +13,6 @@ import de.greenrobot.event.EventBus;
 import name.neuhalfen.todosimple.android.di.ForApplication;
 import name.neuhalfen.todosimple.android.di.Injector;
 import name.neuhalfen.todosimple.android.infrastructure.db.TodoSQLiteHelper;
-import name.neuhalfen.todosimple.android.infrastructure.db.TodoTableImpl;
 
 import javax.inject.Inject;
 import java.util.Arrays;

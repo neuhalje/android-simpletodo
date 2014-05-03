@@ -1,14 +1,13 @@
-package name.neuhalfen.todosimple.android.infrastructure;
+package name.neuhalfen.todosimple.android.infrastructure.db.eventstore;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import name.neuhalfen.todosimple.android.di.ForApplication;
+import name.neuhalfen.todosimple.android.infrastructure.db.SQLiteToTransactionAdapter;
+import name.neuhalfen.todosimple.android.infrastructure.db.eventstore.json.EventJsonSerializer;
 import name.neuhalfen.todosimple.domain.infrastructure.EventStore;
 import name.neuhalfen.todosimple.domain.model.Event;
-import name.neuhalfen.todosimple.android.di.ForApplication;
-import name.neuhalfen.todosimple.android.infrastructure.db.EventStoreTableImpl;
-import name.neuhalfen.todosimple.android.infrastructure.db.SQLiteToTransactionAdapter;
-import name.neuhalfen.todosimple.android.infrastructure.json.EventJsonSerializer;
 import scala.Option;
 import scala.collection.Iterator;
 import scala.collection.Seq;
