@@ -11,7 +11,7 @@ class CreateTaskCommandTest extends UnitSpec with TaskTestTrait {
 
     for (evt <- task.uncommittedEVTs) evt match {
       case TaskCreatedEvent(eventId, aggregateRootId, oldAggregateVersion, newAggregateVersion, newDescription) => assert(newDescription == "fresh")
-      case _ => fail("Unecpected event")
+      case _ => fail("Unexpected event")
     }
   }
 
@@ -25,6 +25,11 @@ class CreateTaskCommandTest extends UnitSpec with TaskTestTrait {
     val tc = new CreateTaskCommand(COMMAND_ID_TWO, task.id, "description")
 
     an[IllegalArgumentException] should be thrownBy task.handle(tc)
+  }
+
+  it should " be in state CREATED" in {
+    val task = createUncommitedTaskViaCreateTaskCommand()
+    assert(task.state == TaskState.CREATED)
   }
 
 }

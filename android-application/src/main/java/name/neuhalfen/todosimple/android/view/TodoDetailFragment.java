@@ -17,6 +17,7 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 import name.neuhalfen.todosimple.domain.application.TaskManagingApplication;
 import name.neuhalfen.todosimple.domain.model.Command;
 import name.neuhalfen.todosimple.domain.model.CreateTaskCommand;
+import name.neuhalfen.todosimple.domain.model.DeleteTaskCommand;
 import name.neuhalfen.todosimple.domain.model.RenameTaskCommand;
 import name.neuhalfen.todosimple.android.R;
 import name.neuhalfen.todosimple.android.di.DIFragment;
@@ -251,21 +252,25 @@ public class TodoDetailFragment extends DIFragment implements LoaderManager.Load
         if (isEditExistingTask()) {
             cmd = new RenameTaskCommand(UUID.randomUUID(), UUID.fromString( uuidText.getText().toString()) , Integer.parseInt( versionText.getText().toString()), titleText.getText().toString());
         } else {
-            cmd = new CreateTaskCommand(UUID.randomUUID(), UUID.randomUUID(), titleText.getText().toString(), 0);
+          cmd = new CreateTaskCommand(UUID.randomUUID(), UUID.randomUUID(), titleText.getText().toString(), 0);
         }
+        executeCommand(cmd);
+    }
+
+    private void executeCommand(Command cmd) {
         try {
             taskApp.executeCommand(cmd);
             updateUri(TodoContentProvider.Factory.forAggregateId(cmd.aggregateRootId()));
             getLoaderManager().initLoader(0, null, this);
         }catch(Exception e){
-            Crouton.makeText(getActivity(),e.toString(), Style.ALERT).show();
+            Crouton.makeText(getActivity(), e.toString(), Style.ALERT).show();
         }
     }
 
     private void deleteTask() {
-        // FIXME: Command
+        final Command cmd = new DeleteTaskCommand(UUID.randomUUID(), UUID.fromString( uuidText.getText().toString()) , Integer.parseInt( versionText.getText().toString()));
         dataState = DATA_STATE.NO_DATA;
-        getActivity().getContentResolver().delete(todoUri, null, null);
+        executeCommand(cmd);
     }
 
     @Override

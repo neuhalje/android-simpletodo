@@ -1,16 +1,17 @@
 package name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo;
 
-import android.content.*;
+import android.content.ContentProvider;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.text.TextUtils;
 import android.util.Log;
 import de.greenrobot.event.EventBus;
 import name.neuhalfen.todosimple.android.di.ForApplication;
 import name.neuhalfen.todosimple.android.di.Injector;
-import name.neuhalfen.todosimple.android.domain.model.TodoDeletedEvent;
 import name.neuhalfen.todosimple.android.infrastructure.db.TodoSQLiteHelper;
 import name.neuhalfen.todosimple.android.infrastructure.db.TodoTableImpl;
 
@@ -107,133 +108,19 @@ public class TodoContentProviderImpl extends ContentProvider implements TodoCont
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        int uriType = sURIMatcher.match(uri);
-        SQLiteDatabase sqlDB = database.getWritableDatabase();
-        long id = 0;
-        switch (uriType) {
-            case TODOS:
-                id = sqlDB.insert(TodoTableImpl.TABLE_TODOS, null, values);
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown URI: " + uri);
-        }
-        Uri newUri = ContentUris.withAppendedId(CONTENT_URI, id);
-        getContext().getContentResolver().notifyChange(newUri, null);
-        return newUri;
+        throw new UnsupportedOperationException("insert not supported. Use the application.");
     }
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        int uriType = sURIMatcher.match(uri);
-        SQLiteDatabase sqlDB = database.getWritableDatabase();
-        int rowsDeleted = 0;
-        switch (uriType) {
-            case TODOS:
-                rowsDeleted = sqlDB.delete(TodoTableImpl.TABLE_TODOS, selection,
-                        selectionArgs);
-                break;
-            case TODO_ID:
-                String id = uri.getLastPathSegment();
-                if (TextUtils.isEmpty(selection)) {
-                    // FIXME: SQL Injection
-                    rowsDeleted = sqlDB.delete(TodoTableImpl.TABLE_TODOS,
-                            TodoTable.COLUMN_ID + "=" + id,
-                            null);
-                } else {
-                    // FIXME: SQL Injection
-                    rowsDeleted = sqlDB.delete(TodoTableImpl.TABLE_TODOS,
-                            TodoTable.COLUMN_ID + "=" + id
-                                    + " and " + selection,
-                            selectionArgs
-                    );
-                }
-
-                eventBus.post(new TodoDeletedEvent());
-                break;
-            case TODO_AGGREGATE_ID:
-                String aggregateId = uri.getLastPathSegment();
-                if (TextUtils.isEmpty(selection)) {
-                    // FIXME: SQL Injection
-                    rowsDeleted = sqlDB.delete(TodoTableImpl.TABLE_TODOS,
-                            TodoTable.COLUMN_AGGREGATE_ID + "='" + aggregateId + "'",
-                            null);
-                } else {
-                    // FIXME: SQL Injection
-                    rowsDeleted = sqlDB.delete(TodoTableImpl.TABLE_TODOS,
-                            TodoTable.COLUMN_AGGREGATE_ID + "='" + aggregateId + "'"
-                                    + " and " + selection,
-                            selectionArgs
-                    );
-                }
-
-                eventBus.post(new TodoDeletedEvent());
-                break;
-
-            default:
-                throw new IllegalArgumentException("Unknown URI: " + uri);
-        }
-        getContext().getContentResolver().notifyChange(uri, null);
-        return rowsDeleted;
+        throw new UnsupportedOperationException("delete not supported. Use the application.");
     }
 
     @Override
-    public int update(Uri uri, ContentValues values, String selection,
-                      String[] selectionArgs) {
-
-        int uriType = sURIMatcher.match(uri);
-        SQLiteDatabase sqlDB = database.getWritableDatabase();
-        int rowsUpdated = 0;
-        switch (uriType) {
-            case TODOS:
-                rowsUpdated = sqlDB.update(TodoTableImpl.TABLE_TODOS,
-                        values,
-                        selection,
-                        selectionArgs);
-                break;
-            case TODO_ID:
-                String id = uri.getLastPathSegment();
-                if (TextUtils.isEmpty(selection)) {
-                    // FIXME: SQL Injection
-                    rowsUpdated = sqlDB.update(TodoTableImpl.TABLE_TODOS,
-                            values,
-                            TodoTable.COLUMN_ID + "=" + id,
-                            null);
-                } else {
-                    // FIXME: SQL Injection
-                    rowsUpdated = sqlDB.update(TodoTableImpl.TABLE_TODOS,
-                            values,
-                            TodoTable.COLUMN_ID + "=" + id
-                                    + " and "
-                                    + selection,
-                            selectionArgs
-                    );
-                }
-                break;
-            case TODO_AGGREGATE_ID:
-                String aggregateId = uri.getLastPathSegment();
-                if (TextUtils.isEmpty(selection)) {
-                    // FIXME: SQL Injection
-                    rowsUpdated = sqlDB.update(TodoTableImpl.TABLE_TODOS,
-                            values,
-                            TodoTable.COLUMN_AGGREGATE_ID + "='" + aggregateId + "'",
-                            null);
-                } else {
-                    // FIXME: SQL Injection
-                    rowsUpdated = sqlDB.update(TodoTableImpl.TABLE_TODOS,
-                            values,
-                            TodoTable.COLUMN_AGGREGATE_ID + "='" + aggregateId + "'"
-                                    + " and "
-                                    + selection,
-                            selectionArgs
-                    );
-                }
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown URI: " + uri);
-        }
-        getContext().getContentResolver().notifyChange(uri, null);
-        return rowsUpdated;
+    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        throw new UnsupportedOperationException("update not supported. Use the application.");
     }
+
 
     private void checkColumns(String[] projection) {
         if (projection != null) {

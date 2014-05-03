@@ -10,7 +10,7 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 import name.neuhalfen.todosimple.android.R;
 import name.neuhalfen.todosimple.android.di.DIActivity;
 import name.neuhalfen.todosimple.android.di.ForApplication;
-import name.neuhalfen.todosimple.android.domain.model.TodoDeletedEvent;
+import name.neuhalfen.todosimple.domain.model.TaskDeletedEvent;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -156,7 +156,7 @@ public class TodoListActivity extends DIActivity
      *
      * @param event
      */
-    public void onEventMainThread(TodoDeletedEvent event) {
+    public void onEventMainThread(TaskDeletedEvent event) {
         if (mTwoPane) {
             Log.d("ListFragment", "onTodoDeleted called");
             final boolean hasFragment = (null != detailFragment);
