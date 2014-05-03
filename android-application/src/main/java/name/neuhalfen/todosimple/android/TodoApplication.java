@@ -3,6 +3,8 @@ package name.neuhalfen.todosimple.android;
 import android.app.Application;
 import dagger.ObjectGraph;
 import edu.umd.cs.findbugs.annotations.NonNull;
+import mortar.Mortar;
+import mortar.MortarScope;
 import name.neuhalfen.todosimple.android.di.AndroidApplicationModule;
 import name.neuhalfen.todosimple.android.di.Injector;
 
@@ -12,11 +14,17 @@ import java.util.List;
 public class TodoApplication
         extends Application implements Injector {
     private ObjectGraph applicationGraph;
+    private MortarScope rootScope;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        // inject(this)
+        //rootScope = Mortar.createRootScope(BuildConfig.DEBUG, getApplicationGraph());
+        rootScope = Mortar.createRootScope(BuildConfig.DEBUG);
+    }
+
+    public MortarScope getRootScope() {
+        return rootScope;
     }
 
     protected List<Object> getModules() {
