@@ -26,7 +26,7 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2014-05-03 13:53:23 +0000</string>
+	<string>2014-05-10 08:02:11 +0000</string>
 	<key>Modifier</key>
 	<string>Jens Neuhalfen</string>
 	<key>NotesVisible</key>
@@ -1979,7 +1979,7 @@ queries}</string>
 							<key>LineType</key>
 							<integer>2</integer>
 							<key>TailArrow</key>
-							<string>FilledDiamond</string>
+							<string>0</string>
 							<key>Width</key>
 							<real>2</real>
 						</dict>
@@ -2581,7 +2581,7 @@ queries}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{300.4999961882238, 85.339462280273438}, {60, 14}}</string>
+					<string>{{294.71372032457634, 96}, {60, 14}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -3475,7 +3475,7 @@ queries}</string>
 	<key>WindowInfo</key>
 	<dict>
 		<key>CurrentSheet</key>
-		<integer>0</integer>
+		<integer>1</integer>
 		<key>ExpandedCanvases</key>
 		<array>
 			<dict>
