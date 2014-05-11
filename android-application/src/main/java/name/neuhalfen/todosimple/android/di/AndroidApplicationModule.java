@@ -1,9 +1,12 @@
 package name.neuhalfen.todosimple.android.di;
 
 import android.content.Context;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import dagger.Module;
 import dagger.Provides;
 import de.greenrobot.event.EventBus;
+import flow.Parcer;
 import name.neuhalfen.todosimple.android.TodoApplication;
 import name.neuhalfen.todosimple.android.infrastructure.AndroidEventPublisher;
 import name.neuhalfen.todosimple.android.infrastructure.db.SQLiteToTransactionAdapter;
@@ -14,6 +17,7 @@ import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoTabl
 import name.neuhalfen.todosimple.android.infrastructure.db.eventstore.AndroidEventStore;
 import name.neuhalfen.todosimple.android.infrastructure.db.eventstore.json.EventJsonSerializer;
 import name.neuhalfen.todosimple.android.infrastructure.db.eventstore.json.EventJsonSerializerImpl;
+import name.neuhalfen.todosimple.android.mft.GsonParcer;
 import name.neuhalfen.todosimple.domain.application.TaskManagingApplication;
 import name.neuhalfen.todosimple.domain.infrastructure.EventPublisher;
 import name.neuhalfen.todosimple.domain.infrastructure.EventStore;
@@ -111,6 +115,16 @@ public class AndroidApplicationModule {
         views.add(new TodoTableDatabaseViewManager());
         return views;
     }
+    @Provides @Singleton
+    Gson provideGson() {
+        return new GsonBuilder().create();
+    }
+
+    @Provides @Singleton
+    Parcer<Object> provideParcer(Gson gson) {
+        return new GsonParcer<Object>(gson);
+    }
+
 
     /*
     @Provides @Singleton LocationManager provideLocationManager() {

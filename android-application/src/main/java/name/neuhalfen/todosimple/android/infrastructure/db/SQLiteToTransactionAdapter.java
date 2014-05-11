@@ -2,9 +2,10 @@ package name.neuhalfen.todosimple.android.infrastructure.db;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import name.neuhalfen.todosimple.android.di.ForApplication;
 import name.neuhalfen.todosimple.domain.infrastructure.Transaction;
 import name.neuhalfen.todosimple.domain.infrastructure.TransactionRollbackException;
-import name.neuhalfen.todosimple.android.di.ForApplication;
+import name.neuhalfen.todosimple.helper.Preconditions;
 
 import javax.inject.Inject;
 
@@ -34,13 +35,17 @@ public class SQLiteToTransactionAdapter implements Transaction {
             }
         };
 
-
         public abstract boolean isTxInClosedState();
+
+        public boolean isTxInOpenState() {
+            return !isTxInClosedState();
+        }
     }
 
     private TX_STATE state = TX_STATE.COMMITTED;
 
     public SQLiteDatabase getDb() {
+        Preconditions.checkState(state.isTxInOpenState(), "Transaction must be open but is in state %s.", state);
         return db;
     }
 

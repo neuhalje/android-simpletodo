@@ -19,8 +19,8 @@ public class TodoApplication
     @Override
     public void onCreate() {
         super.onCreate();
-        //rootScope = Mortar.createRootScope(BuildConfig.DEBUG, getApplicationGraph());
-        rootScope = Mortar.createRootScope(BuildConfig.DEBUG);
+        rootScope = Mortar.createRootScope(BuildConfig.DEBUG, getApplicationGraph());
+        //rootScope = Mortar.createRootScope(BuildConfig.DEBUG);
     }
 
     public MortarScope getRootScope() {
@@ -46,5 +46,16 @@ public class TodoApplication
     @Override
     public void inject(Object object) {
         getApplicationGraph().inject(object);
+    }
+
+    @Override
+    public <T> T get(Class<? extends T> type) {
+        return applicationGraph.get(type);
+    }
+    @Override public Object getSystemService(String name) {
+        if (Mortar.isScopeSystemService(name)) {
+            return rootScope;
+        }
+        return super.getSystemService(name);
     }
 }
