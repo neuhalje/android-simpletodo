@@ -21,10 +21,6 @@ import java.util.Set;
 
 public class TodoContentProviderImpl extends ContentProvider implements TodoContentProvider {
 
-    @Inject
-    @ForApplication
-    EventBus eventBus;
-
     // database
     private TodoSQLiteHelper database;
 
