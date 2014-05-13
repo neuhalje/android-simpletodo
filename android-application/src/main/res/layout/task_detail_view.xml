@@ -1,9 +1,8 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<?xml version="1.0" encoding="utf-8"?>
+<name.neuhalfen.todosimple.android.view.task.DetailView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical"
-    tools:context="name.neuhalfen.todosimple.android.view.TodoDetailFragment">
+    android:orientation="vertical">
 
     <EditText
         android:id="@+id/todo_edit_title"
@@ -39,8 +38,8 @@
         android:id="@+id/todo_detail_uri"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="N/A" />
+        android:text="N/A"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -60,6 +59,6 @@
             android:text="xxx"
             android:textAppearance="?android:attr/textAppearanceSmall" />
     </LinearLayout>
+</name.neuhalfen.todosimple.android.view.task.DetailView>
 
 
-</LinearLayout>

@@ -8,6 +8,7 @@ import name.neuhalfen.todosimple.android.infrastructure.db.SQLiteToTransactionAd
 import name.neuhalfen.todosimple.android.infrastructure.db.eventstore.json.EventJsonSerializer;
 import name.neuhalfen.todosimple.domain.infrastructure.EventStore;
 import name.neuhalfen.todosimple.domain.model.Event;
+import name.neuhalfen.todosimple.helper.Preconditions;
 import scala.Option;
 import scala.collection.Iterator;
 import scala.collection.Seq;
@@ -31,7 +32,8 @@ public class AndroidEventStore implements EventStore {
 
     @Override
     public Option<Seq<Event>> loadEvents(UUID aggregateId) throws IOException {
-        // FIXME
+        Preconditions.checkNotNull(aggregateId, "aggregateId must not be null");
+
         SQLiteDatabase db = txAdapter.getDb();
         Cursor cursor = EventStoreTableImpl.queryForAggregateOrderByVersion(db, aggregateId);
         if (cursor.isAfterLast()) {
