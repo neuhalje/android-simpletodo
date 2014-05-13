@@ -1,4 +1,4 @@
-package name.neuhalfen.todosimple.android.mft;
+package name.neuhalfen.todosimple.android.view.task;
 
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -10,6 +10,8 @@ import mortar.Blueprint;
 import mortar.ViewPresenter;
 import name.neuhalfen.todosimple.android.R;
 import name.neuhalfen.todosimple.android.di.ForApplication;
+import name.neuhalfen.todosimple.android.view.base.ActionBarOwner;
+import name.neuhalfen.todosimple.android.view.base.Main;
 import name.neuhalfen.todosimple.domain.application.TaskManagingApplication;
 import name.neuhalfen.todosimple.domain.model.Commands;
 import name.neuhalfen.todosimple.domain.model.RenameTaskCommand;
@@ -21,7 +23,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.UUID;
 
-@Layout(R.layout.detail_view)
+@Layout(R.layout.task_detail_view)
 public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
     private final UUID taskId;
 

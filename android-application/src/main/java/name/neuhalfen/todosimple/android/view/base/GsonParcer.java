@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 
-package name.neuhalfen.todosimple.android.mft;
+package name.neuhalfen.todosimple.android.view.base;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import flow.Parcer;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;

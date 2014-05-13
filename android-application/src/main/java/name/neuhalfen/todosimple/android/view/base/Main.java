@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package name.neuhalfen.todosimple.android.mft;
+package name.neuhalfen.todosimple.android.view.base;
 
 import dagger.Provides;
 import flow.Flow;
@@ -21,7 +21,8 @@ import flow.HasParent;
 import flow.Parcer;
 import mortar.Blueprint;
 import name.neuhalfen.todosimple.android.di.AndroidApplicationModule;
-import name.neuhalfen.todosimple.android.mft.util.FlowOwner;
+import name.neuhalfen.todosimple.android.view.base.util.FlowOwner;
+import name.neuhalfen.todosimple.android.view.task.TaskListScreen;
 import rx.util.functions.Action0;
 
 import javax.inject.Inject;

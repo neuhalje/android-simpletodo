@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package name.neuhalfen.todosimple.android.mft.util;
+package name.neuhalfen.todosimple.android.view.base.util;
 
 import android.content.Context;
 import android.view.View;

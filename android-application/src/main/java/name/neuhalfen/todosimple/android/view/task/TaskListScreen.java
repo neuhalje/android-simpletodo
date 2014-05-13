@@ -1,4 +1,4 @@
-package name.neuhalfen.todosimple.android.mft;
+package name.neuhalfen.todosimple.android.view.task;
 
 import android.os.Bundle;
 import flow.Flow;
@@ -7,6 +7,8 @@ import mortar.Blueprint;
 import mortar.ViewPresenter;
 import name.neuhalfen.todosimple.android.R;
 import name.neuhalfen.todosimple.android.di.ForApplication;
+import name.neuhalfen.todosimple.android.view.base.ActionBarOwner;
+import name.neuhalfen.todosimple.android.view.base.Main;
 import name.neuhalfen.todosimple.domain.application.TaskManagingApplication;
 import name.neuhalfen.todosimple.domain.model.Commands;
 import name.neuhalfen.todosimple.domain.model.CreateTaskCommand;

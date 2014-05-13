@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package name.neuhalfen.todosimple.android.mft;
+package name.neuhalfen.todosimple.android.view.base;
 
 public @interface MainScope {
 }

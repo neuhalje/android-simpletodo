@@ -1,4 +1,4 @@
-package name.neuhalfen.todosimple.android.mft;
+package name.neuhalfen.todosimple.android.view.task;
 
 import android.app.LoaderManager;
 import android.content.Context;
@@ -15,6 +15,7 @@ import android.widget.SimpleCursorAdapter;
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 import mortar.Mortar;
 import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoContentProvider;
+import name.neuhalfen.todosimple.android.view.base.BaseActivity;
 
 import javax.inject.Inject;
 import java.util.UUID;
@@ -61,12 +62,12 @@ public class TaskListView
     @CheckForNull
     private LoaderManager getLoaderManager() {
         Context context = getContext();
-        LoaderManager loaderManager = (LoaderManager) context.getSystemService(HelloActivity.NAME_NEUHALFEN_LOADER_MANAGER);
+        LoaderManager loaderManager = (LoaderManager) context.getSystemService(BaseActivity.NAME_NEUHALFEN_LOADER_MANAGER);
 
         if (null != loaderManager) {
             return loaderManager;
         } else {
-            Log.i("TaskListView", String.format("initLoaderManager: Context '%s' is not returning %s.", context, HelloActivity.NAME_NEUHALFEN_LOADER_MANAGER));
+            Log.i("TaskListView", String.format("initLoaderManager: Context '%s' is not returning %s.", context, BaseActivity.NAME_NEUHALFEN_LOADER_MANAGER));
         }
         return null;
     }

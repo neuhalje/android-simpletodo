@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package name.neuhalfen.todosimple.android.mft;
+package name.neuhalfen.todosimple.android.view.base;
 
 import dagger.Module;
 import dagger.Provides;
 
 import javax.inject.Singleton;
 
-@Module(injects = HelloActivity.class)
+@Module(injects = BaseActivity.class)
 public class ActionBarModule {
-  @Provides
-  @Singleton
-  ActionBarOwner provideActionBarOwner() {
-    return new ActionBarOwner();
-  }
+    @Provides
+    @Singleton
+    ActionBarOwner provideActionBarOwner() {
+        return new ActionBarOwner();
+    }
 }
