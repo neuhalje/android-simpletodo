@@ -3,6 +3,7 @@ package name.neuhalfen.todosimple.android.view.task;
 import android.os.Bundle;
 import android.os.Parcelable;
 import dagger.Provides;
+import de.greenrobot.event.EventBus;
 import flow.HasParent;
 import flow.Layout;
 import flow.Parcer;
@@ -12,6 +13,7 @@ import name.neuhalfen.todosimple.android.R;
 import name.neuhalfen.todosimple.android.di.ForApplication;
 import name.neuhalfen.todosimple.android.view.base.ActionBarOwner;
 import name.neuhalfen.todosimple.android.view.base.Main;
+import name.neuhalfen.todosimple.android.view.base.notification.ViewShowNotificationCommand;
 import name.neuhalfen.todosimple.domain.application.TaskManagingApplication;
 import name.neuhalfen.todosimple.domain.model.Commands;
 import name.neuhalfen.todosimple.domain.model.RenameTaskCommand;
@@ -86,13 +88,15 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
         private final Task task;
         private final ActionBarOwner actionBar;
         private final Parcer<Object> parcer;
+        private final EventBus eventBus;
 
         @Inject
-        Presenter(@ForApplication TaskManagingApplication taskApp, Task task, ActionBarOwner actionBar, Parcer<Object> parcer) {
+        Presenter(@ForApplication TaskManagingApplication taskApp, @ForApplication EventBus eventBus,Task task, ActionBarOwner actionBar, Parcer<Object> parcer) {
             this.taskApp = taskApp;
             this.task = task;
             this.actionBar = actionBar;
             this.parcer = parcer;
+            this.eventBus = eventBus;
         }
 
         @Override
@@ -130,9 +134,14 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
                 return;
             }
 
-            final TaskDTO editState = view.getEditState();
-            final RenameTaskCommand renameTaskCommand = Commands.renameTask(task, editState.description);
-            taskApp.executeCommand(renameTaskCommand);
+            try {
+
+                final TaskDTO editState = view.getEditState();
+                final RenameTaskCommand renameTaskCommand = Commands.renameTask(task, editState.description);
+                taskApp.executeCommand(renameTaskCommand);
+            } catch (Exception e) {
+                eventBus.post(ViewShowNotificationCommand.makeText(e.getLocalizedMessage(), ViewShowNotificationCommand.Style.ALERT));
+            }
         }
 
         @Override

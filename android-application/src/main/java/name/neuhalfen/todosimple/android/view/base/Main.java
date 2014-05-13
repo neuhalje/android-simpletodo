@@ -41,7 +41,7 @@ public class Main implements Blueprint {
     }
 
     @dagger.Module( //
-            includes = ActionBarModule.class,
+            includes = BaseActivityModule.class,
             injects = MainView.class,
             addsTo = AndroidApplicationModule.class, //
             library = true //

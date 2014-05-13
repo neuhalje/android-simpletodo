@@ -12,6 +12,7 @@ import name.neuhalfen.todosimple.android.view.base.util.ScreenConductor;
 import javax.inject.Inject;
 
 public class MainView extends FrameLayout implements CanShowScreen<Blueprint> {
+
     @Inject
     Main.Presenter presenter;
     private final ScreenConductor<Blueprint> screenMaestro;

@@ -5,7 +5,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dagger.Module;
 import dagger.Provides;
-import de.greenrobot.event.EventBus;
 import flow.Parcer;
 import name.neuhalfen.todosimple.android.TodoApplication;
 import name.neuhalfen.todosimple.android.infrastructure.AndroidEventPublisher;
@@ -27,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-@Module(library = true, complete = true, injects = {AndroidEventStore.class, TodoContentProviderImpl.class, AndroidEventPublisher.class, SQLiteToTransactionAdapter.class}, includes = AndroidApplicationModule.EventBusModule.class)
+@Module(library = true, complete = true, injects = { AndroidEventStore.class, TodoContentProviderImpl.class, AndroidEventPublisher.class, SQLiteToTransactionAdapter.class}, includes = EventBusModule.class)
 public class AndroidApplicationModule {
     private final TodoApplication application;
 
@@ -59,16 +58,6 @@ public class AndroidApplicationModule {
     @ForApplication
     TodoSQLiteHelper provideSQLiteHelper() {
         return new TodoSQLiteHelper(application);
-    }
-
-    @Module(library = true)
-    static class EventBusModule {
-        @Singleton
-        @Provides
-        @ForApplication
-        EventBus provideEventBus() {
-            return new EventBus();
-        }
     }
 
     //     /**
