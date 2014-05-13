@@ -17,7 +17,7 @@ import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoTabl
 import name.neuhalfen.todosimple.android.infrastructure.db.eventstore.AndroidEventStore;
 import name.neuhalfen.todosimple.android.infrastructure.db.eventstore.json.EventJsonSerializer;
 import name.neuhalfen.todosimple.android.infrastructure.db.eventstore.json.EventJsonSerializerImpl;
-import name.neuhalfen.todosimple.android.mft.GsonParcer;
+import name.neuhalfen.todosimple.android.view.base.GsonParcer;
 import name.neuhalfen.todosimple.domain.application.TaskManagingApplication;
 import name.neuhalfen.todosimple.domain.infrastructure.EventPublisher;
 import name.neuhalfen.todosimple.domain.infrastructure.EventStore;
@@ -115,12 +115,15 @@ public class AndroidApplicationModule {
         views.add(new TodoTableDatabaseViewManager());
         return views;
     }
-    @Provides @Singleton
+
+    @Provides
+    @Singleton
     Gson provideGson() {
         return new GsonBuilder().create();
     }
 
-    @Provides @Singleton
+    @Provides
+    @Singleton
     Parcer<Object> provideParcer(Gson gson) {
         return new GsonParcer<Object>(gson);
     }

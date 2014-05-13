@@ -1,4 +1,4 @@
-package name.neuhalfen.todosimple.android.mft;
+package name.neuhalfen.todosimple.android.view.task;
 
 import android.content.Context;
 import android.util.AttributeSet;

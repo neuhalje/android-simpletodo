@@ -1,4 +1,4 @@
-package name.neuhalfen.todosimple.android.mft;
+package name.neuhalfen.todosimple.android.view.base;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -21,7 +21,7 @@ import static android.content.Intent.ACTION_MAIN;
 import static android.content.Intent.CATEGORY_LAUNCHER;
 import static android.view.MenuItem.SHOW_AS_ACTION_ALWAYS;
 
-public class HelloActivity extends Activity implements ActionBarOwner.View {
+public class BaseActivity extends Activity implements ActionBarOwner.View {
     public static final String NAME_NEUHALFEN_LOADER_MANAGER = "name.neuhalfen.LoaderManager";
     private MortarActivityScope activityScope;
     private ActionBarOwner.MenuAction actionBarMenuAction;
@@ -44,7 +44,7 @@ public class HelloActivity extends Activity implements ActionBarOwner.View {
         Mortar.inject(this, this);
 
         activityScope.onCreate(savedInstanceState);
-        setContentView(R.layout.hello_activity);
+        setContentView(R.layout.base_activity);
         MainView mainView = (MainView) findViewById(R.id.container);
         mainFlow = mainView.getFlow();
 

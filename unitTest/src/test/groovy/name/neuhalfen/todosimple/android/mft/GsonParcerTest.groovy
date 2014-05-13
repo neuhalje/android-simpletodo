@@ -2,6 +2,7 @@ package name.neuhalfen.todosimple.android.mft
 
 import android.os.Parcelable
 import com.google.gson.Gson
+import name.neuhalfen.todosimple.android.view.base.GsonParcer
 import pl.polidea.robospock.RoboSpecification
 
 class GsonParcerTest

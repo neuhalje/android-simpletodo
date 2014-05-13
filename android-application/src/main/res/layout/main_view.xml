@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<name.neuhalfen.todosimple.android.mft.MainView xmlns:android="http://schemas.android.com/apk/res/android"
+<name.neuhalfen.todosimple.android.view.base.MainView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center">
@@ -11,10 +11,11 @@
         android:fontFamily="sans-serif-condensed"
         android:gravity="center"
         android:textSize="25dp" />
+
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="GO GO GO"
-        android:id="@+id/go_detail"/>
-</name.neuhalfen.todosimple.android.mft.MainView>
+        android:id="@+id/go_detail" />
+</name.neuhalfen.todosimple.android.view.base.MainView>
 
