@@ -20,7 +20,7 @@ import dagger.Provides;
 
 import javax.inject.Singleton;
 
-@Module(injects = BaseActivity.class)
+@Module(library = true)
 public class ActionBarModule {
     @Provides
     @Singleton
