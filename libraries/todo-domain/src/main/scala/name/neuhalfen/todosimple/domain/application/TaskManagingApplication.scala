@@ -49,7 +49,9 @@ class TaskManagingApplication @Inject()(eventStore: EventStore, eventPublishing:
   }
 
   def loadTask(taskId: UUID): Option[Task] = {
+    tx.beginTransaction()
     val events = eventStore.loadEvents(taskId)
+    tx.commit()
     events match {
       case Some(e) => Some(Task.loadFromHistory(e))
       case None => None

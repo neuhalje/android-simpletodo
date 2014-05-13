@@ -9,21 +9,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.util.Log;
-import de.greenrobot.event.EventBus;
-import name.neuhalfen.todosimple.android.di.ForApplication;
 import name.neuhalfen.todosimple.android.di.Injector;
 import name.neuhalfen.todosimple.android.infrastructure.db.TodoSQLiteHelper;
 
-import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 public class TodoContentProviderImpl extends ContentProvider implements TodoContentProvider {
-
-    @Inject
-    @ForApplication
-    EventBus eventBus;
 
     // database
     private TodoSQLiteHelper database;

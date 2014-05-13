@@ -48,4 +48,9 @@ public class DIActivity extends Activity implements Injector {
     public void inject(Object object) {
         activityGraph.inject(object);
     }
+
+    @Override
+    public <T> T get(Class<? extends T> type) {
+        return activityGraph.get(type);
+    }
 }

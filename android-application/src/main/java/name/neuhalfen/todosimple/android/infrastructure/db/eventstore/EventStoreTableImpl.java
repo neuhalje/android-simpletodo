@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import name.neuhalfen.todosimple.android.infrastructure.db.TodoSQLiteHelper;
+import name.neuhalfen.todosimple.helper.Preconditions;
 
 import java.sql.SQLException;
 import java.util.UUID;
@@ -45,6 +46,10 @@ public class EventStoreTableImpl {
 
 
     public static void record(SQLiteDatabase db, UUID aggregate, int newAggregateVersion, String event) throws SQLException{
+        Preconditions.checkNotNull(aggregate, "aggregate must not be null");
+        Preconditions.checkNotNull(db, "db must not be null");
+        Preconditions.checkNotNull(event, "event must not be null");
+
         ContentValues values = new ContentValues();
         values.put(Table.COLUMN_AGGREGATE_ID, aggregate.toString());
         values.put(Table.COLUMN_AGGREGATE_VERSION, newAggregateVersion);
@@ -53,6 +58,9 @@ public class EventStoreTableImpl {
     }
 
     public static Cursor queryForAggregateOrderByVersion(SQLiteDatabase db, UUID aggregate) {
+        Preconditions.checkNotNull(aggregate, "aggregate must not be null");
+        Preconditions.checkNotNull(db, "db must not be null");
+
         Cursor cursor = db.query(TABLE_EVENT, Table.ALL_COLUMNS, Table.COLUMN_AGGREGATE_ID + " = ?", new String[]{aggregate.toString()}, null, null, Table.COLUMN_AGGREGATE_VERSION + " ASC");
         return cursor;
     }

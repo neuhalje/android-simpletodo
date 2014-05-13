@@ -27,11 +27,15 @@ Dependency Injection
 
 Domain, and android app use `@Inject` to mark injectable objects. The DI implementation used in the app is [Dagger](http://square.github.io/dagger/). The DI implementation used by the domain tests (scala) is [Guice](https://code.google.com/p/google-guice/), as Dagger won't work with scala.
 
+Views
+------
+
+Views are implemented with [flow](https://github.com/square/flow), and [mortar](https://github.com/square/mortar). Squareup has a nice [introduction](http://corner.squareup.com/2014/01/mortar-and-flow.html).
+
+There are no Fragments!
+
 Communication
 ----------------
-
-### View internal
-Fragments rely on callbacks to communicate with the hosting activity.
 
 ### Commands
 Views send commands to the domain.
