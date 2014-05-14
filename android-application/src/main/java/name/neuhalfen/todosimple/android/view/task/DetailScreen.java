@@ -28,6 +28,7 @@ import static name.neuhalfen.todosimple.helper.Preconditions.checkNotNull;
 @Layout(R.layout.task_detail_view)
 public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
     static enum State {EXISTING, NEW}
+
     static final class Cmd {
         public final State cmd;
         public final UUID taskId;
@@ -48,6 +49,7 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
         this.state = State.NEW;
         this.taskId = UUID.randomUUID();
     }
+
     /*
     * edit
      */
@@ -73,7 +75,7 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
     }
 
     public static Blueprint forExistingTask(UUID taskId) {
-        checkNotNull(taskId,"TaskId must not be null");
+        checkNotNull(taskId, "TaskId must not be null");
         return new DetailScreen(taskId);
     }
 
@@ -91,7 +93,7 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
 
         @Provides
         Cmd provideCmd() {
-            return new Cmd(state,taskId);
+            return new Cmd(state, taskId);
         }
 
     }
@@ -122,8 +124,13 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
             public TaskDTO withDescription(String newDescription) {
                 return new TaskDTO(id, version, title, newDescription, state);
             }
+
             public TaskDTO asSaved() {
                 return new TaskDTO(id, version, title, description, State.EXISTING);
+            }
+
+            public TaskDTO withVersion(int newVersion) {
+                return new TaskDTO(id, newVersion, title, description, state);
             }
         }
 
@@ -145,25 +152,26 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
         }
 
         TaskDTO loadOrCreateTaskDTO(Cmd cmd) {
-           if (cmd.cmd == State.NEW) {
-               return new TaskDTO(UUID.randomUUID(), 0,"new task title", "new task description", State.NEW);
-           } else {
-               final Option<Task> taskOption = taskApp.loadTask(cmd.taskId);
-               if (taskOption.isDefined()) {
-                   final Task task = taskOption.get();
-                   return new TaskDTO(task._aggregateId(), task.version(), "TODO any title", task._description(), State.EXISTING);
-               }
-               else {
-                   throw new IllegalStateException(String.format("Task %s not found",cmd.taskId.toString() ));
-               }
-           }
+            if (cmd.cmd == State.NEW) {
+                return new TaskDTO(UUID.randomUUID(), 0, "new task title", "new task description", State.NEW);
+            } else {
+                final Option<Task> taskOption = taskApp.loadTask(cmd.taskId);
+                if (taskOption.isDefined()) {
+                    final Task task = taskOption.get();
+                    return new TaskDTO(task._aggregateId(), task.version(), "TODO any title", task._description(), State.EXISTING);
+                } else {
+                    throw new IllegalStateException(String.format("Task %s not found", cmd.taskId.toString()));
+                }
+            }
         }
+
         @Override
         public void onLoad(Bundle savedState) {
             super.onLoad(savedState);
             DetailView view = getView();
 
             if (view != null) {
+                eventBus.register(this);
 
                 ActionBarOwner.Config actionBarConfig = actionBar.getConfig();
 
@@ -195,7 +203,6 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
             }
 
 
-
             try {
                 final TaskDTO editState = view.getEditState();
 
@@ -205,10 +212,10 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
                         command = new RenameTaskCommand(UUID.randomUUID(), editState.id, editState.version, editState.description);
                         break;
                     case NEW:
-                        command = new CreateTaskCommand(UUID.randomUUID(), editState.id, editState.description,0);
+                        command = new CreateTaskCommand(UUID.randomUUID(), editState.id, editState.description, 0);
                         break;
                     default:
-                        throw new IllegalStateException(String.format( "There should be no third state but it is '%s'", editState.state));
+                        throw new IllegalStateException(String.format("There should be no third state but it is '%s'", editState.state));
                 }
                 taskApp.executeCommand(command);
             } catch (Exception e) {
@@ -219,8 +226,53 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
         @Override
         public void onSave(Bundle outState) {
             super.onSave(outState);
+            eventBus.unregister(this);
             final TaskDTO editState = getView().getEditState();
             outState.putParcelable("edit-state", null != editState ? parcer.wrap(editState) : null);
+        }
+
+        /**
+         * Event bus callback
+         */
+        public void onEventMainThread(TaskRenamedEvent event) {
+            final DetailView view = getView();
+            if (null==view) {
+                return;
+            }
+
+            final TaskDTO originalState = view.getOriginalState();
+
+            if (!isEventRelatesToMyTask(event, originalState)) {
+                return;
+            }
+            final TaskDTO newState = originalState.withDescription(event.newDescription()).withVersion(event.newAggregateRootVersion());
+
+            view.setOriginalState(newState);
+        }
+
+        private boolean isEventRelatesToMyTask(Event event, TaskDTO originalState) {
+            return (event.aggregateRootId().equals(originalState.id)
+                    && event.originalAggregateRootVersion() == originalState.version);
+        }
+
+        /**
+         * Event bus callback
+         */
+        public void onEventMainThread(TaskCreatedEvent event) {
+            final DetailView view = getView();
+            if (null==view) {
+                return;
+            }
+
+            final TaskDTO originalState = view.getOriginalState();
+
+            // TODO: check if the race condition of multiple out of order events matters
+            if (!isEventRelatesToMyTask(event, originalState)) {
+                return;
+            }
+            final TaskDTO newState = originalState.asSaved().withVersion(event.newAggregateRootVersion());
+
+            view.setOriginalState(newState);
         }
 
     }

@@ -124,6 +124,12 @@ public class DetailView extends LinearLayout {
         show(this.originalState != null ? this.originalState : NULL_STATE);
 
     }
+    /**
+     *
+     */
+    public DetailScreen.Presenter.TaskDTO getOriginalState() {
+        return originalState;
+    }
 
     private void show(DetailScreen.Presenter.TaskDTO state) {
         checkNotNull(state, "state must not be null");
