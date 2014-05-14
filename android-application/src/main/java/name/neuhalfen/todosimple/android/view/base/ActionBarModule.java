@@ -21,7 +21,7 @@ import name.neuhalfen.todosimple.android.di.AndroidApplicationModule;
 
 import javax.inject.Singleton;
 
-@Module(library = true,injects = BaseActivity.class, addsTo = AndroidApplicationModule.class)
+@Module(library = true, injects = BaseActivity.class, addsTo = AndroidApplicationModule.class)
 public class ActionBarModule {
     @Provides
     @Singleton

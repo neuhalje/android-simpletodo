@@ -1,4 +1,5 @@
 package name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo
+
 import android.content.UriMatcher
 import android.net.Uri
 import pl.polidea.robospock.RoboSpecification

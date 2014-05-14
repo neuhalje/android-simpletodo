@@ -15,7 +15,7 @@ object ServiceInjector {
 
   def inject(obj: AnyRef) = injector.injectMembers(obj)
 
-   def getInstance[T](clazz:Class[T]) :T  = injector.getInstance(clazz)
+  def getInstance[T](clazz: Class[T]): T = injector.getInstance(clazz)
 }
 
 

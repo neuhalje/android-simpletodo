@@ -1,8 +1,8 @@
 package name.neuhalfen.todosimple.android.infrastructure.db.dbviews;
 
 import android.content.Context;
-import name.neuhalfen.todosimple.domain.model.Event;
 import name.neuhalfen.todosimple.android.infrastructure.db.SQLiteToTransactionAdapter;
+import name.neuhalfen.todosimple.domain.model.Event;
 
 import java.util.List;
 

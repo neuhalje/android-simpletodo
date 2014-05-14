@@ -34,7 +34,8 @@ public class GsonParcer<T> implements Parcer<T> {
         this.gson = gson;
     }
 
-    @Override public Parcelable wrap(T instance) {
+    @Override
+    public Parcelable wrap(T instance) {
         try {
             String json = encode(instance);
             return new Wrapper(json);
@@ -43,7 +44,8 @@ public class GsonParcer<T> implements Parcer<T> {
         }
     }
 
-    @Override public T unwrap(Parcelable parcelable) {
+    @Override
+    public T unwrap(Parcelable parcelable) {
         Wrapper wrapper = (Wrapper) parcelable;
         try {
             return decode(wrapper.json);
@@ -92,21 +94,25 @@ public class GsonParcer<T> implements Parcer<T> {
             this.json = json;
         }
 
-        @Override public int describeContents() {
+        @Override
+        public int describeContents() {
             return 0;
         }
 
-        @Override public void writeToParcel(Parcel out, int flags) {
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
             out.writeString(json);
         }
 
         public static final Parcelable.Creator<Wrapper> CREATOR = new Parcelable.Creator<Wrapper>() {
-            @Override public Wrapper createFromParcel(Parcel in) {
+            @Override
+            public Wrapper createFromParcel(Parcel in) {
                 String json = in.readString();
                 return new Wrapper(json);
             }
 
-            @Override public Wrapper[] newArray(int size) {
+            @Override
+            public Wrapper[] newArray(int size) {
                 return new Wrapper[size];
             }
         };

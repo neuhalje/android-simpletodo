@@ -6,7 +6,7 @@
         android:showAsAction="ifRoom"
         android:orderInCategory="10"
         android:visible="false"
-        android:title="@string/menu_add_demo_tasks"/>
+        android:title="@string/menu_add_demo_tasks" />
     <item
         android:id="@+id/add_new_task"
         android:showAsAction="ifRoom"
