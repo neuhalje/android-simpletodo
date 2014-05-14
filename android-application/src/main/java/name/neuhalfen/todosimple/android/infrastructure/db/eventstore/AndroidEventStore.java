@@ -58,7 +58,6 @@ public class AndroidEventStore implements EventStore {
 
     @Override
     public void appendEvents(UUID aggregateId, Seq<Event> events) throws IOException {
-        // FIXME
         try {
             Iterator<Event> eventIterator = events.iterator();
             SQLiteDatabase db = txAdapter.getDb();
