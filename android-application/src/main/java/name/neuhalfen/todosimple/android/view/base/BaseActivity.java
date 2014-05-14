@@ -20,6 +20,7 @@ import name.neuhalfen.todosimple.android.R;
 import name.neuhalfen.todosimple.android.di.ForApplication;
 import name.neuhalfen.todosimple.android.view.base.notification.ViewShowNotificationCommand;
 import name.neuhalfen.todosimple.domain.model.TaskCreatedEvent;
+import name.neuhalfen.todosimple.domain.model.TaskDeletedEvent;
 import name.neuhalfen.todosimple.domain.model.TaskRenamedEvent;
 
 import javax.inject.Inject;
@@ -234,6 +235,12 @@ public class BaseActivity extends Activity implements ActionBarOwner.View {
      */
     public void onEventMainThread(TaskCreatedEvent event) {
         Crouton.makeText(this, String.format("Task created '%s", event.description()), Style.INFO).show();
+    }
+    /**
+     * Event bus callback
+     */
+    public void onEventMainThread(TaskDeletedEvent event) {
+        Crouton.makeText(this, String.format("Task deleted '%s", event.id()), Style.INFO).show();
     }
 }
 

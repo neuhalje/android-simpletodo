@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import dagger.Provides;
 import de.greenrobot.event.EventBus;
+import flow.Flow;
 import flow.HasParent;
 import flow.Layout;
 import flow.Parcer;
@@ -140,15 +141,17 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
         private final Parcer<Object> parcer;
         private final EventBus eventBus;
         private final Cmd cmd;
+        private final Flow flow;
 
 
         @Inject
-        Presenter(@ForApplication TaskManagingApplication taskApp, @ForApplication EventBus eventBus, ActionBarOwner actionBar, Parcer<Object> parcer, Cmd cmd) {
+        Presenter(@ForApplication TaskManagingApplication taskApp, @ForApplication EventBus eventBus, ActionBarOwner actionBar, Parcer<Object> parcer, Cmd cmd, Flow flow) {
             this.taskApp = taskApp;
             this.actionBar = actionBar;
             this.parcer = parcer;
             this.eventBus = eventBus;
             this.cmd = cmd;
+            this.flow = flow;
         }
 
         TaskDTO loadOrCreateTaskDTO(Cmd cmd) {
@@ -181,6 +184,11 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
                             public void call() {
                                 saveTask();
                             }
+                        })).withAction(new ActionBarOwner.MenuAction("Delete", new Action0() {
+                            @Override
+                            public void call() {
+                                deleteTaskOrAbortCreate();
+                            }
                         }));
 
                 final TaskDTO taskDTO = loadOrCreateTaskDTO(cmd);
@@ -196,6 +204,28 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
             }
         }
 
+        private void deleteTaskOrAbortCreate() {
+            DetailView view = getView();
+            if (null == view) {
+                return;
+            }
+
+
+            final TaskDTO originalState = view.getOriginalState();
+
+            switch (originalState.state) {
+                case EXISTING:
+                    Command command = new DeleteTaskCommand(UUID.randomUUID(), originalState.id, originalState.version);
+                    executeCommand(command);
+                    break;
+                case NEW:
+                    // Ignore -- just close the editor
+                    break;
+            }
+
+            flow.goBack();
+        }
+
         private void saveTask() {
             DetailView view = getView();
             if (null == view) {
@@ -203,20 +233,24 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
             }
 
 
-            try {
-                final TaskDTO editState = view.getEditState();
+            final TaskDTO editState = view.getEditState();
 
-                final Command command;
-                switch (editState.state) {
-                    case EXISTING:
-                        command = new RenameTaskCommand(UUID.randomUUID(), editState.id, editState.version, editState.description);
-                        break;
-                    case NEW:
-                        command = new CreateTaskCommand(UUID.randomUUID(), editState.id, editState.description, 0);
-                        break;
-                    default:
-                        throw new IllegalStateException(String.format("There should be no third state but it is '%s'", editState.state));
-                }
+            final Command command;
+            switch (editState.state) {
+                case EXISTING:
+                    command = new RenameTaskCommand(UUID.randomUUID(), editState.id, editState.version, editState.description);
+                    break;
+                case NEW:
+                    command = new CreateTaskCommand(UUID.randomUUID(), editState.id, editState.description, 0);
+                    break;
+                default:
+                    throw new IllegalStateException(String.format("There should be no third state but it is '%s'", editState.state));
+            }
+            executeCommand(command);
+        }
+
+        private void executeCommand(Command command) {
+            try {
                 taskApp.executeCommand(command);
             } catch (Exception e) {
                 eventBus.post(ViewShowNotificationCommand.makeText(e.getLocalizedMessage(), ViewShowNotificationCommand.Style.ALERT));
