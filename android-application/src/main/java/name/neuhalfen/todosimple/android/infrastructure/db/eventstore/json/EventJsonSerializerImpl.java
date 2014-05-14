@@ -1,15 +1,11 @@
 package name.neuhalfen.todosimple.android.infrastructure.db.eventstore.json;
 
-import name.neuhalfen.todosimple.domain.model.Event;
-import name.neuhalfen.todosimple.domain.model.TaskCreatedEvent;
-import name.neuhalfen.todosimple.domain.model.TaskDeletedEvent;
-import name.neuhalfen.todosimple.domain.model.TaskRenamedEvent;
+import name.neuhalfen.todosimple.domain.model.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import static name.neuhalfen.todosimple.helper.Preconditions.checkNotNull;
 
@@ -89,7 +85,7 @@ public class EventJsonSerializerImpl implements EventJsonSerializer<Event> {
 
             final String description = eventJson.getString(DESCRIPTION);
 
-            return new TaskCreatedEvent(UUID.fromString(eventId), UUID.fromString(aggregateId), originalAggregateVersion, newAggregateVersion, description);
+            return new TaskCreatedEvent(EventId.fromString(eventId), TaskId.fromString(aggregateId), originalAggregateVersion, newAggregateVersion, description);
         }
 
         public void serializeEvent(JSONObject dest, TaskCreatedEvent event) throws JSONException {
@@ -115,9 +111,10 @@ public class EventJsonSerializerImpl implements EventJsonSerializer<Event> {
 
             final String newDescription = eventJson.getString(NEW_DESCRIPTION);
 
-            return new TaskRenamedEvent(UUID.fromString(eventId), UUID.fromString(aggregateId), originalAggregateVersion, newAggregateVersion, newDescription);
+            return new TaskRenamedEvent(EventId.fromString(eventId), TaskId.fromString(aggregateId), originalAggregateVersion, newAggregateVersion, newDescription);
         }
     }
+
     private final static class TaskDeletedEventSerializer extends BaseEventSerializer<TaskDeletedEvent> {
 
         public void serializeEvent(JSONObject dest, TaskDeletedEvent event) throws JSONException {
@@ -132,7 +129,7 @@ public class EventJsonSerializerImpl implements EventJsonSerializer<Event> {
             final int originalAggregateVersion = eventJson.getInt(ORIGINAL_AGGREGATE_VERSION);
 
 
-            return new TaskDeletedEvent(UUID.fromString(eventId), UUID.fromString(aggregateId), originalAggregateVersion, newAggregateVersion);
+            return new TaskDeletedEvent(EventId.fromString(eventId), TaskId.fromString(aggregateId), originalAggregateVersion, newAggregateVersion);
         }
     }
 

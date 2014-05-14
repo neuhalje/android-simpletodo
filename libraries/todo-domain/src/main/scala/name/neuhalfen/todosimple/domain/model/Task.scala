@@ -1,6 +1,5 @@
 package name.neuhalfen.todosimple.domain.model
 
-import java.util.UUID
 import name.neuhalfen.todosimple.domain.model.TaskState.TaskState
 
 
@@ -13,14 +12,14 @@ object Task extends AggregateFactory[Task, Event] {
   }
 
   def newTask(command: CreateTaskCommand): Task = {
-    applyEvent(new TaskCreatedEvent(UUID.randomUUID(), command.aggregateRootId, 0, 1, command.description))
+    applyEvent(new TaskCreatedEvent(EventId.generateId(), command.aggregateRootId, 0, 1, command.description))
   }
 
   override def newInstance = new Task(null, 0, List[Event](), "", TaskState.NOT_CREATED)
 }
 
 case class Task(
-                 _aggregateId: UUID,
+                 _aggregateId: TaskId,
                  _version: Int,
                  _uncommittedEvents: List[Event],
                  _description: String,
@@ -43,7 +42,7 @@ case class Task(
     requireCorrectAggregateVersion(command.aggregateRootVersion)
     requireState(TaskState.NOT_CREATED)
 
-    applyEvent(new TaskCreatedEvent(UUID.randomUUID(), command.aggregateRootId, 0, 1, command.description))
+    applyEvent(new TaskCreatedEvent(EventId.generateId(), command.aggregateRootId, 0, 1, command.description))
   }
 
   /**
@@ -59,7 +58,7 @@ case class Task(
       this
     } else {
       requireState(TaskState.CREATED)
-      applyEvent(new TaskDeletedEvent(UUID.randomUUID(), id, version, version + 1))
+      applyEvent(new TaskDeletedEvent(EventId.generateId(), id, version, version + 1))
     }
   }
 
@@ -71,7 +70,7 @@ case class Task(
     if (_description.equals(command.newDescription)) {
       this
     } else {
-      applyEvent(new TaskRenamedEvent(UUID.randomUUID(), id, version, version + 1, command.newDescription))
+      applyEvent(new TaskRenamedEvent(EventId.generateId(), id, version, version + 1, command.newDescription))
     }
   }
 
@@ -105,7 +104,7 @@ case class Task(
     require(state == requiredState, s"State of task ${_aggregateId} v$version must be $requiredState but is $state")
   }
 
-  protected def requireCorrectAggregateId(aggregateRootIdFromExternal: UUID) {
+  protected def requireCorrectAggregateId(aggregateRootIdFromExternal: TaskId) {
     require(id == aggregateRootIdFromExternal, s"wrong aggregate root '$aggregateRootIdFromExternal', should be '$id'")
   }
 

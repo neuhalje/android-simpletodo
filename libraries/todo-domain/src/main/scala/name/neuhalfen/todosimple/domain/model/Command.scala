@@ -1,10 +1,9 @@
 package name.neuhalfen.todosimple.domain.model
 
-import java.util.UUID
 
 sealed trait Command {
-  val id: UUID
-  val aggregateRootId: UUID
+  val id: CommandId
+  val aggregateRootId: TaskId
   val aggregateRootVersion: Int
 
   override def toString: String = s"${getClass.getSimpleName}: ${id.toString}. Aggregate: ${aggregateRootId.toString} v$aggregateRootVersion"
@@ -12,21 +11,21 @@ sealed trait Command {
 
 
 object Commands {
-  def createTask(description: String) = CreateTaskCommand(UUID.randomUUID(), UUID.randomUUID(), description, 0)
+  def createTask(description: String) = CreateTaskCommand(CommandId.generateId(), TaskId.generateId(), description, 0)
 
-  def renameTask(task: Task, newDescription: String) = RenameTaskCommand(UUID.randomUUID(), task.id, task.version, newDescription)
+  def renameTask(task: Task, newDescription: String) = RenameTaskCommand(CommandId.generateId(), task.id, task.version, newDescription)
 
-  def deleteTask(task: Task) = DeleteTaskCommand(UUID.randomUUID(), task.id, task.version)
+  def deleteTask(task: Task) = DeleteTaskCommand(CommandId.generateId(), task.id, task.version)
 }
 
-case class CreateTaskCommand(id: UUID, aggregateRootId: UUID, description: String, aggregateRootVersion: Int = 0) extends Command {
+case class CreateTaskCommand(id: CommandId, aggregateRootId: TaskId, description: String, aggregateRootVersion: Int = 0) extends Command {
   override def toString: String = super.toString() + s", taskDesc: $description"
 }
 
-case class RenameTaskCommand(id: UUID, aggregateRootId: UUID, aggregateRootVersion: Int, newDescription: String) extends Command {
+case class RenameTaskCommand(id: CommandId, aggregateRootId: TaskId, aggregateRootVersion: Int, newDescription: String) extends Command {
   override def toString: String = super.toString() + s", taskDesc: $newDescription"
 }
 
-case class DeleteTaskCommand(id: UUID, aggregateRootId: UUID, aggregateRootVersion: Int) extends Command {
+case class DeleteTaskCommand(id: CommandId, aggregateRootId: TaskId, aggregateRootVersion: Int) extends Command {
   override def toString: String = super.toString()
 }

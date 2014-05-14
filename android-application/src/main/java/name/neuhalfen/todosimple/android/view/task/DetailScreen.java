@@ -22,7 +22,6 @@ import scala.Option;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.UUID;
 
 import static name.neuhalfen.todosimple.helper.Preconditions.checkNotNull;
 
@@ -32,15 +31,15 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
 
     static final class Cmd {
         public final State cmd;
-        public final UUID taskId;
+        public final TaskId taskId;
 
-        private Cmd(State cmd, UUID taskId) {
+        private Cmd(State cmd, TaskId taskId) {
             this.cmd = cmd;
             this.taskId = taskId;
         }
     }
 
-    private final UUID taskId;
+    private final TaskId taskId;
     private final State state;
 
     /*
@@ -48,13 +47,13 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
      */
     private DetailScreen() {
         this.state = State.NEW;
-        this.taskId = UUID.randomUUID();
+        this.taskId = TaskId.generateId();
     }
 
     /*
     * edit
      */
-    private DetailScreen(UUID taskId) {
+    private DetailScreen(TaskId taskId) {
         checkNotNull(taskId, "taskId must not be null");
         this.state = State.EXISTING;
         this.taskId = taskId;
@@ -75,7 +74,7 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
         return new Module();
     }
 
-    public static Blueprint forExistingTask(UUID taskId) {
+    public static Blueprint forExistingTask(TaskId taskId) {
         checkNotNull(taskId, "TaskId must not be null");
         return new DetailScreen(taskId);
     }
@@ -104,13 +103,13 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
     static class Presenter extends ViewPresenter<DetailView> {
         static class TaskDTO {
             public final int version;
-            public final UUID id;
+            public final TaskId id;
             public final String title;
             public final String description;
 
             public final State state;
 
-            TaskDTO(UUID id, int version, String title, String description, State state) {
+            TaskDTO(TaskId id, int version, String title, String description, State state) {
                 this.version = version;
                 this.id = id;
                 this.title = title;
@@ -156,7 +155,7 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
 
         TaskDTO loadOrCreateTaskDTO(Cmd cmd) {
             if (cmd.cmd == State.NEW) {
-                return new TaskDTO(UUID.randomUUID(), 0, "new task title", "new task description", State.NEW);
+                return new TaskDTO(TaskId.generateId(), 0, "new task title", "new task description", State.NEW);
             } else {
                 final Option<Task> taskOption = taskApp.loadTask(cmd.taskId);
                 if (taskOption.isDefined()) {
@@ -215,7 +214,7 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
 
             switch (originalState.state) {
                 case EXISTING:
-                    Command command = new DeleteTaskCommand(UUID.randomUUID(), originalState.id, originalState.version);
+                    Command command = new DeleteTaskCommand(CommandId.generateId(), originalState.id, originalState.version);
                     executeCommand(command);
                     break;
                 case NEW:
@@ -238,10 +237,10 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
             final Command command;
             switch (editState.state) {
                 case EXISTING:
-                    command = new RenameTaskCommand(UUID.randomUUID(), editState.id, editState.version, editState.description);
+                    command = new RenameTaskCommand(CommandId.generateId(), editState.id, editState.version, editState.description);
                     break;
                 case NEW:
-                    command = new CreateTaskCommand(UUID.randomUUID(), editState.id, editState.description, 0);
+                    command = new CreateTaskCommand(CommandId.generateId(), editState.id, editState.description, 0);
                     break;
                 default:
                     throw new IllegalStateException(String.format("There should be no third state but it is '%s'", editState.state));
@@ -270,7 +269,7 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
          */
         public void onEventMainThread(TaskRenamedEvent event) {
             final DetailView view = getView();
-            if (null==view) {
+            if (null == view) {
                 return;
             }
 
@@ -294,7 +293,7 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
          */
         public void onEventMainThread(TaskCreatedEvent event) {
             final DetailView view = getView();
-            if (null==view) {
+            if (null == view) {
                 return;
             }
 

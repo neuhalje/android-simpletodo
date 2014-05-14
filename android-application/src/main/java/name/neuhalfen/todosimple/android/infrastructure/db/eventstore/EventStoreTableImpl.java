@@ -5,10 +5,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import name.neuhalfen.todosimple.android.infrastructure.db.TodoSQLiteHelper;
+import name.neuhalfen.todosimple.domain.model.TaskId;
 import name.neuhalfen.todosimple.helper.Preconditions;
 
 import java.sql.SQLException;
-import java.util.UUID;
 
 public class EventStoreTableImpl {
     public interface Table {
@@ -45,7 +45,7 @@ public class EventStoreTableImpl {
     private static final String DATABASE_CREATE_INDEX = String.format("create unique index idx_agg_vers on %s(%s,%s); ", TABLE_EVENT, Table.COLUMN_AGGREGATE_ID, Table.COLUMN_AGGREGATE_VERSION);
 
 
-    public static void record(SQLiteDatabase db, UUID aggregate, int newAggregateVersion, String event) throws SQLException{
+    public static void record(SQLiteDatabase db, TaskId aggregate, int newAggregateVersion, String event) throws SQLException {
         Preconditions.checkNotNull(aggregate, "aggregate must not be null");
         Preconditions.checkNotNull(db, "db must not be null");
         Preconditions.checkNotNull(event, "event must not be null");
@@ -57,7 +57,7 @@ public class EventStoreTableImpl {
         db.insertOrThrow(TABLE_EVENT, null, values);
     }
 
-    public static Cursor queryForAggregateOrderByVersion(SQLiteDatabase db, UUID aggregate) {
+    public static Cursor queryForAggregateOrderByVersion(SQLiteDatabase db, TaskId aggregate) {
         Preconditions.checkNotNull(aggregate, "aggregate must not be null");
         Preconditions.checkNotNull(db, "db must not be null");
 

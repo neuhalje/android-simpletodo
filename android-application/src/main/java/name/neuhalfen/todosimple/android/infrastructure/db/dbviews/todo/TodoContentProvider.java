@@ -2,8 +2,7 @@ package name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo;
 
 import android.content.ContentResolver;
 import android.net.Uri;
-
-import java.util.UUID;
+import name.neuhalfen.todosimple.domain.model.TaskId;
 
 /**
  * Content provider (http://developer.android.com/guide/topics/providers/content-providers.html) interface
@@ -36,7 +35,7 @@ public interface TodoContentProvider {
     }
 
     public static class Factory {
-        public static Uri forAggregateId(UUID aggregateId) {
+        public static Uri forAggregateId(TaskId aggregateId) {
             return Uri.withAppendedPath(CONTENT_URI, aggregateId.toString());
         }
 

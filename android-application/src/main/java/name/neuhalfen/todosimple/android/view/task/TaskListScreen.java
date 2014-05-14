@@ -12,11 +12,11 @@ import name.neuhalfen.todosimple.android.view.base.Main;
 import name.neuhalfen.todosimple.domain.application.TaskManagingApplication;
 import name.neuhalfen.todosimple.domain.model.Commands;
 import name.neuhalfen.todosimple.domain.model.CreateTaskCommand;
+import name.neuhalfen.todosimple.domain.model.TaskId;
 import rx.util.functions.Action0;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.UUID;
 
 @Layout(R.layout.task_list_view)
 public class TaskListScreen implements Blueprint {
@@ -87,7 +87,7 @@ public class TaskListScreen implements Blueprint {
         }
 
 
-        public void onTaskSelected(UUID taskID) {
+        public void onTaskSelected(TaskId taskID) {
             flow.goTo(DetailScreen.forExistingTask(taskID));
         }
     }
