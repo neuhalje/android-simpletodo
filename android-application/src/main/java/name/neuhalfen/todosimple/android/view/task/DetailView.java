@@ -41,7 +41,7 @@ public class DetailView extends LinearLayout {
      * Unmodified state from "creation"(or loading)
      */
     private DetailScreen.Presenter.TaskDTO originalState;
-    private final static DetailScreen.Presenter.TaskDTO NULL_STATE = new DetailScreen.Presenter.TaskDTO(null, -1, "", "");
+    private final static DetailScreen.Presenter.TaskDTO NULL_STATE = new DetailScreen.Presenter.TaskDTO(null, -1, "", "", DetailScreen.State.NEW);
 
 
     public DetailView(Context context, AttributeSet attrs) {

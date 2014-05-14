@@ -75,6 +75,11 @@ public class TaskListScreen implements Blueprint {
                             }
 
                         }
+                    })).withAction(new ActionBarOwner.MenuAction("New Task", new Action0() {
+                        @Override
+                        public void call() {
+                            flow.goTo(DetailScreen.forNewTask());
+                        }
                     }));
 
             actionBar.setConfig(actionBarConfig);
@@ -83,7 +88,7 @@ public class TaskListScreen implements Blueprint {
 
 
         public void onTaskSelected(UUID taskID) {
-            flow.goTo(new DetailScreen(taskID));
+            flow.goTo(DetailScreen.forExistingTask(taskID));
         }
     }
 }
