@@ -1,7 +1,6 @@
 package name.neuhalfen.todosimple.domain.application
 
-import name.neuhalfen.todosimple.domain.model.{Event, Command, Task}
-import java.util.UUID
+import name.neuhalfen.todosimple.domain.model.{TaskId, Event, Command, Task}
 import javax.inject.Inject
 import name.neuhalfen.todosimple.domain.infrastructure.{TransactionRollbackException, Transaction, EventPublisher, EventStore}
 import scala.collection.JavaConverters._
@@ -48,7 +47,7 @@ class TaskManagingApplication @Inject()(eventStore: EventStore, eventPublishing:
     }
   }
 
-  def loadTask(taskId: UUID): Option[Task] = {
+  def loadTask(taskId: TaskId): Option[Task] = {
     tx.beginTransaction()
     val events = eventStore.loadEvents(taskId)
     tx.commit()

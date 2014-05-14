@@ -11,9 +11,9 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 import flow.Parcer;
 import mortar.Mortar;
 import name.neuhalfen.todosimple.android.R;
+import name.neuhalfen.todosimple.domain.model.TaskId;
 
 import javax.inject.Inject;
-import java.util.UUID;
 
 import static name.neuhalfen.todosimple.helper.Preconditions.checkNotNull;
 import static name.neuhalfen.todosimple.helper.Preconditions.checkState;
@@ -102,7 +102,7 @@ public class DetailView extends LinearLayout {
         showVersion.setText(String.format("%d", version));
     }
 
-    private void setTaskId(UUID id) {
+    private void setTaskId(TaskId id) {
         checkNotNull(id, "id must not be null");
         showUUID.setText(id.toString());
     }
@@ -111,7 +111,7 @@ public class DetailView extends LinearLayout {
         show(editState != null ? editState : NULL_STATE);
     }
 
-    public  DetailScreen.Presenter.TaskDTO getEditState() {
+    public DetailScreen.Presenter.TaskDTO getEditState() {
         DetailScreen.Presenter.TaskDTO editState = originalState.withTitle(getEditedTitle()).withDescription(getEditedDescription());
         return editState;
     }
@@ -124,6 +124,7 @@ public class DetailView extends LinearLayout {
         show(this.originalState != null ? this.originalState : NULL_STATE);
 
     }
+
     /**
      *
      */

@@ -1,13 +1,12 @@
 package name.neuhalfen.todosimple.domain.infrastructure
 
-import java.util.UUID
-import name.neuhalfen.todosimple.domain.model.Event
+import name.neuhalfen.todosimple.domain.model.{TaskId, Event}
 import java.io.IOException
 
 trait EventStore {
   @throws(classOf[IOException])
-  def loadEvents(aggregateId: UUID): Option[Seq[Event]]
+  def loadEvents(aggregateId: TaskId): Option[Seq[Event]]
 
   @throws(classOf[IOException])
-  def appendEvents(aggregateId: UUID, events: Seq[Event]): Unit
+  def appendEvents(aggregateId: TaskId, events: Seq[Event]): Unit
 }

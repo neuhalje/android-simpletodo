@@ -16,9 +16,9 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 import mortar.Mortar;
 import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoContentProvider;
 import name.neuhalfen.todosimple.android.view.base.BaseActivity;
+import name.neuhalfen.todosimple.domain.model.TaskId;
 
 import javax.inject.Inject;
-import java.util.UUID;
 
 public class TaskListView
         extends ListView implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -53,7 +53,7 @@ public class TaskListView
                     return;
                 }
                 String aggregateId = cursor.getString(cursor.getColumnIndex(TodoContentProvider.TodoTable.COLUMN_AGGREGATE_ID));
-                presenter.onTaskSelected(UUID.fromString(aggregateId));
+                presenter.onTaskSelected(TaskId.fromString(aggregateId));
             }
         });
     }
