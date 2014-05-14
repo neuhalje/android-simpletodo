@@ -71,13 +71,11 @@ public class TodoContentProviderImpl extends ContentProvider implements TodoCont
                 break;
             case TODO_ID:
                 // adding the ID to the original query
-                // FIXME: SQL Injection
                 queryBuilder.appendWhere(TodoTable.COLUMN_ID + "="
-                        + uri.getLastPathSegment());
+                        + Integer.parseInt(uri.getLastPathSegment()));
                 break;
             case TODO_AGGREGATE_ID:
-                // FIXME: SQL Injection
-                queryBuilder.appendWhere(TodoTable.COLUMN_AGGREGATE_ID + "='"
+                queryBuilder.appendWhereEscapeString(TodoTable.COLUMN_AGGREGATE_ID + "='"
                         + uri.getLastPathSegment() + "'");
                 break;
             default:
