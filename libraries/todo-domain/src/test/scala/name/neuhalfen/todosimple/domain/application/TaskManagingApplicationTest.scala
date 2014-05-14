@@ -7,8 +7,8 @@ import com.google.inject.Inject
 import scala.annotation.meta.field
 
 class TaskManagingApplicationTest extends UnitSpec {
-  @(Inject @field)
-  var tasksApp : TaskManagingApplication = _
+  @(Inject@field)
+  var tasksApp: TaskManagingApplication = _
 
   "The task application service " should " return None for a non existing task" in {
     tasksApp.loadTask(UnitSpec.TASK_ID_NON_EXISTING) should be('empty)

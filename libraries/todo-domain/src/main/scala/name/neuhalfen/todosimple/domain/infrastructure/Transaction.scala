@@ -1,15 +1,15 @@
 package name.neuhalfen.todosimple.domain.infrastructure
 
 trait Transaction {
-  def beginTransaction() : Unit
+  def beginTransaction(): Unit
 
   @throws(classOf[TransactionRollbackException])
-  def commit() : Unit
+  def commit(): Unit
 
   /**
    * rollback of the TX in commit.
    */
-  def rollback() : Unit
+  def rollback(): Unit
 }
 
 class TransactionRollbackException extends Exception

@@ -17,7 +17,7 @@ trait AggregateRoot[AR <: AggregateRoot[AR, EVT], EVT] extends EventSourced[AR, 
 }
 
 trait AggregateFactory[AR <: AggregateRoot[AR, EVT], EVT] extends EventSourced[AR, EVT] {
-  def newInstance:  AR
+  def newInstance: AR
 
   def loadFromHistory(history: Iterable[EVT]): AR = {
     var aggregate = applyEvent(history.head)

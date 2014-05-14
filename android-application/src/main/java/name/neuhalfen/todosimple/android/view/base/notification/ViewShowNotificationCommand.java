@@ -16,28 +16,34 @@ public final class ViewShowNotificationCommand {
     public final Style style;
     public final int textRessourceId;
 
-    public static enum  Style {
-        /** Default style for alerting the user. */
+    public static enum Style {
+        /**
+         * Default style for alerting the user.
+         */
         ALERT,
-        /** Default style for confirming an action. */
-         CONFIRM,
-        /** Default style for general information. */
+        /**
+         * Default style for confirming an action.
+         */
+        CONFIRM,
+        /**
+         * Default style for general information.
+         */
         INFO
-        }
-
-    public static ViewShowNotificationCommand makeText( CharSequence text, Style style) {
-        checkNotNull(text,"text must not be null");
-        checkNotNull(style,"style must not be null");
-        return new ViewShowNotificationCommand( text, style);
     }
 
-    public static ViewShowNotificationCommand makeText( int textResourceId, Style style) {
-        checkNotNull(style,"style must not be null");
-        return  new ViewShowNotificationCommand(textResourceId, style);
+    public static ViewShowNotificationCommand makeText(CharSequence text, Style style) {
+        checkNotNull(text, "text must not be null");
+        checkNotNull(style, "style must not be null");
+        return new ViewShowNotificationCommand(text, style);
+    }
+
+    public static ViewShowNotificationCommand makeText(int textResourceId, Style style) {
+        checkNotNull(style, "style must not be null");
+        return new ViewShowNotificationCommand(textResourceId, style);
     }
 
     public boolean isFromTextResource() {
-        return null==text;
+        return null == text;
     }
 
     private ViewShowNotificationCommand(CharSequence text, Style style) {

@@ -66,6 +66,7 @@ class EventJsonSerializerImplTest
         then:
         thrown IllegalArgumentException
     }
+
     def "serializing null throws NPE"() {
         given:
         EventJsonSerializer sut = new EventJsonSerializerImpl();

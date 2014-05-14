@@ -52,7 +52,9 @@ public class TodoApplication
     public <T> T get(Class<? extends T> type) {
         return applicationGraph.get(type);
     }
-    @Override public Object getSystemService(String name) {
+
+    @Override
+    public Object getSystemService(String name) {
         if (Mortar.isScopeSystemService(name)) {
             return rootScope;
         }
