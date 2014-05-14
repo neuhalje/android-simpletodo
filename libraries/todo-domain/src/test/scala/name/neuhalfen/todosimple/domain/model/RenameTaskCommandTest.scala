@@ -33,7 +33,6 @@ class RenameTaskCommandTest extends UnitSpec with TaskTestTrait {
   "Renaming a task to the same description " should " not issue an event " in {
     val originalTask = loadExistingTask()
 
-    // TODO: This does not test the order of events
     val task = originalTask.handle(Commands.renameTask(originalTask, originalTask._description))
     assert(task.uncommittedEVTs.size == 0)
   }
