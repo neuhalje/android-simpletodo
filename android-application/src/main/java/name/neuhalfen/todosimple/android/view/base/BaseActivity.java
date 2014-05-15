@@ -34,6 +34,7 @@ import mortar.Mortar;
 import mortar.MortarActivityScope;
 import mortar.MortarScope;
 import mortar.MortarScopeDevHelper;
+import name.neuhalfen.todosimple.android.BuildConfig;
 import name.neuhalfen.todosimple.android.R;
 import name.neuhalfen.todosimple.android.di.ForApplication;
 import name.neuhalfen.todosimple.android.view.base.notification.ViewShowNotificationCommand;
@@ -146,14 +147,16 @@ public class BaseActivity extends Activity implements ActionBarOwner.View {
                         });
             }
         }
-        menu.add("Log Scope Hierarchy")
-                .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        Log.d("DemoActivity", MortarScopeDevHelper.scopeHierarchyToString(activityScope));
-                        return true;
-                    }
-                });
+        if (BuildConfig.DEBUG) {
+            menu.add("Log Scope Hierarchy")
+                    .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            Log.d("DemoActivity", MortarScopeDevHelper.scopeHierarchyToString(activityScope));
+                            return true;
+                        }
+                    });
+        }
         return true;
     }
 
