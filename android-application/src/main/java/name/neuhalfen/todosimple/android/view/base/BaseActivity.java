@@ -136,7 +136,7 @@ public class BaseActivity extends Activity implements ActionBarOwner.View {
     public boolean onCreateOptionsMenu(Menu menu) {
         if (actionBarMenuActions != null) {
             for (final ActionBarOwner.MenuAction actionBarMenuAction : actionBarMenuActions) {
-                menu.add(actionBarMenuAction.title)
+                final MenuItem menuItem = menu.add(actionBarMenuAction.title)
                         .setShowAsActionFlags(SHOW_AS_ACTION_ALWAYS)
                         .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                             @Override
@@ -145,6 +145,10 @@ public class BaseActivity extends Activity implements ActionBarOwner.View {
                                 return true;
                             }
                         });
+
+                if (actionBarMenuAction.hasIcon()) {
+                    menuItem.setIcon(actionBarMenuAction.icon);
+                }
             }
         }
         if (BuildConfig.DEBUG) {

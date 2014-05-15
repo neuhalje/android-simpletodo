@@ -68,6 +68,7 @@ public class Main implements Blueprint {
         public void showScreen(Blueprint newScreen, Flow.Direction direction) {
             boolean hasUp = newScreen instanceof HasParent;
             String title = newScreen.getClass().getSimpleName();
+            // FIXME
             ActionBarOwner.MenuAction menu =
                     hasUp ? null : new ActionBarOwner.MenuAction("Friends", new Action0() {
                         @Override

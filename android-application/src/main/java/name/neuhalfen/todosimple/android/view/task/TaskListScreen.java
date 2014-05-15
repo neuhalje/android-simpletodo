@@ -94,7 +94,7 @@ public class TaskListScreen implements Blueprint {
                         public void call() {
                             flow.goTo(DetailScreen.forNewTask());
                         }
-                    }));
+                    }, R.drawable.ic_action_add));
 
             actionBar.setConfig(actionBarConfig);
             view.showTasks();
