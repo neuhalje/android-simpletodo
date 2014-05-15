@@ -22,6 +22,10 @@ import mortar.MortarScope;
 import mortar.Presenter;
 import rx.util.functions.Action0;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Allows shared configuration of the Android ActionBar.
  */
@@ -33,7 +37,7 @@ public class ActionBarOwner extends Presenter<ActionBarOwner.View> {
 
         void setTitle(CharSequence title);
 
-        void setMenu(MenuAction action);
+        void setMenu(List<MenuAction> action);
 
         Context getMortarContext();
     }
@@ -42,22 +46,39 @@ public class ActionBarOwner extends Presenter<ActionBarOwner.View> {
         public final boolean showHomeEnabled;
         public final boolean upButtonEnabled;
         public final CharSequence title;
-        public final MenuAction action;
+        public final List<MenuAction> actions;
 
         public Config(boolean showHomeEnabled, boolean upButtonEnabled, CharSequence title,
                       MenuAction action) {
             this.showHomeEnabled = showHomeEnabled;
             this.upButtonEnabled = upButtonEnabled;
             this.title = title;
-            this.action = action;
+
+            List<MenuAction> firstItem = new ArrayList<MenuAction>();
+            firstItem.add(action);
+            this.actions = Collections.unmodifiableList(firstItem);
+        }
+
+        private Config(boolean showHomeEnabled, boolean upButtonEnabled, CharSequence title,
+                       List<MenuAction> actions) {
+            this.showHomeEnabled = showHomeEnabled;
+            this.upButtonEnabled = upButtonEnabled;
+            this.title = title;
+            this.actions = Collections.unmodifiableList(actions);
         }
 
         public Config withTitle(String title) {
-            return new Config(showHomeEnabled, upButtonEnabled, title, action);
+            return new Config(showHomeEnabled, upButtonEnabled, title, actions);
         }
 
         public Config withAction(MenuAction action) {
             return new Config(showHomeEnabled, upButtonEnabled, title, action);
+        }
+
+        public Config addAction(MenuAction action) {
+            List<MenuAction> newList = new ArrayList<MenuAction>(actions);
+            newList.add(action);
+            return new Config(showHomeEnabled, upButtonEnabled, title, newList);
         }
     }
 
@@ -103,6 +124,6 @@ public class ActionBarOwner extends Presenter<ActionBarOwner.View> {
         view.setShowHomeEnabled(config.showHomeEnabled);
         view.setUpButtonEnabled(config.upButtonEnabled);
         view.setTitle(config.title);
-        view.setMenu(config.action);
+        view.setMenu(config.actions);
     }
 }

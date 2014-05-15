@@ -42,6 +42,7 @@ import name.neuhalfen.todosimple.domain.model.TaskDeletedEvent;
 import name.neuhalfen.todosimple.domain.model.TaskRenamedEvent;
 
 import javax.inject.Inject;
+import java.util.List;
 
 import static android.content.Intent.ACTION_MAIN;
 import static android.content.Intent.CATEGORY_LAUNCHER;
@@ -53,7 +54,7 @@ public class BaseActivity extends Activity implements ActionBarOwner.View {
      */
     public static final String NAME_NEUHALFEN_LOADER_MANAGER = "name.neuhalfen.LoaderManager";
     private MortarActivityScope activityScope;
-    private ActionBarOwner.MenuAction actionBarMenuAction;
+    private List<ActionBarOwner.MenuAction> actionBarMenuActions;
 
     @Inject
     ActionBarOwner actionBarOwner;
@@ -132,16 +133,18 @@ public class BaseActivity extends Activity implements ActionBarOwner.View {
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (actionBarMenuAction != null) {
-            menu.add(actionBarMenuAction.title)
-                    .setShowAsActionFlags(SHOW_AS_ACTION_ALWAYS)
-                    .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem menuItem) {
-                            actionBarMenuAction.action.call();
-                            return true;
-                        }
-                    });
+        if (actionBarMenuActions != null) {
+            for (final ActionBarOwner.MenuAction actionBarMenuAction : actionBarMenuActions) {
+                menu.add(actionBarMenuAction.title)
+                        .setShowAsActionFlags(SHOW_AS_ACTION_ALWAYS)
+                        .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem menuItem) {
+                                actionBarMenuAction.action.call();
+                                return true;
+                            }
+                        });
+            }
         }
         menu.add("Log Scope Hierarchy")
                 .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -189,9 +192,9 @@ public class BaseActivity extends Activity implements ActionBarOwner.View {
     }
 
     @Override
-    public void setMenu(ActionBarOwner.MenuAction action) {
-        if (action != actionBarMenuAction) {
-            actionBarMenuAction = action;
+    public void setMenu(List<ActionBarOwner.MenuAction> action) {
+        if (action != actionBarMenuActions) {
+            actionBarMenuActions = action;
             invalidateOptionsMenu();
         }
     }

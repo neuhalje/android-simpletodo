@@ -197,7 +197,7 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
                             public void call() {
                                 saveTask();
                             }
-                        })).withAction(new ActionBarOwner.MenuAction("Delete", new Action0() {
+                        })).addAction(new ActionBarOwner.MenuAction("Delete", new Action0() {
                             @Override
                             public void call() {
                                 deleteTaskOrAbortCreate();
