@@ -6,8 +6,8 @@ import name.neuhalfen.todosimple.domain.model.TaskDeletedEvent
 import name.neuhalfen.todosimple.domain.model.TaskRenamedEvent
 import pl.polidea.robospock.RoboSpecification
 
-import static name.neuhalfen.todosimple.helper.TestConstants.uuid1
-import static name.neuhalfen.todosimple.helper.TestConstants.uuid2
+import static name.neuhalfen.todosimple.helper.TestConstants.eventId2
+import static name.neuhalfen.todosimple.helper.TestConstants.taskId1
 
 class EventJsonSerializerImplTest
         extends RoboSpecification {
@@ -16,7 +16,7 @@ class EventJsonSerializerImplTest
         given:
         EventJsonSerializer sut = new EventJsonSerializerImpl();
 
-        TaskRenamedEvent event = new TaskRenamedEvent(uuid1, uuid2, 1, 2, "my new description");
+        TaskRenamedEvent event = new TaskRenamedEvent(eventId2, taskId1, 1, 2, "my new description");
 
         when:
         String serializedEvent = sut.serializeEvent(event);
@@ -29,7 +29,7 @@ class EventJsonSerializerImplTest
     def "serializing and deserializing a TaskCreatedEvents returns an equal instance"() {
         given:
         EventJsonSerializer sut = new EventJsonSerializerImpl();
-        TaskCreatedEvent event = new TaskCreatedEvent(uuid1, uuid2, 0, 1, "my description");
+        TaskCreatedEvent event = new TaskCreatedEvent(eventId2, taskId1, 0, 1, "my description");
 
         when:
         String serializedEvent = sut.serializeEvent(event);
@@ -43,7 +43,7 @@ class EventJsonSerializerImplTest
         given:
         EventJsonSerializer sut = new EventJsonSerializerImpl();
 
-        Event event = new TaskDeletedEvent(uuid1, uuid2, 1, 2);
+        Event event = new TaskDeletedEvent(eventId2, taskId1, 1, 2);
 
         when:
         String serializedEvent = sut.serializeEvent(event);

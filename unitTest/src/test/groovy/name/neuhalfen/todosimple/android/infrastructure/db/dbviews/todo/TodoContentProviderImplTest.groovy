@@ -4,7 +4,7 @@ import android.content.UriMatcher
 import android.net.Uri
 import pl.polidea.robospock.RoboSpecification
 
-import static name.neuhalfen.todosimple.helper.TestConstants.uuid1
+import static name.neuhalfen.todosimple.helper.TestConstants.taskId1
 
 class TodoContentProviderImplTest
         extends RoboSpecification {
@@ -14,7 +14,7 @@ class TodoContentProviderImplTest
         UriMatcher sut = TodoContentProviderImpl.sURIMatcher;
 
         when:
-        Uri aggregateIdURI = TodoContentProvider.Factory.forAggregateId(uuid1);
+        Uri aggregateIdURI = TodoContentProvider.Factory.forAggregateId(taskId1);
 
         then:
         sut.match(aggregateIdURI) == TodoContentProviderImpl.TODO_AGGREGATE_ID
