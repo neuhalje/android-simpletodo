@@ -72,6 +72,15 @@
 -dontwarn com.google.common.collect.MinMaxPriorityQueue
 
 #############
+# RxJava
+# -----------
+
+# rxjava includes references to the test frameworks within their class files
+-dontwarn org.mockito.**
+-dontwarn org.junit.**
+-dontwarn org.robolectric.**
+
+#############
 # Scala
 # ------------
 
