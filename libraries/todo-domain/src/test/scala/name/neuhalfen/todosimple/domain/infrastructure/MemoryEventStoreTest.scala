@@ -3,14 +3,13 @@ package name.neuhalfen.todosimple.domain.infrastructure
 import name.neuhalfen.todosimple.test.UnitSpec
 import name.neuhalfen.todosimple.domain.model.{TaskRenamedEvent, TaskCreatedEvent}
 import name.neuhalfen.todosimple.domain.model.Event
-import java.util.UUID
 import name.neuhalfen.todosimple.domain.infrastructure.impl.MemoryEventStore
 
 class MemoryEventStoreTest extends UnitSpec {
 
   def newStore = new MemoryEventStore
 
-  val taskId: UUID = UnitSpec.TASK_ID_ONE
+  val taskId = UnitSpec.TASK_ID_ONE
 
 
   "Reading events for a non existing aggregate " should " return None " in {
