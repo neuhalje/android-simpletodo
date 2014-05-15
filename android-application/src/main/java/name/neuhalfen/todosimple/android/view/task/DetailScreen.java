@@ -197,12 +197,12 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
                             public void call() {
                                 saveTask();
                             }
-                        })).addAction(new ActionBarOwner.MenuAction("Delete", new Action0() {
+                        }, R.drawable.ic_action_save)).addAction(new ActionBarOwner.MenuAction("Delete", new Action0() {
                             @Override
                             public void call() {
                                 deleteTaskOrAbortCreate();
                             }
-                        }));
+                        }, R.drawable.ic_action_trash));
 
                 final TaskDTO taskDTO = loadOrCreateTaskDTO(cmd);
 
