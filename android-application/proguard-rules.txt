@@ -80,6 +80,14 @@
 -dontwarn org.junit.**
 -dontwarn org.robolectric.**
 
+## Maybe needed later?
+# We noticed some very obscure behavior in a recent internal beta where notifications were often not delivered to subscribers.
+# It turned out that this was due to state classes in OperationReplay being stripped out by ProGuard even though they were used, apparently.
+# https://groups.google.com/forum/#!msg/rxjava/_tRfKPeftIk/19zWreZk2rQJ
+#-keep class rx.operators.OperationReplay* {
+#    *;
+#}
+
 #############
 # Scala
 # ------------
