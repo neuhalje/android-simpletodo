@@ -317,7 +317,7 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
             if (!isEventRelatesToMyTask(event, originalState)) {
                 return;
             }
-            final TaskDTO newState = originalState.asSaved().withVersion(event.newAggregateRootVersion());
+            final TaskDTO newState = originalState.asSaved().withDescription(event.description()).withVersion(event.newAggregateRootVersion());
 
             view.setOriginalState(newState);
         }
