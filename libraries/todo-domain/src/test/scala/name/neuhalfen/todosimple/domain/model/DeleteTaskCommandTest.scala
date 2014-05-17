@@ -44,7 +44,7 @@ class DeleteTaskCommandTest extends UnitSpec with TaskTestTrait {
     var isFoundDeleted: Boolean = false
 
     for (evt <- task.uncommittedEVTs) evt match {
-      case TaskCreatedEvent(_, _, _, _, _) => isFoundCreated = true
+      case TaskCreatedEvent(_, _, _, _, _, _) => isFoundCreated = true
       case TaskDeletedEvent(_, _, _, _) => isFoundDeleted = true
       case _ => fail("Unexpected event")
     }
@@ -75,7 +75,7 @@ class DeleteTaskCommandTest extends UnitSpec with TaskTestTrait {
     val originalTask = loadExistingTask()
     val deletedTask = originalTask.handle(Commands.deleteTask(originalTask))
 
-    an[IllegalArgumentException] should be thrownBy deletedTask.handle(Commands.renameTask(deletedTask, "die!"))
+    an[IllegalArgumentException] should be thrownBy deletedTask.handle(Commands.renameTask(deletedTask, "die!", "die, die!"))
   }
 
 }

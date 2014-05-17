@@ -47,12 +47,6 @@ public class TaskListScreen implements Blueprint {
 
     @dagger.Module(injects = TaskListView.class, addsTo = Main.Module.class)
     static class Module {
-        /*
-        @Provides
-        List<String> provideConversations(Chats chats) {
-            return chats.getAll();
-        }
-        */
     }
 
     @Singleton
@@ -81,7 +75,7 @@ public class TaskListScreen implements Blueprint {
                         @Override
                         public void call() {
                             for (int i = 1; i < 500; i++) {
-                                CreateTaskCommand createTaskCommand = Commands.createTask(String.format("Todo #%0,10d", i));
+                                CreateTaskCommand createTaskCommand = Commands.createTask(String.format("Todo #%0,10d", i), "some random description");
                                 taskApp.executeCommand(createTaskCommand);
                                 TaskListView view = getView();
                                 if (view == null) return;

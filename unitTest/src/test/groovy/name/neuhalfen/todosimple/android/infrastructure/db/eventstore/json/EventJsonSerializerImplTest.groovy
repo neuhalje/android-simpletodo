@@ -30,7 +30,7 @@ class EventJsonSerializerImplTest
         given:
         EventJsonSerializer sut = new EventJsonSerializerImpl();
 
-        TaskRenamedEvent event = new TaskRenamedEvent(eventId2, taskId1, 1, 2, "my new description");
+        TaskRenamedEvent event = new TaskRenamedEvent(eventId2, taskId1, 1, 2, "my new title", "my new description");
 
         when:
         String serializedEvent = sut.serializeEvent(event);
@@ -43,7 +43,7 @@ class EventJsonSerializerImplTest
     def "serializing and deserializing a TaskCreatedEvents returns an equal instance"() {
         given:
         EventJsonSerializer sut = new EventJsonSerializerImpl();
-        TaskCreatedEvent event = new TaskCreatedEvent(eventId2, taskId1, 0, 1, "my description");
+        TaskCreatedEvent event = new TaskCreatedEvent(eventId2, taskId1, 0, 1, "my new title", "my description");
 
         when:
         String serializedEvent = sut.serializeEvent(event);

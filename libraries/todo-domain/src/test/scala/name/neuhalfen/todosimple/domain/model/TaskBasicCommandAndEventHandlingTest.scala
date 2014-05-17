@@ -35,7 +35,7 @@ class TaskBasicCommandAndEventHandlingTest extends UnitSpec with TaskTestTrait {
 
   "Running a command " should " return only a Events with the correct aggregate" in {
     var task = createUncommitedTaskViaCreateTaskCommand()
-    val tc = new RenameTaskCommand(COMMAND_ID_TWO, task.id, task.version, "change the description")
+    val tc = new RenameTaskCommand(COMMAND_ID_TWO, task.id, task.version, "change the title", "change the description")
     task = task.handle(tc)
     for (evt <- task.uncommittedEVTs) {
       assert(evt.aggregateRootId == task.id)
@@ -44,7 +44,7 @@ class TaskBasicCommandAndEventHandlingTest extends UnitSpec with TaskTestTrait {
 
   it should " return events with ascending versions " in {
     var task = createUncommitedTaskViaCreateTaskCommand()
-    val tc = new RenameTaskCommand(COMMAND_ID_TWO, task.id, task.version, "change the description")
+    val tc = new RenameTaskCommand(COMMAND_ID_TWO, task.id, task.version, "change the title", "change the description")
 
     var versionBeforeEvent = 0
 
@@ -60,7 +60,7 @@ class TaskBasicCommandAndEventHandlingTest extends UnitSpec with TaskTestTrait {
 
   it should "fail, if the version of the aggregate does not match the version in the command" in {
     val task = createUncommitedTaskViaCreateTaskCommand()
-    val tc = new RenameTaskCommand(COMMAND_ID_TWO, task.id, task.version + 1, "change the description")
+    val tc = new RenameTaskCommand(COMMAND_ID_TWO, task.id, task.version + 1, "change the title", "change the description")
     an[IllegalArgumentException] should be thrownBy task.handle(tc)
   }
 
@@ -68,7 +68,7 @@ class TaskBasicCommandAndEventHandlingTest extends UnitSpec with TaskTestTrait {
 
   it should "fail, if the the aggregate does not match the command" in {
     val task = createUncommitedTaskViaCreateTaskCommand()
-    val tc = new RenameTaskCommand(COMMAND_ID_TWO, TASK_ID_ZERO, task.version + 1, "change the description")
+    val tc = new RenameTaskCommand(COMMAND_ID_TWO, TASK_ID_ZERO, task.version + 1, "change the title", "change the description")
     an[IllegalArgumentException] should be thrownBy task.handle(tc)
   }
 

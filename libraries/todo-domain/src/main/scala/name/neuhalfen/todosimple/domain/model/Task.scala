@@ -21,21 +21,22 @@ object Task extends AggregateFactory[Task, Event] {
 
 
   override def applyEvent = {
-    case event: TaskCreatedEvent => Task(event.aggregateRootId, event.newAggregateRootVersion, event :: Nil, event.description, TaskState.CREATED)
+    case event: TaskCreatedEvent => Task(event.aggregateRootId, event.newAggregateRootVersion, event :: Nil, event.title, event.description, TaskState.CREATED)
     case event => unhandled(event)
   }
 
   def newTask(command: CreateTaskCommand): Task = {
-    applyEvent(new TaskCreatedEvent(EventId.generateId(), command.aggregateRootId, 0, 1, command.description))
+    applyEvent(new TaskCreatedEvent(EventId.generateId(), command.aggregateRootId, 0, 1, command.title, command.description))
   }
 
-  override def newInstance = new Task(null, 0, List[Event](), "", TaskState.NOT_CREATED)
+  override def newInstance = new Task(null, 0, List[Event](), "", "", TaskState.NOT_CREATED)
 }
 
 case class Task(
                  _aggregateId: TaskId,
                  _version: Int,
                  _uncommittedEvents: List[Event],
+                 _title: String,
                  _description: String,
                  state: TaskState
                  ) extends AggregateRoot[Task, Event] {
@@ -56,7 +57,7 @@ case class Task(
     requireCorrectAggregateVersion(command.aggregateRootVersion)
     requireState(TaskState.NOT_CREATED)
 
-    applyEvent(new TaskCreatedEvent(EventId.generateId(), command.aggregateRootId, 0, 1, command.description))
+    applyEvent(new TaskCreatedEvent(EventId.generateId(), command.aggregateRootId, 0, 1, command.title, command.description))
   }
 
   /**
@@ -81,10 +82,10 @@ case class Task(
     requireCorrectAggregateVersion(command.aggregateRootVersion)
     requireState(TaskState.CREATED)
 
-    if (_description.equals(command.newDescription)) {
+    if (_description.equals(command.newDescription) && _title.equals(command.newTitle)) {
       this
     } else {
-      applyEvent(new TaskRenamedEvent(EventId.generateId(), id, version, version + 1, command.newDescription))
+      applyEvent(new TaskRenamedEvent(EventId.generateId(), id, version, version + 1, command.newTitle, command.newDescription))
     }
   }
 
@@ -96,14 +97,14 @@ case class Task(
       require(event.originalAggregateRootVersion == version, s"wrong aggregate version ${event.originalAggregateRootVersion}, should be $version")
 
       event match {
-        case TaskCreatedEvent(_, aggregateRootId, _, newAggregateVersion, newDescription) =>
-          copy(aggregateRootId, newAggregateVersion, _uncommittedEvents :+ event, newDescription, TaskState.CREATED)
+        case TaskCreatedEvent(_, aggregateRootId, _, newAggregateVersion, newTitle, newDescription) =>
+          copy(aggregateRootId, newAggregateVersion, _uncommittedEvents :+ event, newTitle, newDescription, TaskState.CREATED)
 
-        case TaskRenamedEvent(_, _, _, newAggregateVersion, newDescription) =>
-          copy(id, newAggregateVersion, _uncommittedEvents :+ event, newDescription, state)
+        case TaskRenamedEvent(_, _, _, newAggregateVersion, newTitle, newDescription) =>
+          copy(id, newAggregateVersion, _uncommittedEvents :+ event, newTitle, newDescription, state)
 
         case TaskDeletedEvent(_, _, _, newAggregateVersion) =>
-          copy(id, newAggregateVersion, _uncommittedEvents :+ event, _description, TaskState.DELETED)
+          copy(id, newAggregateVersion, _uncommittedEvents :+ event, _title, _description, TaskState.DELETED)
       }
     }
   }
