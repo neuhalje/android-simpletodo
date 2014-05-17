@@ -6,11 +6,12 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.9.+'
+        classpath 'com.android.tools.build:gradle:0.9.2'
         classpath 'com.novoda:gradle-android-test-plugin:0.9.3-SNAPSHOT'
     }
 }
 
+apply plugin: 'java'
 apply plugin: 'groovy'
 apply plugin: 'idea'
 apply plugin: 'android-test'
@@ -28,4 +29,6 @@ dependencies {
     testCompile 'org.codehaus.groovy:groovy-all:1.8.+'
 }
 
-android.projectUnderTest ':android-application'
+android {
+    projectUnderTest ':android-application'
+}
