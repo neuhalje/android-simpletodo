@@ -72,7 +72,7 @@ public class TodoTableDatabaseViewManager implements DatabaseViewManager {
 
     private void handleTaskRenamedEvent(SQLiteToTransactionAdapter txAdapter, SQLiteDatabase db, ContentValues values, TaskRenamedEvent evt) {
         // FIXME: add title to event/domain
-        values.put(COLUMN_TITLE, evt.newDescription());
+        values.put(COLUMN_TITLE, evt.newTitle());
         values.put(COLUMN_DESCRIPTION, evt.newDescription());
 
         // does not work: http://code.google.com/p/android/issues/detail?id=56062
@@ -94,7 +94,7 @@ public class TodoTableDatabaseViewManager implements DatabaseViewManager {
     private void handleTaskCreatedEvent(Context context, SQLiteDatabase db, ContentValues values, TaskCreatedEvent evt) {
         // FIXME: add title to event/domain
         values.put(COLUMN_AGGREGATE_ID, evt.aggregateRootId().toString());
-        values.put(COLUMN_TITLE, evt.description());
+        values.put(COLUMN_TITLE, evt.title());
         values.put(COLUMN_DESCRIPTION, evt.description());
 
         long id = db.insert(TodoTableImpl.TABLE_TODOS, null, values);

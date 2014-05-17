@@ -73,6 +73,11 @@ public class EventJsonSerializerImpl implements EventJsonSerializer<Event> {
         protected static final String AGGREGATEID = "aggregate";
         protected static final String TYPE = "type";
 
+        protected static final String TITLE = "title";
+        protected static final String NEW_TITLE = "newTitle";
+        protected static final String DESCRIPTION = "description";
+        protected static final String NEW_DESCRIPTION = "newDescription";
+
         public abstract T parseEvent(JSONObject eventJson) throws JSONException;
 
         public void serializeEvent(JSONObject dest, T event) throws JSONException {
@@ -88,7 +93,6 @@ public class EventJsonSerializerImpl implements EventJsonSerializer<Event> {
     }
 
     private final static class TaskCreatedEventSerializer extends BaseEventSerializer<TaskCreatedEvent> {
-        protected static final String DESCRIPTION = "description";
 
         @Override
         public TaskCreatedEvent parseEvent(JSONObject eventJson) throws JSONException {
@@ -97,22 +101,24 @@ public class EventJsonSerializerImpl implements EventJsonSerializer<Event> {
             final int newAggregateVersion = eventJson.getInt(NEW_AGGREGATE_VERSION);
             final int originalAggregateVersion = eventJson.getInt(ORIGINAL_AGGREGATE_VERSION);
 
+            final String title = eventJson.getString(TITLE);
             final String description = eventJson.getString(DESCRIPTION);
 
-            return new TaskCreatedEvent(EventId.fromString(eventId), TaskId.fromString(aggregateId), originalAggregateVersion, newAggregateVersion, description);
+            return new TaskCreatedEvent(EventId.fromString(eventId), TaskId.fromString(aggregateId), originalAggregateVersion, newAggregateVersion, title, description);
         }
 
         public void serializeEvent(JSONObject dest, TaskCreatedEvent event) throws JSONException {
             super.serializeEvent(dest, event);
+            dest.put(TITLE, event.title());
             dest.put(DESCRIPTION, event.description());
         }
     }
 
     private final static class TaskRenamedEventSerializer extends BaseEventSerializer<TaskRenamedEvent> {
-        protected static final String NEW_DESCRIPTION = "newDescription";
 
         public void serializeEvent(JSONObject dest, TaskRenamedEvent event) throws JSONException {
             super.serializeEvent(dest, event);
+            dest.put(NEW_TITLE, event.newTitle());
             dest.put(NEW_DESCRIPTION, event.newDescription());
         }
 
@@ -123,9 +129,10 @@ public class EventJsonSerializerImpl implements EventJsonSerializer<Event> {
             final int newAggregateVersion = eventJson.getInt(NEW_AGGREGATE_VERSION);
             final int originalAggregateVersion = eventJson.getInt(ORIGINAL_AGGREGATE_VERSION);
 
+            final String newTitle = eventJson.getString(NEW_TITLE);
             final String newDescription = eventJson.getString(NEW_DESCRIPTION);
 
-            return new TaskRenamedEvent(EventId.fromString(eventId), TaskId.fromString(aggregateId), originalAggregateVersion, newAggregateVersion, newDescription);
+            return new TaskRenamedEvent(EventId.fromString(eventId), TaskId.fromString(aggregateId), originalAggregateVersion, newAggregateVersion, newTitle, newDescription);
         }
     }
 

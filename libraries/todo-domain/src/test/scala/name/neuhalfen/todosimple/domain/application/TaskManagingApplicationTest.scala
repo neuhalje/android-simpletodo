@@ -29,31 +29,33 @@ class TaskManagingApplicationTest extends UnitSpec {
   }
 
   it should " return the task for an existing task" in {
-    val createTaskCommand: CreateTaskCommand = Commands.createTask("task")
+    val createTaskCommand: CreateTaskCommand = Commands.createTask("task title", "task desc")
     tasksApp.executeCommand(createTaskCommand)
 
     tasksApp.loadTask(createTaskCommand.aggregateRootId) should be('defined)
   }
 
+
   it should " update a task " in {
 
-    val createTaskCommand: CreateTaskCommand = Commands.createTask("task")
+    val createTaskCommand: CreateTaskCommand = Commands.createTask("task title", "task desc")
     tasksApp.executeCommand(createTaskCommand)
 
-    val renameTaskCommand = Commands.renameTask(tasksApp.loadTask(createTaskCommand.aggregateRootId).get, "renamed task")
+    val renameTaskCommand = Commands.renameTask(tasksApp.loadTask(createTaskCommand.aggregateRootId).get, "renamed task:title", "renamed task:desc")
     tasksApp.executeCommand(renameTaskCommand)
 
     val t = tasksApp.loadTask(createTaskCommand.aggregateRootId).get
-    t._description should be("renamed task")
+    t._title should be("renamed task:title")
+    t._description should be("renamed task:desc")
     t.version should be(renameTaskCommand.aggregateRootVersion + 1)
   }
 
   it should "fail, when the command targets the wrong version" in {
 
-    val createTaskCommand: CreateTaskCommand = Commands.createTask("task")
+    val createTaskCommand: CreateTaskCommand = Commands.createTask("task title", "task desc")
     tasksApp.executeCommand(createTaskCommand)
 
-    val renameTaskCommandWithWrongVersion = RenameTaskCommand(UnitSpec.COMMAND_ID_TWO, createTaskCommand.aggregateRootId, 999, "renamed task")
+    val renameTaskCommandWithWrongVersion = RenameTaskCommand(UnitSpec.COMMAND_ID_TWO, createTaskCommand.aggregateRootId, 999, "renamed task", "xx")
     an[IllegalArgumentException] should be thrownBy tasksApp.executeCommand(renameTaskCommandWithWrongVersion)
   }
 }

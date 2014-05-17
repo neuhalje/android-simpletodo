@@ -24,12 +24,12 @@ sealed trait Event {
   override def toString: String = s"${getClass.getSimpleName}: ${id.toString}. Aggregate: ${aggregateRootId.toString} v$originalAggregateRootVersion->v$newAggregateRootVersion"
 }
 
-case class TaskCreatedEvent(id: EventId, aggregateRootId: TaskId, originalAggregateRootVersion: Int, newAggregateRootVersion: Int, description: String) extends Event {
-  override def toString: String = super.toString() + s", description: $description"
+case class TaskCreatedEvent(id: EventId, aggregateRootId: TaskId, originalAggregateRootVersion: Int, newAggregateRootVersion: Int, title: String, description: String) extends Event {
+  override def toString: String = super.toString() + s", title:'$title', description: '$description'"
 }
 
-case class TaskRenamedEvent(id: EventId, aggregateRootId: TaskId, originalAggregateRootVersion: Int, newAggregateRootVersion: Int, newDescription: String) extends Event {
-  override def toString: String = super.toString() + s", description: $newDescription"
+case class TaskRenamedEvent(id: EventId, aggregateRootId: TaskId, originalAggregateRootVersion: Int, newAggregateRootVersion: Int, newTitle: String, newDescription: String) extends Event {
+  override def toString: String = super.toString() + s",  newTitle: '$newTitle', newDescription: '$newDescription'"
 }
 
 case class TaskDeletedEvent(id: EventId, aggregateRootId: TaskId, originalAggregateRootVersion: Int, newAggregateRootVersion: Int) extends Event {

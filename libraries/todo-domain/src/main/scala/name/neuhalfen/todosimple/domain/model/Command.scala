@@ -25,19 +25,19 @@ sealed trait Command {
 
 
 object Commands {
-  def createTask(description: String) = CreateTaskCommand(CommandId.generateId(), TaskId.generateId(), description, 0)
+  def createTask(title: String, description: String) = CreateTaskCommand(CommandId.generateId(), TaskId.generateId(), title, description, 0)
 
-  def renameTask(task: Task, newDescription: String) = RenameTaskCommand(CommandId.generateId(), task.id, task.version, newDescription)
+  def renameTask(task: Task, newTitle: String, newDescription: String) = RenameTaskCommand(CommandId.generateId(), task.id, task.version, newTitle, newDescription)
 
   def deleteTask(task: Task) = DeleteTaskCommand(CommandId.generateId(), task.id, task.version)
 }
 
-case class CreateTaskCommand(id: CommandId, aggregateRootId: TaskId, description: String, aggregateRootVersion: Int = 0) extends Command {
-  override def toString: String = super.toString() + s", taskDesc: $description"
+case class CreateTaskCommand(id: CommandId, aggregateRootId: TaskId, title: String, description: String, aggregateRootVersion: Int = 0) extends Command {
+  override def toString: String = super.toString() + s", title: '$title', taskDesc: '$description'."
 }
 
-case class RenameTaskCommand(id: CommandId, aggregateRootId: TaskId, aggregateRootVersion: Int, newDescription: String) extends Command {
-  override def toString: String = super.toString() + s", taskDesc: $newDescription"
+case class RenameTaskCommand(id: CommandId, aggregateRootId: TaskId, aggregateRootVersion: Int, newTitle: String, newDescription: String) extends Command {
+  override def toString: String = super.toString() + s", newTitle: '$newTitle', newDesc: '$newDescription'"
 }
 
 case class DeleteTaskCommand(id: CommandId, aggregateRootId: TaskId, aggregateRootVersion: Int) extends Command {

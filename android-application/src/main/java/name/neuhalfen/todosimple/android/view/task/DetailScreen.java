@@ -169,12 +169,12 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
 
         TaskDTO loadOrCreateTaskDTO(Cmd cmd) {
             if (cmd.cmd == State.NEW) {
-                return new TaskDTO(TaskId.generateId(), 0, "new task title", "new task description", State.NEW);
+                return new TaskDTO(TaskId.generateId(), 0, "", "", State.NEW);
             } else {
                 final Option<Task> taskOption = taskApp.loadTask(cmd.taskId);
                 if (taskOption.isDefined()) {
                     final Task task = taskOption.get();
-                    return new TaskDTO(task._aggregateId(), task.version(), "TODO any title", task._description(), State.EXISTING);
+                    return new TaskDTO(task._aggregateId(), task.version(), task._title(), task._description(), State.EXISTING);
                 } else {
                     throw new IllegalStateException(String.format("Task %s not found", cmd.taskId.toString()));
                 }
@@ -251,10 +251,10 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
             final Command command;
             switch (editState.state) {
                 case EXISTING:
-                    command = new RenameTaskCommand(CommandId.generateId(), editState.id, editState.version, editState.description);
+                    command = new RenameTaskCommand(CommandId.generateId(), editState.id, editState.version, editState.title, editState.description);
                     break;
                 case NEW:
-                    command = new CreateTaskCommand(CommandId.generateId(), editState.id, editState.description, 0);
+                    command = new CreateTaskCommand(CommandId.generateId(), editState.id, editState.title, editState.description, 0);
                     break;
                 default:
                     throw new IllegalStateException(String.format("There should be no third state but it is '%s'", editState.state));
@@ -292,7 +292,10 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
             if (!isEventRelatesToMyTask(event, originalState)) {
                 return;
             }
-            final TaskDTO newState = originalState.withDescription(event.newDescription()).withVersion(event.newAggregateRootVersion());
+            final TaskDTO newState = originalState
+                    .withTitle(event.newTitle())
+                    .withDescription(event.newDescription())
+                    .withVersion(event.newAggregateRootVersion());
 
             view.setOriginalState(newState);
         }
@@ -317,7 +320,11 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
             if (!isEventRelatesToMyTask(event, originalState)) {
                 return;
             }
-            final TaskDTO newState = originalState.asSaved().withDescription(event.description()).withVersion(event.newAggregateRootVersion());
+            final TaskDTO newState = originalState
+                    .asSaved()
+                    .withDescription(event.description())
+                    .withTitle(event.title())
+                    .withVersion(event.newAggregateRootVersion());
 
             view.setOriginalState(newState);
         }

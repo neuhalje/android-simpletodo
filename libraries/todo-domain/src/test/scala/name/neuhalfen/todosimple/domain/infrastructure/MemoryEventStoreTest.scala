@@ -33,8 +33,8 @@ class MemoryEventStoreTest extends UnitSpec {
   "Writing events for a new aggregate " should " save them" in {
     val store = newStore
 
-    val taskCreatedEvent: TaskCreatedEvent = TaskCreatedEvent(UnitSpec.EVENT_ID_ONE, taskId, 0, 1, "new task")
-    val taskRenamedEvent: TaskRenamedEvent = TaskRenamedEvent(UnitSpec.EVENT_ID_ONE, taskId, 1, 2, "renamed task")
+    val taskCreatedEvent: TaskCreatedEvent = TaskCreatedEvent(UnitSpec.EVENT_ID_ONE, taskId, 0, 1, "new task title", "new task")
+    val taskRenamedEvent: TaskRenamedEvent = TaskRenamedEvent(UnitSpec.EVENT_ID_ONE, taskId, 1, 2, "renamed task title", "renamed task")
 
     val events: List[Event] = List(taskCreatedEvent, taskRenamedEvent)
     store.appendEvents(taskId, events)
@@ -48,8 +48,8 @@ class MemoryEventStoreTest extends UnitSpec {
   "Writing events for an existing aggregate " should " append them" in {
     val store = newStore
 
-    val taskCreatedEvent: TaskCreatedEvent = TaskCreatedEvent(UnitSpec.EVENT_ID_ONE, taskId, 0, 1, "new task")
-    val taskRenamedEvent: TaskRenamedEvent = TaskRenamedEvent(UnitSpec.EVENT_ID_ONE, taskId, 1, 2, "renamed task")
+    val taskCreatedEvent: TaskCreatedEvent = TaskCreatedEvent(UnitSpec.EVENT_ID_ONE, taskId, 0, 1, "new task title", "new task")
+    val taskRenamedEvent: TaskRenamedEvent = TaskRenamedEvent(UnitSpec.EVENT_ID_ONE, taskId, 1, 2, "renamed task title", "renamed task")
 
     store.appendEvents(taskId, List(taskCreatedEvent))
     store.appendEvents(taskId, List(taskRenamedEvent))
