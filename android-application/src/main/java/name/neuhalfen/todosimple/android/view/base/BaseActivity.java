@@ -256,21 +256,21 @@ public class BaseActivity extends Activity implements ActionBarOwner.View {
      * Event bus callback
      */
     public void onEventMainThread(TaskRenamedEvent event) {
-        Crouton.makeText(this, String.format("Task renamed to '%s", event.newDescription()), Style.INFO).show();
+        Crouton.makeText(this, String.format("Task '%s' renamed ", event.newTitle()), Style.INFO).show();
     }
 
     /**
      * Event bus callback
      */
     public void onEventMainThread(TaskCreatedEvent event) {
-        Crouton.makeText(this, String.format("Task created '%s", event.description()), Style.INFO).show();
+        Crouton.makeText(this, String.format("Task '%s' created ", event.title()), Style.INFO).show();
     }
 
     /**
      * Event bus callback
      */
     public void onEventMainThread(TaskDeletedEvent event) {
-        Crouton.makeText(this, String.format("Task deleted '%s", event.id()), Style.INFO).show();
+        Crouton.makeText(this, String.format("Task '%s' deleted", event.id()), Style.INFO).show();
     }
 }
 
