@@ -21,7 +21,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import edu.umd.cs.findbugs.annotations.CheckForNull;
 import flow.Parcer;
 import mortar.Mortar;
 import name.neuhalfen.todosimple.android.R;
@@ -51,11 +50,9 @@ public class DetailView extends LinearLayout {
     @InjectView(R.id.todo_detail_version)
     TextView showVersion;
 
-    /**
-     * Unmodified state from "creation"(or loading)
-     */
-    private DetailScreen.Presenter.TaskDTO originalState;
-    private final static DetailScreen.Presenter.TaskDTO NULL_STATE = new DetailScreen.Presenter.TaskDTO(null, -1, "", "", DetailScreen.State.NEW);
+    private TaskDTO.State taskStaus;
+
+    private int taskVersion;
 
 
     public DetailView(Context context, AttributeSet attrs) {
@@ -90,69 +87,48 @@ public class DetailView extends LinearLayout {
      *  Display logic
      */
 
-    private void setEditedTitle(String title) {
+    public void setEditedTitle(String title) {
         checkNotNull(title, "title must not be null");
         checkState(null != editTitle, "editTitle not injected");
         editTitle.setText(title);
     }
 
-    private String getEditedTitle() {
+    public String getEditedTitle() {
         checkState(null != editTitle, "editTitle not injected");
         return editTitle.getText().toString();
     }
 
-    private void setEditedDescription(String taskDescription) {
+    public void setEditedDescription(String taskDescription) {
         checkNotNull(taskDescription, "taskDescription must not be null");
         checkState(null != editDescription, "editDescription not injected");
         editDescription.setText(taskDescription);
     }
 
-    private String getEditedDescription() {
+    public String getEditedDescription() {
         checkState(null != editDescription, "editDescription not injected");
         return editDescription.getText().toString();
     }
 
-    private void setTaskVersion(int version) {
+    public void setTaskVersion(int version) {
         showVersion.setText(String.format("%d", version));
+        this.taskVersion = version;
     }
 
-    private void setTaskId(TaskId id) {
+    public int getTaskVersion() {
+        return taskVersion;
+    }
+
+    public void setTaskId(TaskId id) {
         checkNotNull(id, "id must not be null");
         showUUID.setText(id.toString());
     }
 
-    public void setEditState(@CheckForNull DetailScreen.Presenter.TaskDTO editState) {
-        show(editState != null ? editState : NULL_STATE);
+    public TaskDTO.State getTaskStaus() {
+        return taskStaus;
     }
 
-    public DetailScreen.Presenter.TaskDTO getEditState() {
-        DetailScreen.Presenter.TaskDTO editState = originalState.withTitle(getEditedTitle()).withDescription(getEditedDescription());
-        return editState;
-    }
-
-    /**
-     *
-     */
-    public void setOriginalState(@CheckForNull DetailScreen.Presenter.TaskDTO originalState) {
-        this.originalState = originalState;
-        show(this.originalState != null ? this.originalState : NULL_STATE);
-
-    }
-
-    /**
-     *
-     */
-    public DetailScreen.Presenter.TaskDTO getOriginalState() {
-        return originalState;
-    }
-
-    private void show(DetailScreen.Presenter.TaskDTO state) {
-        checkNotNull(state, "state must not be null");
-
-        setTaskId(state.id);
-        setEditedTitle(state.title);
-        setEditedDescription(state.description);
-        setTaskVersion(state.version);
+    public void setTaskStaus(TaskDTO.State taskStaus) {
+        this.taskStaus = taskStaus;
     }
 
 }
