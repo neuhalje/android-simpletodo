@@ -14,6 +14,7 @@ specific language governing permissions and limitations under the License.
  */
 package name.neuhalfen.todosimple.android.view.task;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import dagger.Provides;
 import de.greenrobot.event.EventBus;
@@ -204,11 +205,18 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
         }
 
         private void executeCommand(Command command) {
-            try {
-                taskApp.executeCommand(command);
-            } catch (Exception e) {
-                eventBus.post(ViewShowNotificationCommand.makeText(e.getLocalizedMessage(), ViewShowNotificationCommand.Style.ALERT));
-            }
+            new AsyncTask<Command, Void, Void>() {
+                @Override
+                protected Void doInBackground(Command... params) {
+                    Command command = params[0];
+                    try {
+                        taskApp.executeCommand(command);
+                    } catch (Exception e) {
+                        eventBus.post(ViewShowNotificationCommand.makeText(e.getLocalizedMessage(), ViewShowNotificationCommand.Style.ALERT));
+                    }
+                    return null;
+                }
+            }.doInBackground(command);
         }
 
         @Override
