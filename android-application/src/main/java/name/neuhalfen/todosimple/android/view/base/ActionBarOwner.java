@@ -92,9 +92,11 @@ public class ActionBarOwner extends Presenter<ActionBarOwner.View> {
             this.action = action;
             this.icon = icon;
         }
+
         public MenuAction(CharSequence title, Action0 action) {
             this(title, action, Integer.MAX_VALUE);
         }
+
         public boolean hasIcon() {
             return icon != Integer.MAX_VALUE;
         }
