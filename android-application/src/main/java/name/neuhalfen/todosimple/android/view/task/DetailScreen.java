@@ -21,7 +21,6 @@ import de.greenrobot.event.EventBus;
 import flow.Flow;
 import flow.HasParent;
 import flow.Layout;
-import flow.Parcer;
 import mortar.Blueprint;
 import mortar.ViewPresenter;
 import name.neuhalfen.todosimple.android.R;
@@ -111,7 +110,6 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
         private final TaskManagingApplication taskApp;
         private final TaskDTOAdapter taskDTOAdapter;
         private final ActionBarOwner actionBar;
-        private final Parcer<Object> parcer;
         private final EventBus eventBus;
         private final Flow flow;
 
@@ -119,11 +117,10 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
 
 
         @Inject
-        Presenter(@ForApplication TaskManagingApplication taskApp, TaskDTOAdapter taskDTOAdapter, @ForApplication EventBus eventBus, ActionBarOwner actionBar, Parcer<Object> parcer, Cmd cmd, Flow flow) {
+        Presenter(@ForApplication TaskManagingApplication taskApp, TaskDTOAdapter taskDTOAdapter, @ForApplication EventBus eventBus, ActionBarOwner actionBar, Cmd cmd, Flow flow) {
             this.taskApp = taskApp;
             this.taskDTOAdapter = taskDTOAdapter;
             this.actionBar = actionBar;
-            this.parcer = parcer;
             this.eventBus = eventBus;
             this.cmd = cmd;
             this.flow = flow;
@@ -170,6 +167,7 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
                 return;
             }
 
+
             switch (view.getTaskStaus()) {
                 case EXISTING:
                     Command command = new DeleteTaskCommand(CommandId.generateId(), cmd.taskId, view.getTaskVersion());
@@ -178,8 +176,12 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
                 case NEW:
                     // Ignore -- just close the editor
                     break;
+                case DELETED:
+                    // Ignore -- just close the editor
+                    break;
             }
 
+            view.setTaskStaus(TaskDTO.State.DELETED);
             flow.goBack();
         }
 
@@ -202,6 +204,9 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
                 case NEW:
                     command = new CreateTaskCommand(CommandId.generateId(), this.cmd.taskId, view.getEditedTitle(), view.getEditedDescription(), 0);
                     break;
+                case DELETED:
+                    // nothing to do.Probably a stray "save" from closing the view after saving
+                    return;
                 default:
                     throw new IllegalStateException(String.format("There should be no third state but it is '%s'", view.getTaskStaus()));
             }

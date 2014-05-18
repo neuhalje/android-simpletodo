@@ -3,7 +3,7 @@ package name.neuhalfen.todosimple.android.view.task;
 import name.neuhalfen.todosimple.domain.model.TaskId;
 
 class TaskDTO {
-    public static enum State {EXISTING, NEW}
+    public static enum State {EXISTING, NEW, DELETED}
 
     public final int version;
     public final TaskId id;
