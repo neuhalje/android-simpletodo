@@ -32,7 +32,6 @@ public class EventJsonSerializerImpl implements EventJsonSerializer<Event> {
     public EventJsonSerializerImpl() {
     }
 
-    ;
 
     @Inject
     DateTimeFormatter timestampFormatter;
