@@ -14,22 +14,33 @@ specific language governing permissions and limitations under the License.
  */
 package name.neuhalfen.todosimple.android.infrastructure.db.eventstore.json
 
+import name.neuhalfen.todosimple.android.di.Injector
 import name.neuhalfen.todosimple.domain.model.Event
 import name.neuhalfen.todosimple.domain.model.TaskCreatedEvent
 import name.neuhalfen.todosimple.domain.model.TaskDeletedEvent
 import name.neuhalfen.todosimple.domain.model.TaskRenamedEvent
+import org.robolectric.Robolectric
+import org.robolectric.annotation.Config
 import pl.polidea.robospock.RoboSpecification
 
 import static name.neuhalfen.todosimple.helper.TestConstants.*
 
+@Config(manifest = "../android-application//src/main/AndroidManifest.xml")
 class EventJsonSerializerImplTest
         extends RoboSpecification {
 
 
-    def "serializing and deserializing a TaskRenamedEvent returns an equal instance"() {
-        given:
-        EventJsonSerializer sut = new EventJsonSerializerImpl();
+    EventJsonSerializer sut;
 
+    def setup() {
+        def application = Robolectric.application
+        sut = ((Injector) application).get(EventJsonSerializerImpl.class);
+    }
+
+    def "serializing and deserializing a TaskRenamedEvent returns an equal instance"() {
+
+
+        given:
         TaskRenamedEvent event = new TaskRenamedEvent(eventId2, taskId1, 1, 2, TIME_BEFORE, "my new title", "my new description");
 
         when:
@@ -42,7 +53,6 @@ class EventJsonSerializerImplTest
 
     def "serializing and deserializing a TaskCreatedEvents returns an equal instance"() {
         given:
-        EventJsonSerializer sut = new EventJsonSerializerImpl();
         TaskCreatedEvent event = new TaskCreatedEvent(eventId2, taskId1, 0, 1, TIME_BEFORE, "my new title", "my description");
 
         when:
@@ -55,8 +65,6 @@ class EventJsonSerializerImplTest
 
     def "serializing and deserializing a TaskDeletedEvent returns an equal instance"() {
         given:
-        EventJsonSerializer sut = new EventJsonSerializerImpl();
-
         Event event = new TaskDeletedEvent(eventId2, taskId1, 1, 2, TIME_NOW);
 
         when:
@@ -70,8 +78,6 @@ class EventJsonSerializerImplTest
 
     def "serializing an unknown event fails"() {
         given:
-        EventJsonSerializer sut = new EventJsonSerializerImpl();
-
         Event event = Mock(Event)
 
         when:
@@ -83,8 +89,6 @@ class EventJsonSerializerImplTest
 
     def "serializing null throws NPE"() {
         given:
-        EventJsonSerializer sut = new EventJsonSerializerImpl();
-
 
         when:
         sut.serializeEvent(null);
@@ -95,8 +99,6 @@ class EventJsonSerializerImplTest
 
     def "deserializing null throws NPE"() {
         given:
-        EventJsonSerializer sut = new EventJsonSerializerImpl();
-
 
         when:
         sut.parseEvent(null);
