@@ -34,13 +34,15 @@ import name.neuhalfen.todosimple.android.view.base.GsonParcer;
 import name.neuhalfen.todosimple.domain.application.TaskManagingApplication;
 import name.neuhalfen.todosimple.domain.infrastructure.EventPublisher;
 import name.neuhalfen.todosimple.domain.infrastructure.EventStore;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 
 import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-@Module(library = true, complete = true, injects = {AndroidEventStore.class, TodoContentProviderImpl.class, AndroidEventPublisher.class, SQLiteToTransactionAdapter.class}, includes = EventBusModule.class)
+@Module(library = true, complete = true, injects = {AndroidEventStore.class, TodoContentProviderImpl.class, AndroidEventPublisher.class, SQLiteToTransactionAdapter.class, EventJsonSerializerImpl.class}, includes = EventBusModule.class)
 public class AndroidApplicationModule {
     private final TodoApplication application;
 
@@ -107,8 +109,9 @@ public class AndroidApplicationModule {
     }
 
     @Provides
+    @Singleton
     EventJsonSerializer provideEventJsonSerializer() {
-        return new EventJsonSerializerImpl();
+        return application.get(EventJsonSerializerImpl.class);
     }
 
     @Provides
@@ -131,6 +134,12 @@ public class AndroidApplicationModule {
         return new GsonParcer<Object>(gson);
     }
 
+
+    @Provides
+    @Singleton
+    DateTimeFormatter provideISOtimestampFormatter() {
+        return ISODateTimeFormat.basicDateTime();
+    }
 
     /*
     @Provides @Singleton LocationManager provideLocationManager() {

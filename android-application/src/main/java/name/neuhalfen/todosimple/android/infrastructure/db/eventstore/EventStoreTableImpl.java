@@ -36,13 +36,21 @@ public class EventStoreTableImpl {
          */
         public static final String COLUMN_AGGREGATE_VERSION = "version";
         /**
+         * String (Classname)
+         */
+        public static final String COLUMN_EVENT_TYPE = "event_type";
+        /**
+         * String (Date)
+         */
+        public static final String COLUMN_OCCURRED_AT = "occurded_at";
+        /**
          * String
          */
         public static final String COLUMN_EVENT = "event";
 
-        public static String[] ALL_COLUMNS = {COLUMN_AGGREGATE_ID, COLUMN_AGGREGATE_VERSION, COLUMN_EVENT, COLUMN_ID};
+        public static String[] ALL_COLUMNS = {COLUMN_AGGREGATE_ID, COLUMN_AGGREGATE_VERSION, COLUMN_EVENT, COLUMN_ID, COLUMN_EVENT_TYPE, COLUMN_OCCURRED_AT};
 
-        int TABLE_VERSION = 3;
+        int TABLE_VERSION = 4;
     }
 
     public static final String TABLE_EVENT = "event";
@@ -52,22 +60,28 @@ public class EventStoreTableImpl {
             + TABLE_EVENT + "(" + Table.COLUMN_ID
             + " integer primary key autoincrement, "
             + Table.COLUMN_AGGREGATE_ID + " text not null,"
+            + Table.COLUMN_EVENT_TYPE + " text not null,"
             + Table.COLUMN_AGGREGATE_VERSION + " not null,"
-            + Table.COLUMN_EVENT + " text not null"
+            + Table.COLUMN_EVENT + " text not null,"
+            + Table.COLUMN_OCCURRED_AT + " text not null"
             + ");";
 
     private static final String DATABASE_CREATE_INDEX = String.format("create unique index idx_agg_vers on %s(%s,%s); ", TABLE_EVENT, Table.COLUMN_AGGREGATE_ID, Table.COLUMN_AGGREGATE_VERSION);
 
 
-    public static void record(SQLiteDatabase db, TaskId aggregate, int newAggregateVersion, String event) throws SQLException {
+    public static void record(SQLiteDatabase db, TaskId aggregate, int newAggregateVersion, String occurredAt, String eventType, String event) throws SQLException {
         Preconditions.checkNotNull(aggregate, "aggregate must not be null");
         Preconditions.checkNotNull(db, "db must not be null");
         Preconditions.checkNotNull(event, "event must not be null");
+        Preconditions.checkNotNull(occurredAt, "occurredAt must not be null");
+        Preconditions.checkNotNull(eventType, "eventType must not be null");
 
         ContentValues values = new ContentValues();
         values.put(Table.COLUMN_AGGREGATE_ID, aggregate.toString());
         values.put(Table.COLUMN_AGGREGATE_VERSION, newAggregateVersion);
         values.put(Table.COLUMN_EVENT, event);
+        values.put(Table.COLUMN_EVENT_TYPE, eventType);
+        values.put(Table.COLUMN_OCCURRED_AT, occurredAt);
         db.insertOrThrow(TABLE_EVENT, null, values);
     }
 
@@ -82,7 +96,6 @@ public class EventStoreTableImpl {
     public static void onCreate(SQLiteDatabase database) {
         database.execSQL(DATABASE_CREATE_TABLE);
         database.execSQL(DATABASE_CREATE_INDEX);
-
     }
 
     public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

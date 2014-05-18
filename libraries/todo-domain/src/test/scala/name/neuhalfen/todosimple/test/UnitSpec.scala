@@ -18,6 +18,8 @@ import org.scalatest._
 import com.google.inject.Injector
 import name.neuhalfen.todosimple.test.di.ServiceInjector
 import name.neuhalfen.todosimple.domain.model.{EventId, CommandId, TaskId}
+import org.joda.time.DateTime
+import org.joda.time.format.ISODateTimeFormat
 
 
 object UnitSpec {
@@ -34,6 +36,11 @@ object UnitSpec {
 
   val EVENT_ID_ZERO = new EventId("00000000-eeee-0000-0000-000000000000")
   val EVENT_ID_ONE = new EventId("11111111-eeee-1111-1111-111111111111")
+
+
+  val TIME_NOW = DateTime.parse("20140517'T'165800Z", ISODateTimeFormat.basicDateTimeNoMillis())
+  val TIME_BEFORE = DateTime.parse("19990517'T'165800Z", ISODateTimeFormat.basicDateTimeNoMillis())
+  val TIME_AFTER = DateTime.parse("30140517'T'165800Z", ISODateTimeFormat.basicDateTimeNoMillis())
 }
 
 /**

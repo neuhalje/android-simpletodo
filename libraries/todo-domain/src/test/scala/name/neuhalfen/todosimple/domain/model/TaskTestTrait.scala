@@ -24,6 +24,6 @@ trait TaskTestTrait {
   }
 
   def loadExistingTask(): Task = {
-    Task.loadFromHistory(List(new TaskCreatedEvent(UnitSpec.EVENT_ID_ZERO, UnitSpec.TASK_ID_ONE, 0, 1, "loaded title", "loaded desc")))
+    Task.loadFromHistory(List(new TaskCreatedEvent(UnitSpec.EVENT_ID_ZERO, UnitSpec.TASK_ID_ONE, 0, 1, UnitSpec.TIME_BEFORE, "loaded title", "loaded desc")))
   }
 }

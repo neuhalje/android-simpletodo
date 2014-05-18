@@ -24,6 +24,7 @@ import name.neuhalfen.todosimple.domain.infrastructure.EventStore;
 import name.neuhalfen.todosimple.domain.model.Event;
 import name.neuhalfen.todosimple.domain.model.TaskId;
 import name.neuhalfen.todosimple.helper.Preconditions;
+import org.joda.time.format.DateTimeFormatter;
 import scala.Option;
 import scala.collection.Iterator;
 import scala.collection.Seq;
@@ -42,6 +43,9 @@ public class AndroidEventStore implements EventStore {
 
     @Inject
     EventJsonSerializer serializer;
+
+    @Inject
+    DateTimeFormatter timestampFormatter;
 
 
     @Override
@@ -80,7 +84,7 @@ public class AndroidEventStore implements EventStore {
                 Event event = eventIterator.next();
                 Log.d("EventStore", String.format("%s += %s ", aggregateId.toString(), event.toString()));
                 String eventJson = serializer.serializeEvent(event);
-                EventStoreTableImpl.record(db, aggregateId, event.newAggregateRootVersion(), eventJson);
+                EventStoreTableImpl.record(db, aggregateId, event.newAggregateRootVersion(), timestampFormatter.print(event.occurredAt()), event.getClass().getName(), eventJson);
             }
         } catch (SQLException e) {
             throw new IOException(e);

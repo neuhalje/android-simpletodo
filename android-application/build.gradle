@@ -64,6 +64,8 @@ dependencies {
     compile project.ext.shareddeps['dagger_rt']
     apt project.ext.shareddeps['dagger_apt']
 
+    compile project.ext.shareddeps['joda_time']
+
     compile project(':libraries:todo-domain')
     compile 'com.android.support:support-v4:19.1+'
 

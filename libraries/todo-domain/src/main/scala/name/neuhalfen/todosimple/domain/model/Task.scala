@@ -15,6 +15,7 @@ specific language governing permissions and limitations under the License.
 package name.neuhalfen.todosimple.domain.model
 
 import name.neuhalfen.todosimple.domain.model.TaskState.TaskState
+import org.joda.time.DateTime
 
 
 object Task extends AggregateFactory[Task, Event] {
@@ -26,7 +27,7 @@ object Task extends AggregateFactory[Task, Event] {
   }
 
   def newTask(command: CreateTaskCommand): Task = {
-    applyEvent(new TaskCreatedEvent(EventId.generateId(), command.aggregateRootId, 0, 1, command.title, command.description))
+    applyEvent(new TaskCreatedEvent(EventId.generateId(), command.aggregateRootId, 0, 1, DateTime.now(), command.title, command.description))
   }
 
   override def newInstance = new Task(null, 0, List[Event](), "", "", TaskState.NOT_CREATED)
@@ -57,7 +58,7 @@ case class Task(
     requireCorrectAggregateVersion(command.aggregateRootVersion)
     requireState(TaskState.NOT_CREATED)
 
-    applyEvent(new TaskCreatedEvent(EventId.generateId(), command.aggregateRootId, 0, 1, command.title, command.description))
+    applyEvent(new TaskCreatedEvent(EventId.generateId(), command.aggregateRootId, 0, 1, DateTime.now(), command.title, command.description))
   }
 
   /**
@@ -73,7 +74,7 @@ case class Task(
       this
     } else {
       requireState(TaskState.CREATED)
-      applyEvent(new TaskDeletedEvent(EventId.generateId(), id, version, version + 1))
+      applyEvent(new TaskDeletedEvent(EventId.generateId(), id, version, version + 1, DateTime.now()))
     }
   }
 
@@ -85,7 +86,7 @@ case class Task(
     if (_description.equals(command.newDescription) && _title.equals(command.newTitle)) {
       this
     } else {
-      applyEvent(new TaskRenamedEvent(EventId.generateId(), id, version, version + 1, command.newTitle, command.newDescription))
+      applyEvent(new TaskRenamedEvent(EventId.generateId(), id, version, version + 1, DateTime.now(), command.newTitle, command.newDescription))
     }
   }
 
@@ -97,13 +98,13 @@ case class Task(
       require(event.originalAggregateRootVersion == version, s"wrong aggregate version ${event.originalAggregateRootVersion}, should be $version")
 
       event match {
-        case TaskCreatedEvent(_, aggregateRootId, _, newAggregateVersion, newTitle, newDescription) =>
+        case TaskCreatedEvent(_, aggregateRootId, _, newAggregateVersion, _, newTitle, newDescription) =>
           copy(aggregateRootId, newAggregateVersion, _uncommittedEvents :+ event, newTitle, newDescription, TaskState.CREATED)
 
-        case TaskRenamedEvent(_, _, _, newAggregateVersion, newTitle, newDescription) =>
+        case TaskRenamedEvent(_, _, _, newAggregateVersion, _, newTitle, newDescription) =>
           copy(id, newAggregateVersion, _uncommittedEvents :+ event, newTitle, newDescription, state)
 
-        case TaskDeletedEvent(_, _, _, newAggregateVersion) =>
+        case TaskDeletedEvent(_, _, _, newAggregateVersion, _) =>
           copy(id, newAggregateVersion, _uncommittedEvents :+ event, _title, _description, TaskState.DELETED)
       }
     }
