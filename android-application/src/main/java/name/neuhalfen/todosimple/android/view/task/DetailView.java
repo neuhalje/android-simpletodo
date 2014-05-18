@@ -53,6 +53,7 @@ public class DetailView extends LinearLayout {
     private TaskDTO.State taskStaus;
 
     private int taskVersion;
+    private TaskId taskId;
 
 
     public DetailView(Context context, AttributeSet attrs) {
@@ -79,6 +80,7 @@ public class DetailView extends LinearLayout {
         if (isInEditMode()) { // IDEA Editor
             return;
         }
+        presenter.onCloseView();
         ButterKnife.reset(this);
         presenter.dropView(this);
     }
@@ -120,7 +122,13 @@ public class DetailView extends LinearLayout {
 
     public void setTaskId(TaskId id) {
         checkNotNull(id, "id must not be null");
+        this.taskId = id;
         showUUID.setText(id.toString());
+    }
+
+
+    public TaskId getTaskId() {
+        return taskId;
     }
 
     public TaskDTO.State getTaskStaus() {

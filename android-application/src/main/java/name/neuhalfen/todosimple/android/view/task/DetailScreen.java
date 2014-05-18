@@ -183,6 +183,10 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
             flow.goBack();
         }
 
+        public void onCloseView() {
+            saveTask();
+        }
+
         private void saveTask() {
             DetailView view = getView();
             if (null == view) {
@@ -204,11 +208,11 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
             executeCommand(command);
         }
 
-        private void executeCommand(Command command) {
+        private void executeCommand(final Command command) {
             new AsyncTask<Command, Void, Void>() {
                 @Override
-                protected Void doInBackground(Command... params) {
-                    Command command = params[0];
+                protected Void doInBackground(final Command... params) {
+                    final Command command = params[0];
                     try {
                         taskApp.executeCommand(command);
                     } catch (Exception e) {
@@ -234,6 +238,10 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
                 return;
             }
 
+            if (!isMyAggregate(event)) {
+                return;
+            }
+
             view.setEditedDescription(event.newDescription());
             view.setEditedTitle(event.newTitle());
             view.setTaskVersion(event.newAggregateRootVersion());
@@ -247,10 +255,20 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
             if (null == view) {
                 return;
             }
+
+            if (!isMyAggregate(event)) {
+                return;
+            }
+
+
             view.setEditedDescription(event.description());
             view.setEditedTitle(event.title());
             view.setTaskVersion(event.newAggregateRootVersion());
             view.setTaskStaus(TaskDTO.State.EXISTING);
+        }
+
+        private boolean isMyAggregate(Event event) {
+            return cmd.taskId.equals(event.aggregateRootId());
         }
 
     }
