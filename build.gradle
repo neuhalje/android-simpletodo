@@ -16,7 +16,8 @@ allprojects {
     project.ext.shareddeps = [
             eventbus  : ['de.greenrobot:eventbus:2.2.0+'],
             dagger_rt : ["com.squareup.dagger:dagger:${daggerVersion}"],
-            dagger_apt: ["com.squareup.dagger:dagger-compiler:${daggerVersion}"]
+            dagger_apt: ["com.squareup.dagger:dagger-compiler:${daggerVersion}"],
+            joda_time: ['joda-time:joda-time:2.3', 'org.joda:joda-convert:1.4' /*Stick to 1.4 bc 1.5 and above give proguard errors*/]
     ]
 
 }
