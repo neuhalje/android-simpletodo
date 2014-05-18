@@ -24,7 +24,7 @@ class CreateTaskCommandTest extends UnitSpec with TaskTestTrait {
     assert(task.uncommittedEVTs.size == 1)
 
     for (evt <- task.uncommittedEVTs) evt match {
-      case TaskCreatedEvent(eventId, aggregateRootId, oldAggregateVersion, newAggregateVersion, newTitle, newDescription) =>
+      case TaskCreatedEvent(eventId, aggregateRootId, oldAggregateVersion, newAggregateVersion, _, newTitle, newDescription) =>
         assert(newTitle == "fresh title")
         assert(newDescription == "fresh desc")
       case _ => fail("Unexpected event")

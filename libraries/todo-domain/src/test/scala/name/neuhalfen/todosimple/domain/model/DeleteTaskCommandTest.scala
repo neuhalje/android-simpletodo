@@ -24,14 +24,14 @@ class DeleteTaskCommandTest extends UnitSpec with TaskTestTrait {
     val task = originalTask.handle(Commands.deleteTask(originalTask))
     assert(task.uncommittedEVTs.size == 1)
 
-    var isFound: Boolean = false
+    var isFoundDeleted: Boolean = false
 
     for (evt <- task.uncommittedEVTs) evt match {
-      case TaskDeletedEvent(_, _, _, _) => isFound = true
+      case ev if ev.getClass == classOf[TaskDeletedEvent] => isFoundDeleted = true
       case _ => fail("Unexpected event")
     }
 
-    assert(isFound)
+    assert(isFoundDeleted)
   }
 
   "deleting a freshly created task " should " returns (only) a created, and a deleted event" in {
@@ -44,12 +44,12 @@ class DeleteTaskCommandTest extends UnitSpec with TaskTestTrait {
     var isFoundDeleted: Boolean = false
 
     for (evt <- task.uncommittedEVTs) evt match {
-      case TaskCreatedEvent(_, _, _, _, _, _) => isFoundCreated = true
-      case TaskDeletedEvent(_, _, _, _) => isFoundDeleted = true
+      case ev if ev.getClass == classOf[TaskCreatedEvent] => isFoundCreated = true
+      case ev if ev.getClass == classOf[TaskDeletedEvent] => isFoundDeleted = true
       case _ => fail("Unexpected event")
     }
     assert(isFoundCreated, "Task created event should be found")
-    assert(isFoundDeleted, "Task deletd event should be found")
+    assert(isFoundDeleted, "Task deleted event should be found")
   }
 
   "Deleting a deleted task " should " be idempotent " in {
@@ -69,6 +69,7 @@ class DeleteTaskCommandTest extends UnitSpec with TaskTestTrait {
 
     val deletedTask = originalTask.handle(Commands.deleteTask(originalTask))
     assert(deletedTask.state == TaskState.DELETED)
+    assert(false)
   }
 
   "Renaming a deleted task " should " fail " in {

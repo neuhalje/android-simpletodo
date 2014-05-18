@@ -25,7 +25,7 @@ class RenameTaskCommandTest extends UnitSpec with TaskTestTrait {
     assert(task.uncommittedEVTs.size == 1)
 
     for (evt <- task.uncommittedEVTs) evt match {
-      case TaskRenamedEvent(eventId, aggregateRootId, oldAggregateVersion, newAggregateVersion, newTitle, newDescription) => assert(newDescription == "new description")
+      case TaskRenamedEvent(eventId, aggregateRootId, oldAggregateVersion, newAggregateVersion, _, newTitle, newDescription) => assert(newDescription == "new description")
       case _ => fail("Unexpected event")
     }
   }
@@ -38,7 +38,7 @@ class RenameTaskCommandTest extends UnitSpec with TaskTestTrait {
     assert(task.uncommittedEVTs.size == 1)
 
     for (evt <- task.uncommittedEVTs) evt match {
-      case TaskRenamedEvent(eventId, aggregateRootId, oldAggregateVersion, newAggregateVersion, newTitle, newDescription) =>
+      case TaskRenamedEvent(eventId, aggregateRootId, oldAggregateVersion, newAggregateVersion, _, newTitle, newDescription) =>
         assert(newTitle == "new title")
         assert(newDescription == originalDescription)
       case _ => fail("Unexpected event")
@@ -53,8 +53,8 @@ class RenameTaskCommandTest extends UnitSpec with TaskTestTrait {
 
     assert(task.uncommittedEVTs.size == 2)
     for (evt <- task.uncommittedEVTs) evt match {
-      case TaskCreatedEvent(eventId, aggregateRootId, oldAggregateVersion, newAggregateVersion, newTitle, newDescription) => assert(newDescription == "fresh desc")
-      case TaskRenamedEvent(eventId, aggregateRootId, oldAggregateVersion, newAggregateVersion, newTitle, newDescription) => assert(newDescription == "new description")
+      case TaskCreatedEvent(eventId, aggregateRootId, oldAggregateVersion, newAggregateVersion, newTitle, _, newDescription) => assert(newDescription == "fresh desc")
+      case TaskRenamedEvent(eventId, aggregateRootId, oldAggregateVersion, newAggregateVersion, newTitle, _, newDescription) => assert(newDescription == "new description")
       case _ => fail("Unexpected event")
     }
   }
