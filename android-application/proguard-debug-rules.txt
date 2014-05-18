@@ -1,0 +1,4 @@
+# Proguard rules that are only used in debug builds.
+
+-keep class name.neuhalfen.*
+-dontobfuscate

@@ -39,6 +39,11 @@ android {
             runProguard true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
+        debug {
+            runProguard true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-debug-rules.txt', 'proguard-rules.txt'
+            zipAlign true
+        }
     }
     productFlavors {
     }
@@ -47,6 +52,9 @@ android {
     }
     packagingOptions {
         exclude 'META-INF/services/javax.annotation.processing.Processor'
+        // JODA
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
     }
 }
 
