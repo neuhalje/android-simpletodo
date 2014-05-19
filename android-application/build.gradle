@@ -59,7 +59,7 @@ android {
 }
 
 dependencies {
-    def butterknifeVersion = "5.0.0+"
+    def butterknifeVersion = "5.0.1+"
 
     compile project.ext.shareddeps['dagger_rt']
     apt project.ext.shareddeps['dagger_apt']
