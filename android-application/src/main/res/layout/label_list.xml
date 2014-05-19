@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/label_list_assigned_labels"
+        android:layout_marginRight="@dimen/margin_medium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <!--
+    <Button style="@style/labelButtonView" android:text="button a" />
+        <Button style="@style/labelButtonView" android:text="button B" />
+        -->
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/label_list_add_label"
+        style="@style/labelButtonView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="(add)" />
+</LinearLayout>

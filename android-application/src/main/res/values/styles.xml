@@ -5,4 +5,17 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="labelButtonView" parent="@android:style/Widget.Button">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:background">#ff2f46ff</item>
+        <item name="android:padding">2dp</item>
+        <item name="android:layout_marginRight">@dimen/margin_small</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:clickable">true</item>
+
+        <item name="android:minHeight">32dip</item>
+        <item name="android:minWidth">64dip</item>
+    </style>
+
 </resources>

@@ -24,6 +24,7 @@ import butterknife.InjectView;
 import flow.Parcer;
 import mortar.Mortar;
 import name.neuhalfen.todosimple.android.R;
+import name.neuhalfen.todosimple.android.view.label.LabelListView;
 import name.neuhalfen.todosimple.domain.model.TaskId;
 
 import javax.inject.Inject;
@@ -49,6 +50,9 @@ public class DetailView extends LinearLayout {
 
     @InjectView(R.id.todo_detail_version)
     TextView showVersion;
+
+    @InjectView(R.id.todo_detail_labels)
+    LabelListView labels;
 
     private TaskDTO.State taskStaus;
 
