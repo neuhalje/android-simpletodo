@@ -46,7 +46,6 @@
         android:id="@+id/todo_detail_labels"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         label:borderWidth="1dp"
         label:borderColor="#180CFF"
         label:textColor="#ff01002f"

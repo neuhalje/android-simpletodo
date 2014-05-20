@@ -2,17 +2,14 @@ package name.neuhalfen.todosimple.android.view.label;
 
 import android.os.Bundle;
 import android.util.Log;
-import flow.Layout;
 import mortar.Blueprint;
 import mortar.ViewPresenter;
-import name.neuhalfen.todosimple.android.R;
 import name.neuhalfen.todosimple.android.view.base.Main;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.*;
 
-@Layout(R.layout.label_list)
 public class LabelListControl implements Blueprint {
 
     @Override
