@@ -27,7 +27,7 @@ import java.util.*;
 
 public class LabelListView extends LinearLayout {
     @InjectView(R.id.label_list_add_label)
-    Button addLabel;
+    Button addLabelButton;
 
     @InjectView(R.id.label_list_assigned_labels)
     LinearLayout assignedLabelViews;
@@ -52,11 +52,12 @@ public class LabelListView extends LinearLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        addLabel = (Button) findViewById(R.id.label_list_add_label);
+        addLabelButton = (Button) findViewById(R.id.label_list_add_label);
         assignedLabelViews = (LinearLayout) findViewById(R.id.label_list_assigned_labels);
         // ButterKnife.inject(this);
 
         if (isInEditMode()) { // IDEA Editor
+            // Add some demo data in the IDE editor
             UUID id = UUID.randomUUID();
             addLabel(new LabelDTO(id, "Demo label!"));
 
@@ -67,7 +68,7 @@ public class LabelListView extends LinearLayout {
             addLabel(new LabelDTO(id, "another one"));
             return;
         }
-        addLabel.setOnClickListener(new OnClickListener() {
+        addLabelButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 final UUID id = UUID.randomUUID();
@@ -84,7 +85,7 @@ public class LabelListView extends LinearLayout {
             // return;
         }
         //ButterKnife.reset(this);
-        addLabel = null;
+        addLabelButton = null;
         assignedLabelViews = null;
     }
 
@@ -120,7 +121,7 @@ public class LabelListView extends LinearLayout {
     private void addLabelView(LabelDTO label) {
 
         LayoutInflater li = LayoutInflater.from(getContext());
-        Button tv = (Button) li.inflate(R.layout.label_button_view, null);
+        Button tv = (Button) li.inflate(R.layout.label_button_view, assignedLabelViews, false);
         tv.setText(label.name);
         tv.setTag(label);
 

@@ -44,10 +44,7 @@
     <name.neuhalfen.todosimple.android.view.label.LabelListView
         android:id="@+id/todo_detail_labels"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:baselineAligned="false"
-        android:measureWithLargestChild="false"
-        android:paddingStart="8dp" />
+        android:layout_height="wrap_content" />
 
     <LinearLayout
         android:layout_width="fill_parent"
