@@ -16,23 +16,26 @@ package name.neuhalfen.todosimple.android.view.label;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import butterknife.InjectView;
 import name.neuhalfen.todosimple.android.R;
 
 import java.util.*;
 
 public class LabelListView extends LinearLayout {
-    @InjectView(R.id.label_list_add_label)
-    Button addLabelButton;
 
     @InjectView(R.id.label_list_assigned_labels)
     LinearLayout assignedLabelViews;
 
     private Map<UUID, LabelDTO> assignedLabels;
+
+
+    private SortedSet<Button> allLabelViews;
 
     public LabelListView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -52,8 +55,18 @@ public class LabelListView extends LinearLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        addLabelButton = (Button) findViewById(R.id.label_list_add_label);
         assignedLabelViews = (LinearLayout) findViewById(R.id.label_list_assigned_labels);
+
+
+        allLabelViews = new TreeSet<Button>(new Comparator<Button>() {
+            @Override
+            public int compare(Button lhs, Button rhs) {
+                LabelDTO ldto = (LabelDTO) lhs.getTag();
+                LabelDTO rdto = (LabelDTO) rhs.getTag();
+                return ldto.name.compareTo(rdto.name);
+            }
+        });
+
         // ButterKnife.inject(this);
 
         if (isInEditMode()) { // IDEA Editor
@@ -68,14 +81,6 @@ public class LabelListView extends LinearLayout {
             addLabel(new LabelDTO(id, "another one"));
             return;
         }
-        addLabelButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final UUID id = UUID.randomUUID();
-                addLabel(new LabelDTO(id, id.toString()));
-
-            }
-        });
     }
 
     @Override
@@ -85,8 +90,8 @@ public class LabelListView extends LinearLayout {
             // return;
         }
         //ButterKnife.reset(this);
-        addLabelButton = null;
         assignedLabelViews = null;
+        allLabelViews = null;
     }
 
 
@@ -94,7 +99,7 @@ public class LabelListView extends LinearLayout {
         return Collections.unmodifiableSet(new HashSet<LabelDTO>(assignedLabels.values()));
     }
 
-    protected void addLabel(LabelDTO label) {
+    public void addLabel(LabelDTO label) {
         if (assignedLabels.containsKey(label.id)) {
             return;
         }
@@ -114,8 +119,17 @@ public class LabelListView extends LinearLayout {
     }
 
     private void removeLabelView(LabelDTO label) {
-        final View view = assignedLabelViews.findViewWithTag(label);
-        assignedLabelViews.removeView(view);
+        //final View view = assignedLabelViews.findViewWithTag(label);
+        //assignedLabelViews.removeView(view);
+        // FIXME: Hacksih at its worst
+        Button tobeRemoved = null;
+        for (Button b : allLabelViews) {
+            if (b.getTag() == label) {
+                tobeRemoved = b;
+            }
+        }
+        allLabelViews.remove(tobeRemoved);
+        populateViews(assignedLabelViews, allLabelViews, getContext());
     }
 
     private void addLabelView(LabelDTO label) {
@@ -132,7 +146,10 @@ public class LabelListView extends LinearLayout {
                 removeLabel(label);
             }
         });
-        assignedLabelViews.addView(tv);
+        //assignedLabelViews.addView(tv);
+        allLabelViews.add(tv);
+
+        populateViews(assignedLabelViews, allLabelViews, getContext());
     }
 
 
@@ -143,4 +160,68 @@ public class LabelListView extends LinearLayout {
         }
     }
 
+
+    /**
+     * Copyright 2011 Sherif
+     * Updated by Karim Varela to handle LinearLayouts with other views on either side.
+     *
+     * @param linearLayout
+     * @param views        : The views to wrap within LinearLayout
+     * @param context
+     * @author Karim Varela
+     */
+    private void populateViews(LinearLayout linearLayout, SortedSet<Button> views, Context context) {
+
+        // FIXME HACK: remove all children from the parent
+        for (View view : views) {
+            if (view.getParent() != null) {
+                if (view.getParent() instanceof LinearLayout) {
+                    ((LinearLayout) view.getParent()).removeView(view);
+                }
+            }
+        }
+        // this alone does not help
+        linearLayout.removeAllViews();
+
+        int maxWidth = this.getMeasuredWidth() - getResources().getDimensionPixelSize(R.dimen.margin_small);
+
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+
+        LinearLayout.LayoutParams params;
+        LinearLayout newLL = new LinearLayout(context);
+        newLL.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+        newLL.setGravity(Gravity.LEFT);
+        newLL.setOrientation(LinearLayout.HORIZONTAL);
+
+        int widthSoFar = 0;
+
+        for (View view : views) {
+            LinearLayout LL = new LinearLayout(context);
+            LL.setOrientation(LinearLayout.HORIZONTAL);
+            LL.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
+            LL.setLayoutParams(new ListView.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+
+            view.measure(0, 0);
+            params = new LinearLayout.LayoutParams(view.getMeasuredWidth(), LayoutParams.WRAP_CONTENT);
+            params.setMargins(5, 0, 5, 0);
+
+            LL.addView(view, params);
+            LL.measure(0, 0);
+            widthSoFar += view.getMeasuredWidth();
+            if (widthSoFar >= maxWidth) {
+                linearLayout.addView(newLL);
+
+                newLL = new LinearLayout(context);
+                newLL.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+                newLL.setOrientation(LinearLayout.HORIZONTAL);
+                newLL.setGravity(Gravity.LEFT);
+                params = new LinearLayout.LayoutParams(LL.getMeasuredWidth(), LL.getMeasuredHeight());
+                newLL.addView(LL, params);
+                widthSoFar = LL.getMeasuredWidth();
+            } else {
+                newLL.addView(LL);
+            }
+        }
+        linearLayout.addView(newLL);
+    }
 }

@@ -6,6 +6,7 @@
     android:orientation="horizontal">
 
     <LinearLayout
+        android:orientation="horizontal"
         android:id="@+id/label_list_assigned_labels"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -23,10 +24,5 @@
         -->
     </LinearLayout>
 
-    <Button
-        android:id="@+id/label_list_add_label"
-        style="@style/labelButtonView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="(add)" />
+
 </LinearLayout>

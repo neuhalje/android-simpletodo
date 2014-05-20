@@ -16,18 +16,22 @@ package name.neuhalfen.todosimple.android.view.task;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import flow.Parcer;
 import mortar.Mortar;
 import name.neuhalfen.todosimple.android.R;
+import name.neuhalfen.todosimple.android.view.label.LabelDTO;
 import name.neuhalfen.todosimple.android.view.label.LabelListView;
 import name.neuhalfen.todosimple.domain.model.TaskId;
 
 import javax.inject.Inject;
+import java.util.UUID;
 
 import static name.neuhalfen.todosimple.helper.Preconditions.checkNotNull;
 import static name.neuhalfen.todosimple.helper.Preconditions.checkState;
@@ -54,6 +58,9 @@ public class DetailView extends LinearLayout {
     @InjectView(R.id.todo_detail_labels)
     LabelListView labels;
 
+    @InjectView(R.id.todo_detail_add_label)
+    Button addLabelButton;
+
     private TaskDTO.State taskStaus;
 
     private int taskVersion;
@@ -67,6 +74,15 @@ public class DetailView extends LinearLayout {
         }
         Mortar.inject(context, this);
     }
+
+
+    @OnClick(R.id.todo_detail_add_label)
+    void addNewLabel() {
+        UUID id = UUID.randomUUID();
+        LabelDTO label = new LabelDTO(id, id.toString());
+        labels.addLabel(label);
+    }
+
 
     @Override
     protected void onFinishInflate() {
