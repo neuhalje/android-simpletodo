@@ -17,6 +17,7 @@ package name.neuhalfen.todosimple.android.view.label;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -24,7 +25,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import mortar.Mortar;
 import mortar.MortarScope;
 import name.neuhalfen.todosimple.android.R;
@@ -38,14 +38,21 @@ public class LabelListView extends LinearLayout {
 
     private SortedSet<Button> allLabelViews;
 
-    int labelTextColor;
+    private final static class LabelViewConfig {
+        int labelTextColor;
+        int bgColor;
+        int borderColor;
+        int borderWidth;
+
+        Drawable background;
+    }
+
+    private LabelViewConfig labelViewConfig;
 
     public LabelListView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         if (isInEditMode()) { // IDEA Editor
-            final View view = LayoutInflater.from(context).inflate(R.layout.label_list, null);
-            addView(view);
             return;
         }
 
@@ -53,26 +60,29 @@ public class LabelListView extends LinearLayout {
         final MortarScope newChildScope = myScope.requireChild(new LabelListControl());
         final Context newChildScopeContext = newChildScope.createContext(context);
 
-        final View view = LayoutInflater.from(newChildScopeContext).inflate(R.layout.label_list, null);
-
-
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.LabelListView);
-        int bgColor = a.getColor(R.styleable.LabelListView_backgroundColor, Color.GRAY);
-        int borderColor = a.getColor(R.styleable.LabelListView_borderColor, Color.BLACK);
-        int borderWidth = a.getDimensionPixelSize(R.styleable.LabelListView_borderWidth, getResources().getDimensionPixelSize(R.dimen.label_border_width));
-
-        this.labelTextColor = a.getColor(R.styleable.LabelListView_textColor, Color.WHITE);
-
-        a.recycle();
-
-        final GradientDrawable background = (GradientDrawable) view.getBackground();
-        background.setStroke(borderWidth, borderColor);
-        background.setColor(bgColor);
-
-        addView(view);
+        labelViewConfig = buildLabelViewConfig(context, attrs);
 
         Mortar.inject(newChildScopeContext, this);
+        setOrientation(LinearLayout.VERTICAL);
+    }
 
+    private LabelViewConfig buildLabelViewConfig(Context context, AttributeSet attrs) {
+        final LabelViewConfig cfg = new LabelViewConfig();
+
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.LabelListView);
+        cfg.bgColor = a.getColor(R.styleable.LabelListView_backgroundColor, Color.GRAY);
+        cfg.borderColor = a.getColor(R.styleable.LabelListView_borderColor, Color.BLACK);
+        cfg.borderWidth = a.getDimensionPixelSize(R.styleable.LabelListView_borderWidth, getResources().getDimensionPixelSize(R.dimen.label_border_width));
+        cfg.labelTextColor = a.getColor(R.styleable.LabelListView_textColor, Color.WHITE);
+        a.recycle();
+
+        final GradientDrawable background = (GradientDrawable) getResources().getDrawable(R.drawable.rounded_corners);
+        background.setStroke(cfg.borderWidth, cfg.borderColor);
+        background.setColor(cfg.bgColor);
+
+        cfg.background = background;
+
+        return cfg;
     }
 
     @Override
@@ -144,7 +154,7 @@ public class LabelListView extends LinearLayout {
             }
         }
         allLabelViews.remove(tobeRemoved);
-        populateViews(this, allLabelViews, getContext());
+        buildLabelRows(allLabelViews, getContext());
     }
 
     void addLabelView(LabelDTO label) {
@@ -153,7 +163,8 @@ public class LabelListView extends LinearLayout {
         Button tv = (Button) li.inflate(R.layout.label_button_view, this, false);
         tv.setText(label.name);
         tv.setTag(label);
-        tv.setTextColor(this.labelTextColor);
+        tv.setTextColor(labelViewConfig.labelTextColor);
+        tv.setBackground(labelViewConfig.background);
 
         tv.setOnClickListener(new OnClickListener() {
             @Override
@@ -164,21 +175,66 @@ public class LabelListView extends LinearLayout {
         });
         allLabelViews.add(tv);
 
-        populateViews(this, allLabelViews, getContext());
+        buildLabelRows(allLabelViews, getContext());
     }
 
 
-    /**
-     * Copyright 2011 Sherif
-     * Updated by Karim Varela to handle LinearLayouts with other views on either side.
-     *
-     * @param linearLayout
-     * @param views        : The views to wrap within LinearLayout
-     * @param context
-     * @author Karim Varela
-     */
-    private void populateViews(LinearLayout linearLayout, SortedSet<Button> views, Context context) {
+    private final static class Row {
+        private final int maxLength;
+        private int currentLength;
+        public final LinearLayout layoutRow;
 
+        public Row(int maxLength, LinearLayout layoutRow) {
+            this.maxLength = maxLength;
+            this.layoutRow = layoutRow;
+            this.currentLength = 0;
+        }
+
+        public boolean isEmpty() {
+            return currentLength == 0;
+        }
+
+        public boolean fits(int viewMeasuredWith) {
+            return viewMeasuredWith + currentLength <= maxLength;
+        }
+
+        public void append(View view, int viewMeasuredWidth) {
+            layoutRow.addView(view, new LinearLayout.LayoutParams(viewMeasuredWidth, LayoutParams.WRAP_CONTENT));
+            currentLength += viewMeasuredWidth;
+        }
+
+        public boolean isFull() {
+            return currentLength >= maxLength;
+        }
+    }
+
+    private void buildLabelRows(SortedSet<Button> views, Context context) {
+        removeAllLabelRowsAndViews(views);
+
+        int maxWidth = this.getMeasuredWidth() - getResources().getDimensionPixelSize(R.dimen.margin_small);
+
+        Row currentRow = new Row(maxWidth, buildRowLayout(context));
+
+        for (View view : views) {
+            view.measure(0, 0);
+            final int viewMeasuredWidth = view.getMeasuredWidth();
+
+            if (currentRow.isEmpty() || currentRow.fits(viewMeasuredWidth)) {
+                currentRow.append(view, viewMeasuredWidth);
+            } else {
+                addView(currentRow.layoutRow);
+
+                currentRow = new Row(maxWidth, buildRowLayout(context));
+                currentRow.append(view, viewMeasuredWidth);
+            }
+        }
+
+        if (!currentRow.isEmpty()) {
+            addView(currentRow.layoutRow);
+        }
+    }
+
+    private void removeAllLabelRowsAndViews(SortedSet<Button> views) {
         // FIXME HACK: remove all children from the parent
         for (View view : views) {
             if (view.getParent() != null) {
@@ -188,48 +244,17 @@ public class LabelListView extends LinearLayout {
             }
         }
         // this alone does not help
-        linearLayout.removeAllViews();
+        removeAllViews();
+    }
 
-        int maxWidth = this.getMeasuredWidth() - getResources().getDimensionPixelSize(R.dimen.margin_small);
 
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-
-        LinearLayout.LayoutParams params;
-        LinearLayout newLL = new LinearLayout(context);
-        newLL.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-        newLL.setGravity(Gravity.LEFT);
-        newLL.setOrientation(LinearLayout.HORIZONTAL);
-
-        int widthSoFar = 0;
-
-        for (View view : views) {
-            LinearLayout LL = new LinearLayout(context);
-            LL.setOrientation(LinearLayout.HORIZONTAL);
-            LL.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
-            LL.setLayoutParams(new ListView.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-
-            view.measure(0, 0);
-            params = new LinearLayout.LayoutParams(view.getMeasuredWidth(), LayoutParams.WRAP_CONTENT);
-            //params.setMargins(5, 0, 5, 0);
-
-            LL.addView(view, params);
-            LL.measure(0, 0);
-            widthSoFar += view.getMeasuredWidth();
-            if (widthSoFar >= maxWidth) {
-                linearLayout.addView(newLL);
-
-                newLL = new LinearLayout(context);
-                newLL.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-                newLL.setOrientation(LinearLayout.HORIZONTAL);
-                newLL.setGravity(Gravity.LEFT);
-                params = new LinearLayout.LayoutParams(LL.getMeasuredWidth(), LL.getMeasuredHeight());
-                newLL.addView(LL, params);
-                widthSoFar = LL.getMeasuredWidth();
-            } else {
-                newLL.addView(LL);
-            }
-        }
-        linearLayout.addView(newLL);
+    private LinearLayout buildRowLayout(Context context) {
+        LinearLayout currentRow;
+        currentRow = new LinearLayout(context);
+        currentRow.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+        currentRow.setGravity(Gravity.LEFT);
+        currentRow.setOrientation(LinearLayout.HORIZONTAL);
+        return currentRow;
     }
 
 
