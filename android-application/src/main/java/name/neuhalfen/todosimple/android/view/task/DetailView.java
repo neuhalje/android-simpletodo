@@ -77,10 +77,10 @@ public class DetailView extends LinearLayout {
 
 
     @OnClick(R.id.todo_detail_add_label)
-    void addNewLabel() {
+    void assignNewLabel() {
         UUID id = UUID.randomUUID();
         LabelDTO label = new LabelDTO(id, id.toString());
-        labels.addLabel(label);
+        labels.assignLabel(label);
     }
 
 

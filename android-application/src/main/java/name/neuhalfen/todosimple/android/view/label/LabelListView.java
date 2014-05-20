@@ -37,7 +37,6 @@ public class LabelListView extends LinearLayout {
     @InjectView(R.id.label_list_assigned_labels)
     LinearLayout assignedLabelViews;
 
-    private Map<UUID, LabelDTO> assignedLabels;
 
 
     private SortedSet<Button> allLabelViews;
@@ -56,8 +55,6 @@ public class LabelListView extends LinearLayout {
         addView(view);
 
         Mortar.inject(newChildScopeContext, this);
-
-        assignedLabels = new HashMap<UUID, LabelDTO>();
     }
 
     @Override
@@ -76,18 +73,21 @@ public class LabelListView extends LinearLayout {
             }
         });
 
+
+        presenter.takeView(this);
+
         // ButterKnife.inject(this);
 
         if (isInEditMode()) { // IDEA Editor
             // Add some demo data in the IDE editor
             UUID id = UUID.randomUUID();
-            addLabel(new LabelDTO(id, "Demo label!"));
+            assignLabel(new LabelDTO(id, "Demo label!"));
 
             id = UUID.randomUUID();
-            addLabel(new LabelDTO(id, "Important"));
+            assignLabel(new LabelDTO(id, "Important"));
 
             id = UUID.randomUUID();
-            addLabel(new LabelDTO(id, "another one"));
+            assignLabel(new LabelDTO(id, "another one"));
             return;
         }
     }
@@ -98,36 +98,27 @@ public class LabelListView extends LinearLayout {
         if (isInEditMode()) { // IDEA Editor
             // return;
         }
-        //ButterKnife.reset(this);
+
+        presenter.dropView(this);
+
         assignedLabelViews = null;
         allLabelViews = null;
     }
 
 
     public Set<LabelDTO> getAssignedLabels() {
-        return Collections.unmodifiableSet(new HashSet<LabelDTO>(assignedLabels.values()));
+        return presenter.getAssignedLabels();
     }
 
-    public void addLabel(LabelDTO label) {
-        if (assignedLabels.containsKey(label.id)) {
-            return;
-        }
-
-        assignedLabels.put(label.id, label);
-
-        addLabelView(label);
+    public void assignLabel(LabelDTO label) {
+        presenter.assignLabel(label);
     }
 
-    private void removeLabel(LabelDTO label) {
-        if (!assignedLabels.containsKey(label.id)) {
-            return;
-        }
-        assignedLabels.remove(label.id);
-        removeLabelView(label);
-
+    private void unassignLabel(LabelDTO label) {
+        presenter.unassignLabel(label);
     }
 
-    private void removeLabelView(LabelDTO label) {
+    void removeLabelView(LabelDTO label) {
         //final View view = assignedLabelViews.findViewWithTag(label);
         //assignedLabelViews.removeView(view);
         // FIXME: Hacksih at its worst
@@ -141,7 +132,7 @@ public class LabelListView extends LinearLayout {
         populateViews(assignedLabelViews, allLabelViews, getContext());
     }
 
-    private void addLabelView(LabelDTO label) {
+    void addLabelView(LabelDTO label) {
 
         LayoutInflater li = LayoutInflater.from(getContext());
         Button tv = (Button) li.inflate(R.layout.label_button_view, assignedLabelViews, false);
@@ -152,21 +143,12 @@ public class LabelListView extends LinearLayout {
             @Override
             public void onClick(View v) {
                 final LabelDTO label = (LabelDTO) v.getTag();
-                removeLabel(label);
+                unassignLabel(label);
             }
         });
-        //assignedLabelViews.addView(tv);
         allLabelViews.add(tv);
 
         populateViews(assignedLabelViews, allLabelViews, getContext());
-    }
-
-
-    private void repopulateLabelsView() {
-        assignedLabelViews.removeAllViews();
-        for (LabelDTO label : assignedLabels.values()) {
-            addLabelView(label);
-        }
     }
 
 
@@ -233,4 +215,6 @@ public class LabelListView extends LinearLayout {
         }
         linearLayout.addView(newLL);
     }
+
+
 }
