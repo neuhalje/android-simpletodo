@@ -23,11 +23,16 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import butterknife.InjectView;
+import mortar.Mortar;
+import mortar.MortarScope;
 import name.neuhalfen.todosimple.android.R;
 
+import javax.inject.Inject;
 import java.util.*;
 
 public class LabelListView extends LinearLayout {
+    @Inject
+    LabelListControl.Presenter presenter;
 
     @InjectView(R.id.label_list_assigned_labels)
     LinearLayout assignedLabelViews;
@@ -43,10 +48,14 @@ public class LabelListView extends LinearLayout {
             // return;
         }
 
-        LayoutInflater inflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        inflater.inflate(R.layout.label_list, this, true);
+        final MortarScope myScope = Mortar.getScope(context);
+        final MortarScope newChildScope = myScope.requireChild(new LabelListControl());
+        final Context newChildScopeContext = newChildScope.createContext(context);
 
+        final View view = LayoutInflater.from(newChildScopeContext).inflate(R.layout.label_list, null);
+        addView(view);
+
+        Mortar.inject(newChildScopeContext, this);
 
         assignedLabels = new HashMap<UUID, LabelDTO>();
     }
