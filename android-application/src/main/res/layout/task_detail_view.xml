@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <name.neuhalfen.todosimple.android.view.task.DetailView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:label="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical">
@@ -44,11 +45,16 @@
     <name.neuhalfen.todosimple.android.view.label.LabelListView
         android:id="@+id/todo_detail_labels"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        label:borderWidth="1dp"
+        label:borderColor="#180CFF"
+        label:textColor="#ff01002f"
+        label:backgroundColor="#ffa8abff"
+        android:minHeight="@dimen/margin_huge" />
 
     <Button
         android:id="@+id/todo_detail_add_label"
-        style="@style/labelButtonView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="(add)" />

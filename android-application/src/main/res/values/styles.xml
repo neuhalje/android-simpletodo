@@ -7,7 +7,7 @@
 
     <style name="labelButtonView" parent="@android:style/Widget.Button">
         <item name="android:textColor">#FFFFFF</item>
-        <item name="android:background">#ff2f46ff</item>
+        <item name="android:background">@drawable/rounded_corners</item>
         <item name="android:padding">2dp</item>
         <item name="android:layout_marginRight">@dimen/margin_small</item>
         <item name="android:layout_height">wrap_content</item>

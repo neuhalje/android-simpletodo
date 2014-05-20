@@ -33,13 +33,19 @@ public class MainView extends FrameLayout implements CanShowScreen<Blueprint> {
 
     public MainView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        Mortar.inject(context, this);
         screenMaestro = new ScreenConductor<Blueprint>(context, this);
+        if (isInEditMode()) {
+            return;
+        }
+        Mortar.inject(context, this);
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        if (isInEditMode()) {
+            return;
+        }
         presenter.takeView(this);
     }
 

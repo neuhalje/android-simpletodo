@@ -1,28 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:layout_margin="@dimen/margin_medium"
-    android:orientation="horizontal">
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:id="@+id/label_list_assigned_labels"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="0px"
-        android:layout_marginTop="0px">
-
-        <!--
-        <Button
-            style="@style/labelButtonView"
-            android:text="button a" />
-
-        <Button
-            style="@style/labelButtonView"
-            android:text="button B" />
-        -->
-    </LinearLayout>
-
-
-</LinearLayout>
+    android:background="@drawable/rounded_corners"
+    android:orientation="horizontal"
+    tools:context="name.neuhalfen.todosimple.android.view.label.LabelListView" />

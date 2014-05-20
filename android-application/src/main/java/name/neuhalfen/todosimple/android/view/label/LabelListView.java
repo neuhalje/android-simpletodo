@@ -15,6 +15,9 @@ specific language governing permissions and limitations under the License.
 package name.neuhalfen.todosimple.android.view.label;
 
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -22,7 +25,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import butterknife.InjectView;
 import mortar.Mortar;
 import mortar.MortarScope;
 import name.neuhalfen.todosimple.android.R;
@@ -34,17 +36,17 @@ public class LabelListView extends LinearLayout {
     @Inject
     LabelListControl.Presenter presenter;
 
-    @InjectView(R.id.label_list_assigned_labels)
-    LinearLayout assignedLabelViews;
-
-
-
     private SortedSet<Button> allLabelViews;
+
+    int labelTextColor;
 
     public LabelListView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
         if (isInEditMode()) { // IDEA Editor
-            // return;
+            final View view = LayoutInflater.from(context).inflate(R.layout.label_list, null);
+            addView(view);
+            return;
         }
 
         final MortarScope myScope = Mortar.getScope(context);
@@ -52,17 +54,34 @@ public class LabelListView extends LinearLayout {
         final Context newChildScopeContext = newChildScope.createContext(context);
 
         final View view = LayoutInflater.from(newChildScopeContext).inflate(R.layout.label_list, null);
+
+
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.LabelListView);
+        int bgColor = a.getColor(R.styleable.LabelListView_backgroundColor, Color.GRAY);
+        int borderColor = a.getColor(R.styleable.LabelListView_borderColor, Color.BLACK);
+        int borderWidth = a.getDimensionPixelSize(R.styleable.LabelListView_borderWidth, getResources().getDimensionPixelSize(R.dimen.label_border_width));
+
+        this.labelTextColor = a.getColor(R.styleable.LabelListView_textColor, Color.WHITE);
+
+        a.recycle();
+
+        final GradientDrawable background = (GradientDrawable) view.getBackground();
+        background.setStroke(borderWidth, borderColor);
+        background.setColor(bgColor);
+
         addView(view);
 
         Mortar.inject(newChildScopeContext, this);
+
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        assignedLabelViews = (LinearLayout) findViewById(R.id.label_list_assigned_labels);
-
+        if (isInEditMode()) { // IDEA Editor
+            return;
+        }
 
         allLabelViews = new TreeSet<Button>(new Comparator<Button>() {
             @Override
@@ -73,10 +92,7 @@ public class LabelListView extends LinearLayout {
             }
         });
 
-
         presenter.takeView(this);
-
-        // ButterKnife.inject(this);
 
         if (isInEditMode()) { // IDEA Editor
             // Add some demo data in the IDE editor
@@ -96,12 +112,11 @@ public class LabelListView extends LinearLayout {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         if (isInEditMode()) { // IDEA Editor
-            // return;
+            return;
         }
 
         presenter.dropView(this);
 
-        assignedLabelViews = null;
         allLabelViews = null;
     }
 
@@ -129,15 +144,16 @@ public class LabelListView extends LinearLayout {
             }
         }
         allLabelViews.remove(tobeRemoved);
-        populateViews(assignedLabelViews, allLabelViews, getContext());
+        populateViews(this, allLabelViews, getContext());
     }
 
     void addLabelView(LabelDTO label) {
 
         LayoutInflater li = LayoutInflater.from(getContext());
-        Button tv = (Button) li.inflate(R.layout.label_button_view, assignedLabelViews, false);
+        Button tv = (Button) li.inflate(R.layout.label_button_view, this, false);
         tv.setText(label.name);
         tv.setTag(label);
+        tv.setTextColor(this.labelTextColor);
 
         tv.setOnClickListener(new OnClickListener() {
             @Override
@@ -148,7 +164,7 @@ public class LabelListView extends LinearLayout {
         });
         allLabelViews.add(tv);
 
-        populateViews(assignedLabelViews, allLabelViews, getContext());
+        populateViews(this, allLabelViews, getContext());
     }
 
 
@@ -194,7 +210,7 @@ public class LabelListView extends LinearLayout {
 
             view.measure(0, 0);
             params = new LinearLayout.LayoutParams(view.getMeasuredWidth(), LayoutParams.WRAP_CONTENT);
-            params.setMargins(5, 0, 5, 0);
+            //params.setMargins(5, 0, 5, 0);
 
             LL.addView(view, params);
             LL.measure(0, 0);
