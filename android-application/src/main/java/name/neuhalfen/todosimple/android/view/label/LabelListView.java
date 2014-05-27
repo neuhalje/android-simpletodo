@@ -56,14 +56,18 @@ public class LabelListView extends LinearLayout {
             return;
         }
 
-        final MortarScope myScope = Mortar.getScope(context);
-        final MortarScope newChildScope = myScope.requireChild(new LabelListControl());
-        final Context newChildScopeContext = newChildScope.createContext(context);
+        hookUpMortar(context);
 
         labelViewConfig = buildLabelViewConfig(context, attrs);
 
-        Mortar.inject(newChildScopeContext, this);
         setOrientation(LinearLayout.VERTICAL);
+    }
+
+    private void hookUpMortar(Context context) {
+        final MortarScope myScope = Mortar.getScope(context);
+        final MortarScope newChildScope = myScope.requireChild(new LabelListControl());
+        final Context newChildScopeContext = newChildScope.createContext(context);
+        Mortar.inject(newChildScopeContext, this);
     }
 
     private LabelViewConfig buildLabelViewConfig(Context context, AttributeSet attrs) {
@@ -183,10 +187,12 @@ public class LabelListView extends LinearLayout {
         private final int maxLength;
         private int currentLength;
         public final LinearLayout layoutRow;
+        private final MarginLayoutParams childLayoutParams;
 
-        public Row(int maxLength, LinearLayout layoutRow) {
+        public Row(int maxLength, LinearLayout layoutRow, MarginLayoutParams childLayoutParams) {
             this.maxLength = maxLength;
             this.layoutRow = layoutRow;
+            this.childLayoutParams = childLayoutParams;
             this.currentLength = 0;
         }
 
@@ -199,7 +205,8 @@ public class LabelListView extends LinearLayout {
         }
 
         public void append(View view, int viewMeasuredWidth) {
-            layoutRow.addView(view, new LinearLayout.LayoutParams(viewMeasuredWidth, LayoutParams.WRAP_CONTENT));
+            // new LinearLayout.LayoutParams(viewMeasuredWidth, LayoutParams.WRAP_CONTENT)
+            layoutRow.addView(view, childLayoutParams );
             currentLength += viewMeasuredWidth;
         }
 
@@ -211,20 +218,24 @@ public class LabelListView extends LinearLayout {
     private void buildLabelRows(SortedSet<Button> views, Context context) {
         removeAllLabelRowsAndViews(views);
 
-        int maxWidth = this.getMeasuredWidth() - getResources().getDimensionPixelSize(R.dimen.margin_small);
+        final int smallMargin = getResources().getDimensionPixelSize(R.dimen.margin_small);
+        final int maxWidth = this.getMeasuredWidth() - smallMargin;
 
-        Row currentRow = new Row(maxWidth, buildRowLayout(context));
+        final MarginLayoutParams childLayoutParams = new MarginLayoutParams( LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        childLayoutParams.setMargins(smallMargin,smallMargin,smallMargin,smallMargin);
+
+        Row currentRow = new Row(maxWidth, buildRowLayout(context), childLayoutParams);
 
         for (View view : views) {
             view.measure(0, 0);
-            final int viewMeasuredWidth = view.getMeasuredWidth();
+            final int viewMeasuredWidth = view.getMeasuredWidth();;
 
             if (currentRow.isEmpty() || currentRow.fits(viewMeasuredWidth)) {
                 currentRow.append(view, viewMeasuredWidth);
             } else {
                 addView(currentRow.layoutRow);
 
-                currentRow = new Row(maxWidth, buildRowLayout(context));
+                currentRow = new Row(maxWidth, buildRowLayout(context), childLayoutParams);
                 currentRow.append(view, viewMeasuredWidth);
             }
         }
