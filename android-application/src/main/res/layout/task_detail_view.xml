@@ -47,9 +47,9 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         label:borderWidth="1dp"
-        label:borderColor="#180CFF"
-        label:textColor="#ff01002f"
-        label:backgroundColor="#ffa8abff"
+        label:borderColor="#6A48D7"
+        label:textColor="#FFE773"
+        label:backgroundColor="#3914AF"
         android:minHeight="@dimen/margin_huge" />
 
     <Button
