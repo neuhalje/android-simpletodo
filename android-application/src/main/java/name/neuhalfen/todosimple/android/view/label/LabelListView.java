@@ -39,12 +39,20 @@ public class LabelListView extends LinearLayout {
     private SortedSet<Button> allLabelViews;
 
     private final static class LabelViewConfig {
-        int labelTextColor;
-        int bgColor;
-        int borderColor;
-        int borderWidth;
+        final int labelTextColor;
+        final int bgColor;
+        final int borderColor;
+        final int borderWidth;
 
-        Drawable background;
+        final Drawable background;
+
+        private LabelViewConfig(int labelTextColor, int bgColor, int borderColor, int borderWidth, Drawable background) {
+            this.labelTextColor = labelTextColor;
+            this.bgColor = bgColor;
+            this.borderColor = borderColor;
+            this.borderWidth = borderWidth;
+            this.background = background;
+        }
     }
 
     private LabelViewConfig labelViewConfig;
@@ -71,20 +79,19 @@ public class LabelListView extends LinearLayout {
     }
 
     private LabelViewConfig buildLabelViewConfig(Context context, AttributeSet attrs) {
-        final LabelViewConfig cfg = new LabelViewConfig();
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.LabelListView);
-        cfg.bgColor = a.getColor(R.styleable.LabelListView_backgroundColor, Color.GRAY);
-        cfg.borderColor = a.getColor(R.styleable.LabelListView_borderColor, Color.BLACK);
-        cfg.borderWidth = a.getDimensionPixelSize(R.styleable.LabelListView_borderWidth, getResources().getDimensionPixelSize(R.dimen.label_border_width));
-        cfg.labelTextColor = a.getColor(R.styleable.LabelListView_textColor, Color.WHITE);
+        int bgColor = a.getColor(R.styleable.LabelListView_backgroundColor, Color.GRAY);
+        int borderColor = a.getColor(R.styleable.LabelListView_borderColor, Color.BLACK);
+        int borderWidth = a.getDimensionPixelSize(R.styleable.LabelListView_borderWidth, getResources().getDimensionPixelSize(R.dimen.label_border_width));
+        int labelTextColor = a.getColor(R.styleable.LabelListView_textColor, Color.WHITE);
         a.recycle();
 
         final GradientDrawable background = (GradientDrawable) getResources().getDrawable(R.drawable.rounded_corners);
-        background.setStroke(cfg.borderWidth, cfg.borderColor);
-        background.setColor(cfg.bgColor);
+        background.setStroke(borderWidth, borderColor);
+        background.setColor(bgColor);
 
-        cfg.background = background;
+        final LabelViewConfig cfg = new LabelViewConfig(labelTextColor, bgColor, borderColor, borderWidth, background);
 
         return cfg;
     }
