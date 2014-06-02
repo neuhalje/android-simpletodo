@@ -54,8 +54,11 @@ public class ActionBarOwner extends Presenter<ActionBarOwner.View> {
             this.upButtonEnabled = upButtonEnabled;
             this.title = title;
 
+
             List<MenuAction> firstItem = new ArrayList<MenuAction>();
-            firstItem.add(action);
+            if (action!=null) {
+                firstItem.add(action);
+            }
             this.actions = Collections.unmodifiableList(firstItem);
         }
 
