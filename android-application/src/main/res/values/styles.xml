@@ -3,10 +3,20 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
         <!-- Customize your theme here. -->
+        <item name="android:windowBackground">@color/base3</item>
+        <item name="android:textColor">@color/base00</item>
+        <item name="android:textColorHighlight">@color/base01</item>
+        <item name="android:textColorHighlightInverse">@color/base2</item>
+        <item name="android:textColorHint">@color/base1</item>
+        <item name="android:textColorHintInverse">@color/base02</item>
+        <item name="android:textColorPrimary">@color/base00</item>
+        <item name="android:textColorPrimaryInverse">@color/base2</item>
+        <item name="android:textColorLink">@color/blue</item>
+        <item name="android:textColorLinkInverse">@color/base2</item>
     </style>
 
     <style name="labelButtonView" parent="@android:style/Widget.Button">
-        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textColor">@color/yellow</item>
         <item name="android:background">@drawable/rounded_corners</item>
         <item name="android:padding">2dp</item>
         <item name="android:layout_marginRight">@dimen/margin_small</item>
@@ -17,5 +27,7 @@
         <item name="android:minHeight">32dip</item>
         <item name="android:minWidth">64dip</item>
     </style>
+
+
 
 </resources>

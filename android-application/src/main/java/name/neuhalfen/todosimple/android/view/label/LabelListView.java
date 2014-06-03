@@ -56,6 +56,8 @@ public class LabelListView extends LinearLayout {
     }
 
     private LabelViewConfig labelViewConfig;
+    int marginSmall;
+    int marginMedium;
 
     public LabelListView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -67,6 +69,8 @@ public class LabelListView extends LinearLayout {
         hookUpMortar(context);
 
         labelViewConfig = buildLabelViewConfig(context, attrs);
+        marginSmall = getResources().getDimensionPixelSize(R.dimen.margin_small);
+        marginMedium = getResources().getDimensionPixelSize(R.dimen.margin_medium);
 
         setOrientation(LinearLayout.VERTICAL);
     }
@@ -164,8 +168,10 @@ public class LabelListView extends LinearLayout {
                 tobeRemoved = b;
             }
         }
-        allLabelViews.remove(tobeRemoved);
-        buildLabelRows(allLabelViews, getContext());
+        if (null != tobeRemoved) {
+            allLabelViews.remove(tobeRemoved);
+            buildLabelRows(allLabelViews, getContext());
+        }
     }
 
     void addLabelView(LabelDTO label) {
@@ -186,6 +192,7 @@ public class LabelListView extends LinearLayout {
         allLabelViews.add(tv);
 
         buildLabelRows(allLabelViews, getContext());
+        invalidate();
     }
 
     /**
@@ -195,12 +202,10 @@ public class LabelListView extends LinearLayout {
         private final int maxLength;
         private int currentLength;
         public final LinearLayout layoutRow;
-        private final MarginLayoutParams childLayoutParams;
 
-        public Row(int maxLength, LinearLayout layoutRow, MarginLayoutParams childLayoutParams) {
+        public Row(int maxLength, LinearLayout layoutRow) {
             this.maxLength = maxLength;
             this.layoutRow = layoutRow;
-            this.childLayoutParams = childLayoutParams;
             this.currentLength = 0;
         }
 
@@ -214,37 +219,40 @@ public class LabelListView extends LinearLayout {
 
         public void append(View view, int viewMeasuredWidth) {
             // new LinearLayout.LayoutParams(viewMeasuredWidth, LayoutParams.WRAP_CONTENT)
-            layoutRow.addView(view, childLayoutParams );
+            //layoutRow.addView(view, childLayoutParams);
+            layoutRow.addView(view);
             currentLength += viewMeasuredWidth;
         }
 
         public boolean isFull() {
             return currentLength >= maxLength;
         }
+
+        public int measureLabelWidth(View label){
+            label.measure(0, 0);
+            final int measuredWidth = label.getMeasuredWidth();
+            return measuredWidth ;
+        }
     }
 
     private void buildLabelRows(SortedSet<Button> views, Context context) {
         removeAllLabelRowsAndViews(views);
 
-        final int margin = getResources().getDimensionPixelSize(R.dimen.margin_small);
-        final int maxWidth = this.getMeasuredWidth() - margin;
+        final int maxWidth = this.getMeasuredWidth() - marginMedium;
 
-        final MarginLayoutParams childLayoutParams = new MarginLayoutParams( LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        childLayoutParams.setMargins(margin,margin,margin,margin);
-        final LayoutParams layoutParams = new LayoutParams(childLayoutParams);
+        final LayoutParams rowLayoutParams = (LayoutParams) getLayoutParams();
 
-        Row currentRow = new Row(maxWidth, buildRowLayout(context, layoutParams), childLayoutParams);
+        Row currentRow = new Row(maxWidth, buildRowLayout(context, rowLayoutParams));
 
         for (View view : views) {
-            view.measure(0, 0);
-            final int viewMeasuredWidth = view.getMeasuredWidth();
+            final int viewMeasuredWidth =currentRow.measureLabelWidth(view);
 
             if (currentRow.isEmpty() || currentRow.fits(viewMeasuredWidth)) {
                 currentRow.append(view, viewMeasuredWidth);
             } else {
                 addView(currentRow.layoutRow);
 
-                currentRow = new Row(maxWidth, buildRowLayout(context,layoutParams), childLayoutParams);
+                currentRow = new Row(maxWidth, buildRowLayout(context, rowLayoutParams));
                 currentRow.append(view, viewMeasuredWidth);
             }
         }
@@ -252,6 +260,7 @@ public class LabelListView extends LinearLayout {
         if (!currentRow.isEmpty()) {
             addView(currentRow.layoutRow);
         }
+        invalidate();
     }
 
     private void removeAllLabelRowsAndViews(SortedSet<Button> views) {
@@ -268,7 +277,7 @@ public class LabelListView extends LinearLayout {
     }
 
 
-    private LinearLayout buildRowLayout(Context context, LayoutParams layoutParams ) {
+    private LinearLayout buildRowLayout(Context context, LayoutParams layoutParams) {
         LinearLayout currentRow;
         currentRow = new LinearLayout(context);
         currentRow.setLayoutParams(layoutParams);
