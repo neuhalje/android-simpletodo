@@ -4,7 +4,6 @@ import name.neuhalfen.todosimple.android.di.ForApplication;
 import name.neuhalfen.todosimple.android.view.label.LabelDTO;
 import name.neuhalfen.todosimple.domain.application.TaskManagingApplication;
 import name.neuhalfen.todosimple.domain.model.Task;
-import name.neuhalfen.todosimple.domain.model.TaskId;
 import scala.Option;
 
 import javax.inject.Inject;
@@ -21,7 +20,7 @@ public class TaskDTOAdapter {
 
     public TaskDTO loadOrCreateTaskDTO(DetailScreen.Cmd cmd) {
         if (cmd.cmd == TaskDTO.State.NEW) {
-            return new TaskDTO(TaskId.generateId(), 0, "", "", new HashSet<LabelDTO>(), TaskDTO.State.NEW);
+            return new TaskDTO(cmd.taskId, 0, "", "", new HashSet<LabelDTO>(), TaskDTO.State.NEW);
         } else {
             final Option<Task> taskOption = taskApp.loadTask(cmd.taskId);
             if (taskOption.isDefined()) {
