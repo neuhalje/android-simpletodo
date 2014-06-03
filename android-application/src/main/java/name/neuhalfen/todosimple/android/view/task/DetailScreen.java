@@ -113,16 +113,16 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
         private final EventBus eventBus;
         private final Flow flow;
 
-        private final Cmd cmd;
+        private Cmd cmd;
 
 
         @Inject
-        Presenter(@ForApplication TaskManagingApplication taskApp, TaskDTOAdapter taskDTOAdapter, @ForApplication EventBus eventBus, ActionBarOwner actionBar, Cmd cmd, Flow flow) {
+        Presenter(@ForApplication TaskManagingApplication taskApp, TaskDTOAdapter taskDTOAdapter, @ForApplication EventBus eventBus, ActionBarOwner actionBar, Cmd initialCommand, Flow flow) {
             this.taskApp = taskApp;
             this.taskDTOAdapter = taskDTOAdapter;
             this.actionBar = actionBar;
             this.eventBus = eventBus;
-            this.cmd = cmd;
+            this.cmd = initialCommand;
             this.flow = flow;
         }
 
@@ -137,28 +137,46 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
                 ActionBarOwner.Config actionBarConfig = actionBar.getConfig().withOwner(this);
 
                 actionBarConfig =
-                        actionBarConfig.withAction(new ActionBarOwner.MenuAction("Save", new Action0() {
-                            @Override
-                            public void call() {
-                                saveTask();
-                            }
-                        }, R.drawable.ic_action_save)).addAction(new ActionBarOwner.MenuAction("Delete", new Action0() {
-                            @Override
-                            public void call() {
-                                deleteTaskOrAbortCreate();
-                            }
-                        }, R.drawable.ic_action_trash));
+                        actionBarConfig
+                                .withAction(new ActionBarOwner.MenuAction("Save", new Action0() {
+                                    @Override
+                                    public void call() {
+                                        saveTask();
+                                    }
+                                }, R.drawable.ic_action_save))
+                                .addAction(new ActionBarOwner.MenuAction("Delete", new Action0() {
+                                    @Override
+                                    public void call() {
+                                        deleteTaskOrAbortCreate();
+                                    }
+                                }, R.drawable.ic_action_trash))
+                                .addAction(new ActionBarOwner.MenuAction("New Task", new Action0() {
+                                    @Override
+                                    public void call() {
+                                        saveTask();
+                                        Presenter.this.takeCommand(new Cmd(TaskDTO.State.NEW, TaskId.generateId()));
+                                    }
+                                }, R.drawable.ic_action_add));
 
-                final TaskDTO taskDTO = taskDTOAdapter.loadOrCreateTaskDTO(cmd);
-                view.setTaskStaus(cmd.cmd);
-                view.setTaskId(cmd.taskId);
-                view.setEditedDescription(taskDTO.description);
-                view.setEditedTitle(taskDTO.title);
-                view.setTaskVersion(taskDTO.version);
+                actionBar.setConfig(actionBarConfig);
 
-                actionBar.setConfig(actionBarConfig.withTitle(taskDTO.title));
-
+                takeCommand(this.cmd);
             }
+        }
+
+        private void takeCommand(Cmd cmd) {
+            this.cmd = cmd;
+
+            final TaskDTO taskDTO = taskDTOAdapter.loadOrCreateTaskDTO(cmd);
+
+            final DetailView view = getView();
+            view.setTaskStaus(cmd.cmd);
+            view.setTaskId(taskDTO.id);
+            view.setEditedDescription(taskDTO.description);
+            view.setEditedTitle(taskDTO.title);
+            view.setTaskVersion(taskDTO.version);
+
+            actionBar.setConfig(actionBar.getConfig().withTitle(taskDTO.title));
         }
 
         private void deleteTaskOrAbortCreate() {
