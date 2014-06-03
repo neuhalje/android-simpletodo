@@ -85,10 +85,10 @@ public class LabelListView extends LinearLayout {
     private LabelViewConfig buildLabelViewConfig(Context context, AttributeSet attrs) {
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.LabelListView);
-        int bgColor = a.getColor(R.styleable.LabelListView_backgroundColor, Color.GRAY);
-        int borderColor = a.getColor(R.styleable.LabelListView_borderColor, Color.BLACK);
-        int borderWidth = a.getDimensionPixelSize(R.styleable.LabelListView_borderWidth, getResources().getDimensionPixelSize(R.dimen.label_border_width));
-        int labelTextColor = a.getColor(R.styleable.LabelListView_textColor, Color.WHITE);
+        int bgColor = a.getColor(R.styleable.LabelListView_labelBackgroundColor, Color.GRAY);
+        int borderColor = a.getColor(R.styleable.LabelListView_labelBorderColor, Color.BLACK);
+        int borderWidth = a.getDimensionPixelSize(R.styleable.LabelListView_labelBorderWidth, getResources().getDimensionPixelSize(R.dimen.label_border_width));
+        int labelTextColor = a.getColor(R.styleable.LabelListView_labelTextColor, Color.WHITE);
         a.recycle();
 
         final GradientDrawable background = (GradientDrawable) getResources().getDrawable(R.drawable.rounded_corners);
