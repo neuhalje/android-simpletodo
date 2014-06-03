@@ -35,13 +35,6 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
-    <TextView
-        android:id="@+id/todo_detail_uri"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="N/A"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
-
     <name.neuhalfen.todosimple.android.view.label.LabelListView
         android:id="@+id/todo_detail_labels"
         android:layout_width="fill_parent"
@@ -56,7 +49,7 @@
         android:id="@+id/todo_detail_add_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="(add)" />
+        android:text="@string/todo_detail_add_label" />
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -66,14 +59,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Version: "
+            android:text="@string/todo_detail_version"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
             android:id="@+id/todo_detail_version"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="xxx"
             android:textAppearance="?android:attr/textAppearanceSmall" />
     </LinearLayout>
 </name.neuhalfen.todosimple.android.view.task.DetailView>

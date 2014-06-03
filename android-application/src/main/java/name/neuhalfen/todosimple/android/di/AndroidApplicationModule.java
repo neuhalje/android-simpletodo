@@ -41,6 +41,7 @@ import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 
 @Module(library = true, complete = true, injects = {AndroidEventStore.class, TodoContentProviderImpl.class, AndroidEventPublisher.class, SQLiteToTransactionAdapter.class, EventJsonSerializerImpl.class}, includes = EventBusModule.class)
 public class AndroidApplicationModule {
@@ -68,6 +69,12 @@ public class AndroidApplicationModule {
         return new TaskManagingApplication(eventStore, eventPublisher, tx);
     }
 
+    @Singleton
+    @Provides
+    @ForApplication
+    Locale provideUserLocale(@ForApplication Context context) {
+        return context.getResources().getConfiguration().locale;
+    }
 
     @Singleton
     @Provides

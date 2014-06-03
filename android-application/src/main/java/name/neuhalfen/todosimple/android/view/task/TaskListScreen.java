@@ -31,6 +31,7 @@ import rx.util.functions.Action0;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.Locale;
 
 @Layout(R.layout.task_list_view)
 public class TaskListScreen implements Blueprint {
@@ -54,12 +55,14 @@ public class TaskListScreen implements Blueprint {
         private final Flow flow;
         private final ActionBarOwner actionBar;
         private final TaskManagingApplication taskApp;
+        private final Locale userLocale;
 
         @Inject
-        Presenter(Flow flow, ActionBarOwner actionBar, @ForApplication TaskManagingApplication taskApp) {
+        Presenter(Flow flow, ActionBarOwner actionBar, @ForApplication TaskManagingApplication taskApp, @ForApplication Locale userLocale) {
             this.flow = flow;
             this.actionBar = actionBar;
             this.taskApp = taskApp;
+            this.userLocale = userLocale;
         }
 
         @Override
@@ -75,12 +78,12 @@ public class TaskListScreen implements Blueprint {
                         @Override
                         public void call() {
                             for (int i = 1; i < 500; i++) {
-                                CreateTaskCommand createTaskCommand = Commands.createTask(String.format("Todo #%0,10d", i), "some random description");
+                                CreateTaskCommand createTaskCommand = Commands.createTask(String.format(userLocale, "Todo #%0,10d", i), "some random description");
                                 taskApp.executeCommand(createTaskCommand);
-                                TaskListView view = getView();
-                                if (view == null) return;
-                                view.reloadQuery();
                             }
+                            TaskListView view = getView();
+                            if (view == null) return;
+                            view.reloadQuery();
 
                         }
                     })).withAction(new ActionBarOwner.MenuAction("New Task", new Action0() {
