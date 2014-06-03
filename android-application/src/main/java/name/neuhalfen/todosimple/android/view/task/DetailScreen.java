@@ -134,7 +134,7 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
             if (view != null) {
                 eventBus.register(this);
 
-                ActionBarOwner.Config actionBarConfig = actionBar.getConfig();
+                ActionBarOwner.Config actionBarConfig = actionBar.getConfig().withOwner(this);
 
                 actionBarConfig =
                         actionBarConfig.withAction(new ActionBarOwner.MenuAction("Save", new Action0() {
@@ -156,7 +156,7 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
                 view.setEditedTitle(taskDTO.title);
                 view.setTaskVersion(taskDTO.version);
 
-                actionBar.setConfig(actionBarConfig.withTitle(taskDTO.description));
+                actionBar.setConfig(actionBarConfig.withTitle(taskDTO.title));
 
             }
         }
@@ -250,6 +250,11 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
             view.setEditedDescription(event.newDescription());
             view.setEditedTitle(event.newTitle());
             view.setTaskVersion(event.newAggregateRootVersion());
+
+            final ActionBarOwner.Config config = actionBar.getConfig();
+            if (config.isOwner(this)) {
+                actionBar.setConfig(config.withTitle(event.newTitle()));
+            }
         }
 
         /**
@@ -270,6 +275,11 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
             view.setEditedTitle(event.title());
             view.setTaskVersion(event.newAggregateRootVersion());
             view.setTaskStaus(TaskDTO.State.EXISTING);
+
+            final ActionBarOwner.Config config = actionBar.getConfig();
+            if (config.isOwner(this)) {
+                actionBar.setConfig(config.withTitle(event.title()));
+            }
         }
 
         private boolean isMyAggregate(Event event) {

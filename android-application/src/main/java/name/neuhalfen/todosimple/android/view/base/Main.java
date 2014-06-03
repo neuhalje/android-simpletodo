@@ -76,7 +76,7 @@ public class Main implements Blueprint {
                             //onFriendsListPicked();
                         }
                     });
-            actionBarOwner.setConfig(new ActionBarOwner.Config(false, hasUp, title, menu));
+            actionBarOwner.setConfig(new ActionBarOwner.Config(false, hasUp, title, menu, this.hashCode()));
 
             super.showScreen(newScreen, direction);
         }

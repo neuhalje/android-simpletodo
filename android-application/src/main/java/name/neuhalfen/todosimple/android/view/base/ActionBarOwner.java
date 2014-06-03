@@ -43,16 +43,19 @@ public class ActionBarOwner extends Presenter<ActionBarOwner.View> {
     }
 
     public static class Config {
+        private final int ownerHash;
+
         public final boolean showHomeEnabled;
         public final boolean upButtonEnabled;
         public final CharSequence title;
         public final List<MenuAction> actions;
 
         public Config(boolean showHomeEnabled, boolean upButtonEnabled, CharSequence title,
-                      MenuAction action) {
+                      MenuAction action, int ownerHash) {
             this.showHomeEnabled = showHomeEnabled;
             this.upButtonEnabled = upButtonEnabled;
             this.title = title;
+            this.ownerHash = ownerHash;
 
 
             List<MenuAction> firstItem = new ArrayList<MenuAction>();
@@ -63,25 +66,34 @@ public class ActionBarOwner extends Presenter<ActionBarOwner.View> {
         }
 
         private Config(boolean showHomeEnabled, boolean upButtonEnabled, CharSequence title,
-                       List<MenuAction> actions) {
+                       List<MenuAction> actions, int ownerHash) {
             this.showHomeEnabled = showHomeEnabled;
             this.upButtonEnabled = upButtonEnabled;
             this.title = title;
+            this.ownerHash = ownerHash;
             this.actions = Collections.unmodifiableList(actions);
         }
 
         public Config withTitle(String title) {
-            return new Config(showHomeEnabled, upButtonEnabled, title, actions);
+            return new Config(showHomeEnabled, upButtonEnabled, title, actions, ownerHash);
         }
 
         public Config withAction(MenuAction action) {
-            return new Config(showHomeEnabled, upButtonEnabled, title, action);
+            return new Config(showHomeEnabled, upButtonEnabled, title, action, ownerHash);
+        }
+
+        public Config withOwner(Object newOwner) {
+            return new Config(showHomeEnabled, upButtonEnabled, title, actions, newOwner.hashCode());
+        }
+
+        public boolean isOwner(Object candidate) {
+            return candidate.hashCode() == ownerHash;
         }
 
         public Config addAction(MenuAction action) {
             List<MenuAction> newList = new ArrayList<MenuAction>(actions);
             newList.add(action);
-            return new Config(showHomeEnabled, upButtonEnabled, title, newList);
+            return new Config(showHomeEnabled, upButtonEnabled, title, newList, ownerHash);
         }
     }
 
@@ -109,6 +121,7 @@ public class ActionBarOwner extends Presenter<ActionBarOwner.View> {
 
     ActionBarOwner() {
     }
+
 
     @Override
     public void onLoad(Bundle savedInstanceState) {

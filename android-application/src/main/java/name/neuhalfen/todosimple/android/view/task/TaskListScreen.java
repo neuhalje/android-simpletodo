@@ -68,7 +68,7 @@ public class TaskListScreen implements Blueprint {
             TaskListView view = getView();
             if (view == null) return;
 
-            ActionBarOwner.Config actionBarConfig = actionBar.getConfig();
+            ActionBarOwner.Config actionBarConfig = actionBar.getConfig().withOwner(this);
 
             actionBarConfig =
                     actionBarConfig.withAction(new ActionBarOwner.MenuAction("Create Demo Tasks", new Action0() {
