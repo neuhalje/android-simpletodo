@@ -6,5 +6,9 @@
         <attr name="labelBackgroundColor" format="color" />
         <attr name="labelTextColor" format="color" />
     </declare-styleable>
+    <declare-styleable name="Crouton">
+        <attr name="croutonBackgroundColor" format="color" />
+        <attr name="croutonPadding" format="dimension"  />
+    </declare-styleable>
 
 </resources>

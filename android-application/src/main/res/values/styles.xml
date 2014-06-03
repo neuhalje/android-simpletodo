@@ -20,6 +20,9 @@
         <item name="labelBorderColor">@color/base1</item>
         <item name="labelTextColor">@color/blue</item>
         <item name="labelBackgroundColor">@color/base2</item>
+
+        <item name="croutonBackgroundColor">@color/base02</item>
+        <item name="croutonPadding">@dimen/margin_small</item>
     </style>
 
     <style name="Theme.Solarized.Dark.AppTheme" parent="android:Theme.Holo">
@@ -38,6 +41,9 @@
         <item name="labelBorderColor">@color/base01</item>
         <item name="labelTextColor">@color/blue</item>
         <item name="labelBackgroundColor">@color/base02</item>
+
+        <item name="croutonBackgroundColor">@color/base2</item>
+        <item name="croutonPadding">@dimen/margin_small</item>
     </style>
 
     <style name="labelButtonView" parent="@android:style/Widget.Button">

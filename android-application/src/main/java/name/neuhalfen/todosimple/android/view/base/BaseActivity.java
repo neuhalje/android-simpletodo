@@ -22,8 +22,11 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import de.greenrobot.event.EventBus;
@@ -50,6 +53,29 @@ import static android.content.Intent.CATEGORY_LAUNCHER;
 import static android.view.MenuItem.SHOW_AS_ACTION_ALWAYS;
 
 public class BaseActivity extends Activity implements ActionBarOwner.View {
+    private final static class CroutonStyles {
+        /**
+         * Default style for alerting the user.
+         */
+        public final Style ALERT;
+        /**
+         * Default style for confirming an action.
+         */
+        public final Style CONFIRM;
+        /**
+         * Default style for general information.
+         */
+        public final Style INFO;
+
+        public CroutonStyles(Style alert, Style confirm, Style info) {
+            ALERT = alert;
+            CONFIRM = confirm;
+            INFO = info;
+        }
+    }
+
+    private CroutonStyles croutonStyles;
+
     /**
      * Use to get a LoaderManager by calling #getSystemService(NAME_NEUHALFEN_LOADER_MANAGER)
      */
@@ -79,6 +105,7 @@ public class BaseActivity extends Activity implements ActionBarOwner.View {
         activityScope = Mortar.requireActivityScope(parentScope, new Main());
         Mortar.inject(this, this);
 
+        this.croutonStyles = buildCroutonColors(getResources(), getTheme());
 
         eventBus.register(this);
 
@@ -88,6 +115,35 @@ public class BaseActivity extends Activity implements ActionBarOwner.View {
         mainFlow = mainView.getFlow();
 
         actionBarOwner.takeView(this);
+    }
+
+    private CroutonStyles buildCroutonColors(final Resources resources, final Resources.Theme theme) {
+        TypedValue typedValue = new TypedValue();
+        theme.resolveAttribute(R.attr.croutonBackgroundColor, typedValue, true);
+        final int bgColorValue = typedValue.data;
+
+        DisplayMetrics metrics = new DisplayMetrics();
+         getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+                theme.resolveAttribute(R.attr.croutonPadding, typedValue, true);
+        final int padding = (int) typedValue.getDimension(metrics);
+
+        Style alert = new Style.Builder()
+                .setBackgroundColorValue(bgColorValue)
+                .setTextColorValue(resources.getColor(R.color.red))
+                .setPaddingInPixels(padding)
+                .build();
+        Style confirm = new Style.Builder()
+                .setBackgroundColorValue(bgColorValue)
+                .setTextColorValue(resources.getColor(R.color.yellow))
+                .setPaddingInPixels(padding)
+                .build();
+        Style info = new Style.Builder()
+                .setBackgroundColorValue(bgColorValue)
+                .setTextColorValue(resources.getColor(R.color.green))
+                .setPaddingInPixels(padding)
+                .build();
+        return new CroutonStyles(alert, confirm, info);
     }
 
     @Override
@@ -256,21 +312,21 @@ public class BaseActivity extends Activity implements ActionBarOwner.View {
      * Event bus callback
      */
     public void onEventMainThread(TaskRenamedEvent event) {
-        Crouton.makeText(this, String.format("Task '%s' renamed ", event.newTitle()), Style.INFO).show();
+        Crouton.makeText(this, String.format("Task '%s' renamed ", event.newTitle()), croutonStyles.INFO).show();
     }
 
     /**
      * Event bus callback
      */
     public void onEventMainThread(TaskCreatedEvent event) {
-        Crouton.makeText(this, String.format("Task '%s' created ", event.title()), Style.INFO).show();
+        Crouton.makeText(this, String.format("Task '%s' created ", event.title()), croutonStyles.INFO).show();
     }
 
     /**
      * Event bus callback
      */
     public void onEventMainThread(TaskDeletedEvent event) {
-        Crouton.makeText(this, String.format("Task '%s' deleted", event.id()), Style.INFO).show();
+        Crouton.makeText(this, String.format("Task '%s' deleted", event.id()), croutonStyles.ALERT).show();
     }
 }
 
