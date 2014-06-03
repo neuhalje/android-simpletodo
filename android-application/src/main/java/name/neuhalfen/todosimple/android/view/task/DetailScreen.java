@@ -138,7 +138,7 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
 
                 actionBarConfig =
                         actionBarConfig
-                                .withAction(new ActionBarOwner.MenuAction("Save", new Action0() {
+                                .withSoleAction(new ActionBarOwner.MenuAction("Save", new Action0() {
                                     @Override
                                     public void call() {
                                         saveTask();

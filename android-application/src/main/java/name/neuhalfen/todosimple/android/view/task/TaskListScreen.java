@@ -72,6 +72,13 @@ public class TaskListScreen implements Blueprint {
 
             ActionBarOwner.Config actionBarConfig = actionBar.getConfig().withOwner(this);
 
+            actionBarConfig = actionBarConfig.withSoleAction(new ActionBarOwner.MenuAction("New Task", new Action0() {
+                @Override
+                public void call() {
+                    flow.goTo(DetailScreen.forNewTask());
+                }
+            }, R.drawable.ic_action_add));
+
             if (BuildConfig.DEBUG) {
                 actionBarConfig =
                         actionBarConfig.addAction(new ActionBarOwner.MenuAction("Create 20 Demo Tasks", new Action0() {
@@ -96,11 +103,11 @@ public class TaskListScreen implements Blueprint {
                                 for (int i = 1; i < 500; i++) {
                                     CreateTaskCommand createTaskCommand = Commands.createTask(String.format(userLocale, "Todo #%0,10d", i), "some random description");
                                     taskApp.executeCommand(createTaskCommand);
-                                    RenameTaskCommand renameTaskCommand = new RenameTaskCommand(CommandId.generateId(), createTaskCommand.aggregateRootId(),1, String.format(userLocale, "Renamed todo #%0,10d", i), "some random, long description for this task! ");
+                                    RenameTaskCommand renameTaskCommand = new RenameTaskCommand(CommandId.generateId(), createTaskCommand.aggregateRootId(), 1, String.format(userLocale, "Renamed todo #%0,10d", i), "some random, long description for this task! ");
                                     taskApp.executeCommand(renameTaskCommand);
-                                    RenameTaskCommand renameTaskCommand2 = new RenameTaskCommand(CommandId.generateId(), createTaskCommand.aggregateRootId(),2, String.format(userLocale, "Renamed again todo #%0,10d", i), "some random, and considerable longer description for this task! ");
+                                    RenameTaskCommand renameTaskCommand2 = new RenameTaskCommand(CommandId.generateId(), createTaskCommand.aggregateRootId(), 2, String.format(userLocale, "Renamed again todo #%0,10d", i), "some random, and considerable longer description for this task! ");
                                     taskApp.executeCommand(renameTaskCommand2);
-                                    DeleteTaskCommand deleteTaskCommand =  new DeleteTaskCommand(CommandId.generateId(), createTaskCommand.aggregateRootId(),3);
+                                    DeleteTaskCommand deleteTaskCommand = new DeleteTaskCommand(CommandId.generateId(), createTaskCommand.aggregateRootId(), 3);
                                     taskApp.executeCommand(deleteTaskCommand);
                                 }
                                 TaskListView view = getView();
@@ -110,12 +117,6 @@ public class TaskListScreen implements Blueprint {
                         }));
             }
 
-            actionBarConfig = actionBarConfig.addAction(new ActionBarOwner.MenuAction("New Task", new Action0() {
-                @Override
-                public void call() {
-                    flow.goTo(DetailScreen.forNewTask());
-                }
-            }, R.drawable.ic_action_add));
 
             actionBar.setConfig(actionBarConfig);
             view.showTasks();

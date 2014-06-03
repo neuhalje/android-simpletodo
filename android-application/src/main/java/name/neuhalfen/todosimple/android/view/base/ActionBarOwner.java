@@ -78,7 +78,7 @@ public class ActionBarOwner extends Presenter<ActionBarOwner.View> {
             return new Config(showHomeEnabled, upButtonEnabled, title, actions, ownerHash);
         }
 
-        public Config withAction(MenuAction action) {
+        public Config withSoleAction(MenuAction action) {
             return new Config(showHomeEnabled, upButtonEnabled, title, action, ownerHash);
         }
 
