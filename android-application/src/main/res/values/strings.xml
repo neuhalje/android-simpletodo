@@ -9,7 +9,7 @@
     <string name="edit_title_hint">title</string>
     <string name="edit_description_hint">description</string>
     <string name="menu_new_task">Create new task</string>
-    <string name="todo_detail_add_label">(</string>
+    <string name="todo_detail_add_label">(+)</string>
     <string name="todo_detail_version">Version: </string>
 
 </resources>
