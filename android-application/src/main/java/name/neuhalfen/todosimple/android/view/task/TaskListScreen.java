@@ -86,7 +86,7 @@ public class TaskListScreen implements Blueprint {
                             view.reloadQuery();
 
                         }
-                    })).withAction(new ActionBarOwner.MenuAction("New Task", new Action0() {
+                    })).addAction(new ActionBarOwner.MenuAction("New Task", new Action0() {
                         @Override
                         public void call() {
                             flow.goTo(DetailScreen.forNewTask());
