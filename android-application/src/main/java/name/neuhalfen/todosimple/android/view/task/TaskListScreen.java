@@ -19,14 +19,13 @@ import flow.Flow;
 import flow.Layout;
 import mortar.Blueprint;
 import mortar.ViewPresenter;
+import name.neuhalfen.todosimple.android.BuildConfig;
 import name.neuhalfen.todosimple.android.R;
 import name.neuhalfen.todosimple.android.di.ForApplication;
 import name.neuhalfen.todosimple.android.view.base.ActionBarOwner;
 import name.neuhalfen.todosimple.android.view.base.Main;
 import name.neuhalfen.todosimple.domain.application.TaskManagingApplication;
-import name.neuhalfen.todosimple.domain.model.Commands;
-import name.neuhalfen.todosimple.domain.model.CreateTaskCommand;
-import name.neuhalfen.todosimple.domain.model.TaskId;
+import name.neuhalfen.todosimple.domain.model.*;
 import rx.util.functions.Action0;
 
 import javax.inject.Inject;
@@ -73,25 +72,50 @@ public class TaskListScreen implements Blueprint {
 
             ActionBarOwner.Config actionBarConfig = actionBar.getConfig().withOwner(this);
 
-            actionBarConfig =
-                    actionBarConfig.withAction(new ActionBarOwner.MenuAction("Create Demo Tasks", new Action0() {
-                        @Override
-                        public void call() {
-                            for (int i = 1; i < 500; i++) {
-                                CreateTaskCommand createTaskCommand = Commands.createTask(String.format(userLocale, "Todo #%0,10d", i), "some random description");
-                                taskApp.executeCommand(createTaskCommand);
-                            }
-                            TaskListView view = getView();
-                            if (view == null) return;
-                            view.reloadQuery();
+            if (BuildConfig.DEBUG) {
+                actionBarConfig =
+                        actionBarConfig.addAction(new ActionBarOwner.MenuAction("Create 20 Demo Tasks", new Action0() {
+                            @Override
+                            public void call() {
+                                for (int i = 1; i < 20; i++) {
+                                    CreateTaskCommand createTaskCommand = Commands.createTask(String.format(userLocale, "Todo #%0,10d", i), "some random description");
+                                    taskApp.executeCommand(createTaskCommand);
+                                }
+                                TaskListView view = getView();
+                                if (view == null) return;
+                                view.reloadQuery();
 
-                        }
-                    })).addAction(new ActionBarOwner.MenuAction("New Task", new Action0() {
-                        @Override
-                        public void call() {
-                            flow.goTo(DetailScreen.forNewTask());
-                        }
-                    }, R.drawable.ic_action_add));
+                            }
+                        }));
+                actionBarConfig =
+                        actionBarConfig.addAction(new ActionBarOwner.MenuAction("Create deleted Tasks", new Action0() {
+                            // Put some load on the DB
+                            @Override
+                            public void call() {
+
+                                for (int i = 1; i < 500; i++) {
+                                    CreateTaskCommand createTaskCommand = Commands.createTask(String.format(userLocale, "Todo #%0,10d", i), "some random description");
+                                    taskApp.executeCommand(createTaskCommand);
+                                    RenameTaskCommand renameTaskCommand = new RenameTaskCommand(CommandId.generateId(), createTaskCommand.aggregateRootId(),1, String.format(userLocale, "Renamed todo #%0,10d", i), "some random, long description for this task! ");
+                                    taskApp.executeCommand(renameTaskCommand);
+                                    RenameTaskCommand renameTaskCommand2 = new RenameTaskCommand(CommandId.generateId(), createTaskCommand.aggregateRootId(),2, String.format(userLocale, "Renamed again todo #%0,10d", i), "some random, and considerable longer description for this task! ");
+                                    taskApp.executeCommand(renameTaskCommand2);
+                                    DeleteTaskCommand deleteTaskCommand =  new DeleteTaskCommand(CommandId.generateId(), createTaskCommand.aggregateRootId(),3);
+                                    taskApp.executeCommand(deleteTaskCommand);
+                                }
+                                TaskListView view = getView();
+                                if (view == null) return;
+                                view.reloadQuery();
+                            }
+                        }));
+            }
+
+            actionBarConfig = actionBarConfig.addAction(new ActionBarOwner.MenuAction("New Task", new Action0() {
+                @Override
+                public void call() {
+                    flow.goTo(DetailScreen.forNewTask());
+                }
+            }, R.drawable.ic_action_add));
 
             actionBar.setConfig(actionBarConfig);
             view.showTasks();
