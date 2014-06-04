@@ -302,13 +302,13 @@ public class BaseActivity extends Activity implements ActionBarOwner.View {
         final Style croutonStyle;
         switch (cmd.style) {
             case ALERT:
-                croutonStyle = Style.ALERT;
+                croutonStyle = croutonStyles.ALERT;
                 break;
             case CONFIRM:
-                croutonStyle = Style.CONFIRM;
+                croutonStyle = croutonStyles.CONFIRM;
                 break;
             case INFO:
-                croutonStyle = Style.INFO;
+                croutonStyle = croutonStyles.INFO;
                 break;
             default:
                 // cannot happen, just make the java compiler happy
