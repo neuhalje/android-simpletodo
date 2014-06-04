@@ -22,6 +22,7 @@ import dagger.Provides;
 import flow.Parcer;
 import name.neuhalfen.todosimple.android.TodoApplication;
 import name.neuhalfen.todosimple.android.infrastructure.AndroidEventPublisher;
+import name.neuhalfen.todosimple.android.infrastructure.cache.TaskCache;
 import name.neuhalfen.todosimple.android.infrastructure.db.SQLiteToTransactionAdapter;
 import name.neuhalfen.todosimple.android.infrastructure.db.TodoSQLiteHelper;
 import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.DatabaseViewManager;
@@ -31,6 +32,7 @@ import name.neuhalfen.todosimple.android.infrastructure.db.eventstore.AndroidEve
 import name.neuhalfen.todosimple.android.infrastructure.db.eventstore.json.EventJsonSerializer;
 import name.neuhalfen.todosimple.android.infrastructure.db.eventstore.json.EventJsonSerializerImpl;
 import name.neuhalfen.todosimple.android.view.base.GsonParcer;
+import name.neuhalfen.todosimple.domain.application.Cache;
 import name.neuhalfen.todosimple.domain.application.TaskManagingApplication;
 import name.neuhalfen.todosimple.domain.infrastructure.EventPublisher;
 import name.neuhalfen.todosimple.domain.infrastructure.EventStore;
@@ -65,8 +67,14 @@ public class AndroidApplicationModule {
     @Singleton
     @Provides
     @ForApplication
-    TaskManagingApplication provideTaskManagementApplication(@ForApplication EventStore eventStore, @ForApplication EventPublisher eventPublisher, @ForApplication SQLiteToTransactionAdapter tx) {
-        return new TaskManagingApplication(eventStore, eventPublisher, tx);
+    TaskManagingApplication provideTaskManagementApplication(@ForApplication EventStore eventStore, @ForApplication EventPublisher eventPublisher, @ForApplication SQLiteToTransactionAdapter tx, @ForApplication Cache taskCache) {
+        return new TaskManagingApplication(eventStore, eventPublisher, tx, taskCache);
+    }
+    @Singleton
+    @Provides
+    @ForApplication
+    Cache provideTaskCache() {
+        return new TaskCache();
     }
 
     @Singleton

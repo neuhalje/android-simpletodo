@@ -18,6 +18,7 @@ import name.neuhalfen.todosimple.domain.infrastructure._
 import com.google.inject.Module
 import com.google.inject.Binder
 import name.neuhalfen.todosimple.domain.infrastructure.impl.MemoryEventStore
+import name.neuhalfen.todosimple.domain.application.Cache
 
 
 class TestDependencyModule extends Module {
@@ -25,6 +26,7 @@ class TestDependencyModule extends Module {
     binder.bind(classOf[EventStore]).to(classOf[MemoryEventStore])
     binder.bind(classOf[EventPublisher]).to(classOf[DummyEventPublisher])
     binder.bind(classOf[Transaction]).to(classOf[DummyTransaction])
+    binder.bind(classOf[Cache]).toInstance(InMemoryCache)
   }
 }
 

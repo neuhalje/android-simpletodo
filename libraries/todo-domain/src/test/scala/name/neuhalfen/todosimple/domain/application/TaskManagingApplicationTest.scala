@@ -58,4 +58,13 @@ class TaskManagingApplicationTest extends UnitSpec {
     val renameTaskCommandWithWrongVersion = RenameTaskCommand(UnitSpec.COMMAND_ID_TWO, createTaskCommand.aggregateRootId, 999, "renamed task", "xx")
     an[IllegalArgumentException] should be thrownBy tasksApp.executeCommand(renameTaskCommandWithWrongVersion)
   }
+
+  it should "return tasks without uncomitted events" in {
+
+    val createTaskCommand: CreateTaskCommand = Commands.createTask("task title", "task desc")
+    tasksApp.executeCommand(createTaskCommand)
+
+    val task =  tasksApp.loadTask(createTaskCommand.aggregateRootId).get
+    task.uncommittedEVTs should be (empty)
+  }
 }
