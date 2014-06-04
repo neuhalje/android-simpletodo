@@ -87,6 +87,11 @@ public class TaskListScreen implements Blueprint {
                                 for (int i = 1; i < 20; i++) {
                                     CreateTaskCommand createTaskCommand = Commands.createTask(String.format(userLocale, "Todo #%0,10d", i), "some random description");
                                     taskApp.executeCommand(createTaskCommand);
+
+                                    for (int version=1; version<50;version++){
+                                        RenameTaskCommand renameTaskCommand = new RenameTaskCommand(CommandId.generateId(), createTaskCommand.aggregateRootId(), version, String.format(userLocale, "Renamed todo #%0,10d for the %d time", i,version-1), "some random, long description for this task! ");
+                                        taskApp.executeCommand(renameTaskCommand);
+                                    }
                                 }
                                 TaskListView view = getView();
                                 if (view == null) return;
