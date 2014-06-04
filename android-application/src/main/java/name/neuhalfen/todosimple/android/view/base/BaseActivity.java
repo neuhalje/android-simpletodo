@@ -40,13 +40,13 @@ import mortar.MortarScopeDevHelper;
 import name.neuhalfen.todosimple.android.BuildConfig;
 import name.neuhalfen.todosimple.android.R;
 import name.neuhalfen.todosimple.android.di.ForApplication;
+import name.neuhalfen.todosimple.android.infrastructure.cache.TaskCache;
 import name.neuhalfen.todosimple.android.view.base.notification.ViewShowNotificationCommand;
-import name.neuhalfen.todosimple.domain.model.TaskCreatedEvent;
-import name.neuhalfen.todosimple.domain.model.TaskDeletedEvent;
-import name.neuhalfen.todosimple.domain.model.TaskRenamedEvent;
+import name.neuhalfen.todosimple.domain.model.*;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Locale;
 
 import static android.content.Intent.ACTION_MAIN;
 import static android.content.Intent.CATEGORY_LAUNCHER;
@@ -90,6 +90,10 @@ public class BaseActivity extends Activity implements ActionBarOwner.View {
     @ForApplication
     EventBus eventBus;
 
+    @Inject
+    @ForApplication
+    TaskCache taskCache;
+
     private Flow mainFlow;
 
     @Override
@@ -123,9 +127,9 @@ public class BaseActivity extends Activity implements ActionBarOwner.View {
         final int bgColorValue = typedValue.data;
 
         DisplayMetrics metrics = new DisplayMetrics();
-         getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
-                theme.resolveAttribute(R.attr.croutonPadding, typedValue, true);
+        theme.resolveAttribute(R.attr.croutonPadding, typedValue, true);
         final int padding = (int) typedValue.getDimension(metrics);
 
         Style alert = new Style.Builder()
@@ -213,6 +217,19 @@ public class BaseActivity extends Activity implements ActionBarOwner.View {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
                             Log.d("DemoActivity", MortarScopeDevHelper.scopeHierarchyToString(activityScope));
+                            return true;
+                        }
+                    });
+            menu.add("Log Cache Statistics")
+                    .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            final int cacheAccesses = taskCache.getHits() + taskCache.getMisses();
+                            if (cacheAccesses > 0) {
+                                Log.d("DemoActivity", String.format(Locale.getDefault(), "TaskCache: %d items. %d accesses, %f0.1%% hit rate", taskCache.getSize(), cacheAccesses, (double) taskCache.getHits() * 100 / cacheAccesses));
+                            } else {
+                                Log.d("DemoActivity", String.format(Locale.getDefault(), "TaskCache: %d items.  No accesses", taskCache.getSize()));
+                            }
                             return true;
                         }
                     });

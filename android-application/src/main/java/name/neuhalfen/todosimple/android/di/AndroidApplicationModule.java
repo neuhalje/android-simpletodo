@@ -70,11 +70,19 @@ public class AndroidApplicationModule {
     TaskManagingApplication provideTaskManagementApplication(@ForApplication EventStore eventStore, @ForApplication EventPublisher eventPublisher, @ForApplication SQLiteToTransactionAdapter tx, @ForApplication Cache taskCache) {
         return new TaskManagingApplication(eventStore, eventPublisher, tx, taskCache);
     }
+
     @Singleton
     @Provides
     @ForApplication
-    Cache provideTaskCache() {
+    TaskCache provideTaskCache() {
         return new TaskCache();
+    }
+
+    @Singleton
+    @Provides
+    @ForApplication
+    Cache provideTaskCacheIF(@ForApplication TaskCache cache) {
+        return cache;
     }
 
     @Singleton
