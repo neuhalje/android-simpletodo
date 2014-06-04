@@ -69,6 +69,8 @@ dependencies {
     compile project(':libraries:todo-domain')
     compile 'com.android.support:support-v4:19.1+'
 
+    compile 'org.apache.commons:commons-lang3:3.3.2'
+
     compile 'com.squareup.flow:flow:0.6'
     compile 'com.squareup.mortar:mortar:0.14'
 

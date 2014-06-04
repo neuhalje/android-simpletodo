@@ -14,8 +14,10 @@ specific language governing permissions and limitations under the License.
  */
 package name.neuhalfen.todosimple.android.view.task;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
 import dagger.Provides;
 import de.greenrobot.event.EventBus;
 import flow.Flow;
@@ -112,18 +114,20 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
         private final ActionBarOwner actionBar;
         private final EventBus eventBus;
         private final Flow flow;
+        private final Context context;
 
         private Cmd cmd;
 
 
         @Inject
-        Presenter(@ForApplication TaskManagingApplication taskApp, TaskDTOAdapter taskDTOAdapter, @ForApplication EventBus eventBus, ActionBarOwner actionBar, Cmd initialCommand, Flow flow) {
+        Presenter(@ForApplication TaskManagingApplication taskApp, TaskDTOAdapter taskDTOAdapter, @ForApplication EventBus eventBus, ActionBarOwner actionBar, Cmd initialCommand, Flow flow, @ForApplication Context context) {
             this.taskApp = taskApp;
             this.taskDTOAdapter = taskDTOAdapter;
             this.actionBar = actionBar;
             this.eventBus = eventBus;
             this.cmd = initialCommand;
             this.flow = flow;
+            this.context = context;
         }
 
         @Override
@@ -161,6 +165,10 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
                 actionBar.setConfig(actionBarConfig);
 
                 takeCommand(this.cmd);
+                view.setAvailableLabelProvider(   new ArrayAdapter<String>(context,
+                        android.R.layout.simple_dropdown_item_1line, new String[] {
+                        "Belgium", "France", "Italy", "Germany", "Spain"}
+                ));
             }
         }
 

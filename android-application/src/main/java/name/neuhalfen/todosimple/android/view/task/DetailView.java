@@ -16,10 +16,7 @@ package name.neuhalfen.todosimple.android.view.task;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -29,6 +26,7 @@ import name.neuhalfen.todosimple.android.R;
 import name.neuhalfen.todosimple.android.view.label.LabelDTO;
 import name.neuhalfen.todosimple.android.view.label.LabelListView;
 import name.neuhalfen.todosimple.domain.model.TaskId;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.inject.Inject;
 import java.util.UUID;
@@ -58,8 +56,11 @@ public class DetailView extends LinearLayout {
     @InjectView(R.id.todo_detail_labels)
     LabelListView labels;
 
-    @InjectView(R.id.todo_detail_add_label)
+    @InjectView(R.id.todo_detail_add_label_button)
     Button addLabelButton;
+
+    @InjectView(R.id.todo_detail_add_label)
+    AutoCompleteTextView labelAutoComplete;
 
     private TaskDTO.State taskStaus;
 
@@ -76,10 +77,14 @@ public class DetailView extends LinearLayout {
     }
 
 
-    @OnClick(R.id.todo_detail_add_label)
+    @OnClick(R.id.todo_detail_add_label_button)
     void assignNewLabel() {
-        UUID id = UUID.randomUUID();
-        LabelDTO label = new LabelDTO(id, id.toString());
+        final String labelText = labelAutoComplete.getText().toString();
+
+        if (StringUtils.isBlank(labelText)) {return;}
+
+        final UUID id = UUID.randomUUID();
+        LabelDTO label = new LabelDTO(id, labelText);
         labels.assignLabel(label);
     }
 
@@ -144,6 +149,11 @@ public class DetailView extends LinearLayout {
         checkNotNull(id, "id must not be null");
         this.taskId = id;
         showUUID.setText(id.toString());
+    }
+
+
+    public <T extends ListAdapter & Filterable> void  setAvailableLabelProvider(T adapter){
+        labelAutoComplete.setAdapter(adapter);
     }
 
 
