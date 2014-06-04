@@ -1,11 +1,43 @@
 package name.neuhalfen.todosimple.domain.application
 
-import name.neuhalfen.todosimple.domain.model.{TaskId, Event, Command, Task}
 import javax.inject.Inject
 import name.neuhalfen.todosimple.domain.infrastructure.{TransactionRollbackException, Transaction, EventPublisher, EventStore}
-import scala.collection.JavaConverters._
+import name.neuhalfen.todosimple.domain.model._
 import scala.Some
+import scala.collection.JavaConverters._
+import scala.collection.parallel.mutable
+import scala.collection.mutable.Map._
 
+trait Cache {
+  def isCached(aggregateId: TaskId): Boolean
+
+  def put(aggregate: Task): Unit
+
+  def get(aggregateId: TaskId): Option[Task]
+}
+
+/**
+ * FIXME: This is just a temporary solution; needs to be injected.
+ */
+private object Cache extends Cache{
+  private val cache : scala.collection.mutable.Map[TaskId, Task] = scala.collection.mutable.Map.empty
+
+  @Override
+  def isCached(aggregateId: TaskId) : Boolean = {
+    cache.contains(aggregateId)
+  }
+
+  @Override
+  def put(aggregate: Task): Unit = {
+    cache.put(aggregate.id, aggregate)
+  }
+
+  @Override
+  def get(aggregateId: TaskId): Option[Task] = {
+    cache.get(aggregateId)
+  }
+
+}
 
 class TaskManagingApplication @Inject()(eventStore: EventStore, eventPublishing: EventPublisher, tx: Transaction) {
 
@@ -17,18 +49,21 @@ class TaskManagingApplication @Inject()(eventStore: EventStore, eventPublishing:
     try {
       tx.beginTransaction()
       val aggregateId = command.aggregateRootId
-      val events = eventStore.loadEvents(aggregateId)
 
-      var task = events match {
-        case Some(evts) => Task.loadFromHistory(evts)
-        case None => Task.newInstance
+      // FIXME: flatten might help to clean this up
+
+      val loadedTask : Task =  Cache.get(aggregateId) match {
+        case Some(t) => t
+        case None =>loadFromEventStore(aggregateId)
       }
 
-      task = task.handle(command)
-      eventStore.appendEvents(task.id, task.uncommittedEVTs)
-      eventPublishing.publishEventsInTransaction(task.uncommittedEVTs.asJava)
+      val augementedTask = loadedTask.handle(command)
+
+      eventStore.appendEvents(augementedTask.id, augementedTask.uncommittedEVTs)
+      eventPublishing.publishEventsInTransaction(augementedTask.uncommittedEVTs.asJava)
       tx.commit()
-      publishEventsAfterCommitIgnoreExceptions(task.uncommittedEVTs.asJava)
+      Cache.put(augementedTask)
+      publishEventsAfterCommitIgnoreExceptions(augementedTask.uncommittedEVTs.asJava)
     } catch {
       // FIXME: Make error reports better ...
       case e: TransactionRollbackException => throw new RuntimeException(e)
@@ -38,6 +73,16 @@ class TaskManagingApplication @Inject()(eventStore: EventStore, eventPublishing:
     //task.markCommitted
   }
 
+
+  def loadFromEventStore(aggregateId: TaskId): Task = {
+    val events = eventStore.loadEvents(aggregateId)
+
+    val task = events match {
+      case Some(evts) => Task.loadFromHistory(evts)
+      case None => Task.newInstance
+    }
+    task
+  }
 
   def publishEventsAfterCommitIgnoreExceptions(events: java.util.List[Event]) {
     try {
