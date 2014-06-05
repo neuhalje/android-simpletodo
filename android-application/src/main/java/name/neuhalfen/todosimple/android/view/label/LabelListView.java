@@ -42,7 +42,7 @@ public class LabelListView extends LinearLayout {
     @Inject
     LabelListControl.Presenter presenter;
 
-    private SortedSet<Button> allLabelViews;
+    private List<Button> allLabelViews;
 
     private final static class LabelViewConfig {
         final int labelTextColor;
@@ -114,14 +114,7 @@ public class LabelListView extends LinearLayout {
             return;
         }
 
-        allLabelViews = new TreeSet<Button>(new Comparator<Button>() {
-            @Override
-            public int compare(Button lhs, Button rhs) {
-                LabelDTO ldto = (LabelDTO) lhs.getTag();
-                LabelDTO rdto = (LabelDTO) rhs.getTag();
-                return ldto.name.compareTo(rdto.name);
-            }
-        });
+        allLabelViews = new ArrayList<Button>();
 
         presenter.takeView(this);
 
@@ -204,12 +197,24 @@ public class LabelListView extends LinearLayout {
         });
         allLabelViews.add(tv);
 
+        Collections.sort(allLabelViews,
+
+                new Comparator<Button>() {
+                    @Override
+                    public int compare(Button lhs, Button rhs) {
+                        LabelDTO ldto = (LabelDTO) lhs.getTag();
+                        LabelDTO rdto = (LabelDTO) rhs.getTag();
+                        return ldto.name.compareTo(rdto.name);
+                    }
+                });
+
+
         buildLabelRows(allLabelViews, getContext());
         invalidate();
     }
 
     private void onLabelClicked(LabelDTO label) {
-        if (presenter!=null){
+        if (presenter != null) {
             presenter.onLabelClicked(label);
         }
     }
@@ -254,7 +259,7 @@ public class LabelListView extends LinearLayout {
         }
     }
 
-    private void buildLabelRows(SortedSet<Button> views, Context context) {
+    private void buildLabelRows(List<Button> views, Context context) {
         removeAllLabelRowsAndViews(views);
 
         final int maxWidth = this.getMeasuredWidth() - marginMedium;
@@ -282,7 +287,7 @@ public class LabelListView extends LinearLayout {
         invalidate();
     }
 
-    private void removeAllLabelRowsAndViews(SortedSet<Button> views) {
+    private void removeAllLabelRowsAndViews(List<Button> views) {
         // FIXME HACK: remove all children from the parent
         for (View view : views) {
             if (view.getParent() != null) {
