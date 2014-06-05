@@ -29,6 +29,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 import de.greenrobot.event.EventBus;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
@@ -42,7 +43,9 @@ import name.neuhalfen.todosimple.android.R;
 import name.neuhalfen.todosimple.android.di.ForApplication;
 import name.neuhalfen.todosimple.android.infrastructure.cache.TaskCache;
 import name.neuhalfen.todosimple.android.view.base.notification.ViewShowNotificationCommand;
-import name.neuhalfen.todosimple.domain.model.*;
+import name.neuhalfen.todosimple.domain.model.TaskCreatedEvent;
+import name.neuhalfen.todosimple.domain.model.TaskDeletedEvent;
+import name.neuhalfen.todosimple.domain.model.TaskRenamedEvent;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -216,7 +219,9 @@ public class BaseActivity extends Activity implements ActionBarOwner.View {
                     .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
-                            Log.d("DemoActivity", MortarScopeDevHelper.scopeHierarchyToString(activityScope));
+                            final String msg = MortarScopeDevHelper.scopeHierarchyToString(activityScope);
+                            Toast.makeText(BaseActivity.this, msg, Toast.LENGTH_LONG).show();
+                            Log.d("DemoActivity", msg);
                             return true;
                         }
                     });
@@ -225,11 +230,14 @@ public class BaseActivity extends Activity implements ActionBarOwner.View {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
                             final int cacheAccesses = taskCache.getHits() + taskCache.getMisses();
+                            final String msg;
                             if (cacheAccesses > 0) {
-                                Log.d("DemoActivity", String.format(Locale.getDefault(), "TaskCache: %d items. %d accesses, %f0.1%% hit rate", taskCache.getSize(), cacheAccesses, (double) taskCache.getHits() * 100 / cacheAccesses));
+                                msg = String.format(Locale.getDefault(), "TaskCache: %d items. %d accesses, %f0.1%% hit rate", taskCache.getSize(), cacheAccesses, (double) taskCache.getHits() * 100 / cacheAccesses);
                             } else {
-                                Log.d("DemoActivity", String.format(Locale.getDefault(), "TaskCache: %d items.  No accesses", taskCache.getSize()));
+                                msg = String.format(Locale.getDefault(), "TaskCache: %d items.  No accesses", taskCache.getSize());
                             }
+                            Toast.makeText(BaseActivity.this, msg, Toast.LENGTH_LONG).show();
+                            Log.d("DemoActivity", msg);
                             return true;
                         }
                     });
