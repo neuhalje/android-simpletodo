@@ -37,8 +37,8 @@
         label:labelBorderWidth="1dp"
         android:layout_marginLeft="@dimen/margin_tiny"
         android:layout_marginRight="@dimen/margin_small"
-        android:layout_marginBottom="@dimen/margin_small"
-        android:minHeight="@dimen/margin_huge" />
+        android:layout_marginBottom="@dimen/margin_tiny"
+        android:minHeight="@dimen/margin_medium" />
 
 
     <AutoCompleteTextView
