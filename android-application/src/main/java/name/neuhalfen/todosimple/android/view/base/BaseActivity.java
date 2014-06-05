@@ -211,7 +211,7 @@ public class BaseActivity extends Activity implements ActionBarOwner.View {
                 }
             }
         }
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG || true) {
             menu.add("Log Scope Hierarchy")
                     .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                         @Override
