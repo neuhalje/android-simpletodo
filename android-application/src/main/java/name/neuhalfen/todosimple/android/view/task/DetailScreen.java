@@ -30,6 +30,8 @@ import name.neuhalfen.todosimple.android.di.ForApplication;
 import name.neuhalfen.todosimple.android.view.base.ActionBarOwner;
 import name.neuhalfen.todosimple.android.view.base.Main;
 import name.neuhalfen.todosimple.android.view.base.notification.ViewShowNotificationCommand;
+import name.neuhalfen.todosimple.android.view.label.LabelDTO;
+import name.neuhalfen.todosimple.android.view.label.LabelListView;
 import name.neuhalfen.todosimple.domain.application.TaskManagingApplication;
 import name.neuhalfen.todosimple.domain.model.*;
 import rx.util.functions.Action0;
@@ -106,7 +108,7 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
 
 
     @Singleton
-    static class Presenter extends ViewPresenter<DetailView> {
+    static class Presenter extends ViewPresenter<DetailView>{
 
 
         private final TaskManagingApplication taskApp;
@@ -178,7 +180,7 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
             final TaskDTO taskDTO = taskDTOAdapter.loadOrCreateTaskDTO(cmd);
 
             final DetailView view = getView();
-            view.setTaskStaus(cmd.cmd);
+            view.setTaskStatus(cmd.cmd);
             view.setTaskId(taskDTO.id);
             view.setEditedDescription(taskDTO.description);
             view.setEditedTitle(taskDTO.title);
@@ -194,7 +196,7 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
             }
 
 
-            switch (view.getTaskStaus()) {
+            switch (view.getTaskStatus()) {
                 case EXISTING:
                     Command command = new DeleteTaskCommand(CommandId.generateId(), cmd.taskId, view.getTaskVersion());
                     executeCommand(command);
@@ -207,7 +209,7 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
                     break;
             }
 
-            view.setTaskStaus(TaskDTO.State.DELETED);
+            view.setTaskStatus(TaskDTO.State.DELETED);
             flow.goBack();
         }
 
@@ -223,7 +225,7 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
 
 
             final Command command;
-            switch (view.getTaskStaus()) {
+            switch (view.getTaskStatus()) {
                 case EXISTING:
                     command = new RenameTaskCommand(CommandId.generateId(), this.cmd.taskId, view.getTaskVersion(), view.getEditedTitle(), view.getEditedDescription());
                     break;
@@ -234,7 +236,7 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
                     // nothing to do.Probably a stray "save" from closing the view after saving
                     return;
                 default:
-                    throw new IllegalStateException(String.format("There should be no third state but it is '%s'", view.getTaskStaus()));
+                    throw new IllegalStateException(String.format("There should be no third state but it is '%s'", view.getTaskStatus()));
             }
             executeCommand(command);
         }
@@ -300,7 +302,7 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
             view.setEditedDescription(event.description());
             view.setEditedTitle(event.title());
             view.setTaskVersion(event.newAggregateRootVersion());
-            view.setTaskStaus(TaskDTO.State.EXISTING);
+            view.setTaskStatus(TaskDTO.State.EXISTING);
 
             final ActionBarOwner.Config config = actionBar.getConfig();
             if (config.isOwner(this)) {
@@ -312,5 +314,14 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
             return cmd.taskId.equals(event.aggregateRootId());
         }
 
+        public void onAddLabelClicked(LabelDTO label) {
+            final DetailView view = getView();
+            view.showLabelAssigned(label);
+        }
+
+        public void onRemoveLabelClicked(LabelDTO label) {
+            final DetailView view = getView();
+            view.showLabelRemoved(label);
+        }
     }
 }

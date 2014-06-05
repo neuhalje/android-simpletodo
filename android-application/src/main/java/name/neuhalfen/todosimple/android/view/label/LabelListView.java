@@ -33,6 +33,12 @@ import javax.inject.Inject;
 import java.util.*;
 
 public class LabelListView extends LinearLayout {
+
+    public interface OnLabelClickedListener {
+        public void onLabelClicked(LabelListView view, LabelDTO label);
+    }
+
+
     @Inject
     LabelListControl.Presenter presenter;
 
@@ -143,6 +149,13 @@ public class LabelListView extends LinearLayout {
         presenter.dropView(this);
 
         allLabelViews = null;
+        setOnLabelClickedListener(null);
+    }
+
+    public void setOnLabelClickedListener(OnLabelClickedListener listener) {
+        if (null != presenter) {
+            presenter.setOnLabelClickedListener(listener);
+        }
     }
 
 
@@ -154,7 +167,7 @@ public class LabelListView extends LinearLayout {
         presenter.assignLabel(label);
     }
 
-    private void unassignLabel(LabelDTO label) {
+    public void unassignLabel(LabelDTO label) {
         presenter.unassignLabel(label);
     }
 
@@ -186,13 +199,19 @@ public class LabelListView extends LinearLayout {
             @Override
             public void onClick(View v) {
                 final LabelDTO label = (LabelDTO) v.getTag();
-                unassignLabel(label);
+                onLabelClicked(label);
             }
         });
         allLabelViews.add(tv);
 
         buildLabelRows(allLabelViews, getContext());
         invalidate();
+    }
+
+    private void onLabelClicked(LabelDTO label) {
+        if (presenter!=null){
+            presenter.onLabelClicked(label);
+        }
     }
 
     /**
@@ -228,10 +247,10 @@ public class LabelListView extends LinearLayout {
             return currentLength >= maxLength;
         }
 
-        public int measureLabelWidth(View label){
+        public int measureLabelWidth(View label) {
             label.measure(0, 0);
             final int measuredWidth = label.getMeasuredWidth();
-            return measuredWidth ;
+            return measuredWidth;
         }
     }
 
@@ -245,7 +264,7 @@ public class LabelListView extends LinearLayout {
         Row currentRow = new Row(maxWidth, buildRowLayout(context, rowLayoutParams));
 
         for (View view : views) {
-            final int viewMeasuredWidth =currentRow.measureLabelWidth(view);
+            final int viewMeasuredWidth = currentRow.measureLabelWidth(view);
 
             if (currentRow.isEmpty() || currentRow.fits(viewMeasuredWidth)) {
                 currentRow.append(view, viewMeasuredWidth);

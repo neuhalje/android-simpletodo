@@ -8,6 +8,7 @@ import name.neuhalfen.todosimple.android.view.base.Main;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.lang.ref.WeakReference;
 import java.util.*;
 
 public class LabelListControl implements Blueprint {
@@ -34,6 +35,7 @@ public class LabelListControl implements Blueprint {
     static class Presenter extends ViewPresenter<LabelListView> {
 
 
+        private WeakReference<LabelListView.OnLabelClickedListener> onLabelClickedListener;
         private final Map<UUID, LabelDTO> assignedLabels;
 
         @Inject
@@ -80,6 +82,30 @@ public class LabelListControl implements Blueprint {
             }
             assignedLabels.remove(label.id);
             getView().removeLabelView(label);
+        }
+
+        public void onLabelClicked(LabelDTO label) {
+            if (hasOnLabelClickListener()) {
+                onLabelClickedListener.get().onLabelClicked(getView(), label);
+            }
+        }
+
+        public void setOnLabelClickedListener(LabelListView.OnLabelClickedListener listener) {
+            if (null == listener) {
+                this.onLabelClickedListener = null;
+            } else {
+                this.onLabelClickedListener = new WeakReference<LabelListView.OnLabelClickedListener>(listener);
+            }
+        }
+
+        private boolean hasOnLabelClickListener() {
+            return null != onLabelClickedListener && onLabelClickedListener.get() != null;
+        }
+
+        @Override
+        public void dropView(LabelListView view) {
+            super.dropView(view);
+            setOnLabelClickedListener(null);
         }
     }
 

@@ -34,7 +34,7 @@ import java.util.UUID;
 import static name.neuhalfen.todosimple.helper.Preconditions.checkNotNull;
 import static name.neuhalfen.todosimple.helper.Preconditions.checkState;
 
-public class DetailView extends LinearLayout {
+public class DetailView extends LinearLayout   implements LabelListView.OnLabelClickedListener  {
     @Inject
     DetailScreen.Presenter presenter;
 
@@ -62,7 +62,7 @@ public class DetailView extends LinearLayout {
     @InjectView(R.id.todo_detail_add_label)
     AutoCompleteTextView labelAutoComplete;
 
-    private TaskDTO.State taskStaus;
+    private TaskDTO.State taskStatus;
 
     private int taskVersion;
     private TaskId taskId;
@@ -78,16 +78,13 @@ public class DetailView extends LinearLayout {
 
 
     @OnClick(R.id.todo_detail_add_label_button)
-    void assignNewLabel() {
+    void addLabelButtonClick() {
         final String labelText = labelAutoComplete.getText().toString();
-
         if (StringUtils.isBlank(labelText)) {return;}
-
         final UUID id = UUID.randomUUID();
         LabelDTO label = new LabelDTO(id, labelText);
-        labels.assignLabel(label);
+        presenter.onAddLabelClicked(label);
     }
-
 
     @Override
     protected void onFinishInflate() {
@@ -96,6 +93,8 @@ public class DetailView extends LinearLayout {
             return;
         }
         ButterKnife.inject(this);
+
+        labels.setOnLabelClickedListener(this);
         presenter.takeView(this);
     }
 
@@ -106,6 +105,7 @@ public class DetailView extends LinearLayout {
             return;
         }
         presenter.onCloseView();
+        labels.setOnLabelClickedListener(null);
         ButterKnife.reset(this);
         presenter.dropView(this);
     }
@@ -151,6 +151,13 @@ public class DetailView extends LinearLayout {
         showUUID.setText(id.toString());
     }
 
+    public void showLabelAssigned(LabelDTO label ) {
+        labels.assignLabel(label);
+    }
+    public void showLabelRemoved(LabelDTO label ) {
+        labels.unassignLabel(label);
+    }
+
 
     public <T extends ListAdapter & Filterable> void  setAvailableLabelProvider(T adapter){
         labelAutoComplete.setAdapter(adapter);
@@ -161,12 +168,20 @@ public class DetailView extends LinearLayout {
         return taskId;
     }
 
-    public TaskDTO.State getTaskStaus() {
-        return taskStaus;
+    public TaskDTO.State getTaskStatus() {
+        return taskStatus;
     }
 
-    public void setTaskStaus(TaskDTO.State taskStaus) {
-        this.taskStaus = taskStaus;
+    public void setTaskStatus(TaskDTO.State taskStatus)
+    {
+        this.taskStatus = taskStatus;
     }
 
+
+    @Override
+    public void onLabelClicked(LabelListView llv, LabelDTO label) {
+        if (presenter!=null) {
+            presenter.onRemoveLabelClicked(label);
+        }
+    }
 }
