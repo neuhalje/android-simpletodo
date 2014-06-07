@@ -170,7 +170,7 @@ public class LabelListView extends LinearLayout {
         // FIXME: Hacksih at its worst
         Button tobeRemoved = null;
         for (Button b : allLabelViews) {
-            if (b.getTag() == label) {
+            if (b.getTag().equals(label)) {
                 tobeRemoved = b;
             }
         }
