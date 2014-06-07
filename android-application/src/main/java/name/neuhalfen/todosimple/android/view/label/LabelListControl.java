@@ -1,7 +1,6 @@
 package name.neuhalfen.todosimple.android.view.label;
 
 import android.os.Bundle;
-import android.util.Log;
 import mortar.Blueprint;
 import mortar.ViewPresenter;
 import name.neuhalfen.todosimple.android.view.base.Main;
@@ -11,7 +10,7 @@ import javax.inject.Singleton;
 import java.lang.ref.WeakReference;
 import java.util.*;
 
-public class LabelListControl implements Blueprint {
+class LabelListControl implements Blueprint {
 
     @Override
     public String getMortarScopeName() {
@@ -40,7 +39,6 @@ public class LabelListControl implements Blueprint {
 
         @Inject
         public Presenter() {
-            Log.i("LLC", "Iam here");
             assignedLabels = new HashMap<UUID, LabelDTO>();
         }
 
