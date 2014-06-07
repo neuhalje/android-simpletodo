@@ -20,12 +20,11 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import mortar.Mortar;
 import mortar.MortarScope;
 import name.neuhalfen.todosimple.android.R;
@@ -33,7 +32,7 @@ import name.neuhalfen.todosimple.android.R;
 import javax.inject.Inject;
 import java.util.*;
 
-public class LabelListView extends LinearLayout {
+public class LabelListView extends RelativeLayout {
 
     public interface OnLabelClickedListener {
         public void onLabelClicked(LabelListView view, LabelDTO label);
@@ -81,7 +80,6 @@ public class LabelListView extends LinearLayout {
         marginSmall = getResources().getDimensionPixelSize(R.dimen.margin_small);
         marginMedium = getResources().getDimensionPixelSize(R.dimen.margin_medium);
 
-        setOrientation(LinearLayout.VERTICAL);
     }
 
     private void hookUpMortar(Context context) {
@@ -107,7 +105,7 @@ public class LabelListView extends LinearLayout {
         final LayoutParams layoutParams = new LayoutParams(
                 LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(0,marginSmall,marginSmall,marginSmall);
+        layoutParams.setMargins(0, marginSmall, marginSmall, marginSmall);
         final LabelViewConfig cfg = new LabelViewConfig(labelTextColor, bgColor, borderColor, borderWidth, background, layoutParams);
 
         return cfg;
@@ -230,15 +228,29 @@ public class LabelListView extends LinearLayout {
     /**
      * Row for the label view.
      */
-    private final static class Row {
+    private final static class Rows {
         private final int maxLength;
         private int currentLength;
-        public final LinearLayout layoutRow;
+        private final RelativeLayout layout;
 
-        public Row(int maxLength, LinearLayout layoutRow) {
+        private int lastAddedViewId = 0;
+        private int previousRowFirstViewId;
+        private int thisRowFirstViewId;
+
+        private boolean startNewRow;
+        private boolean isFirstRow;
+
+        private final int marginLeft;
+        private final int marginTop;
+
+        public Rows(int maxLength, RelativeLayout layout, int marginLeft, int marginTop) {
             this.maxLength = maxLength;
-            this.layoutRow = layoutRow;
+            this.layout = layout;
+            this.marginLeft = marginLeft;
+            this.marginTop = marginTop;
             this.currentLength = 0;
+            this.startNewRow = true;
+            this.isFirstRow = true;
         }
 
         public boolean isEmpty() {
@@ -250,8 +262,32 @@ public class LabelListView extends LinearLayout {
         }
 
         public void append(View view, int viewMeasuredWidth) {
-            layoutRow.addView(view);
+            final int currentViewId = lastAddedViewId + 1;
             currentLength += viewMeasuredWidth;
+
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+            //  Horizontal alignment
+            if (isFirstRow) {
+                params.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+            } else {
+                params.addRule(RelativeLayout.BELOW, previousRowFirstViewId);
+            }
+
+            // Vertical alignment
+            if (startNewRow) {
+                params.addRule(RelativeLayout.ALIGN_PARENT_START, RelativeLayout.TRUE);
+                thisRowFirstViewId = currentViewId;
+                startNewRow = false;
+            } else {
+                params.addRule(RelativeLayout.RIGHT_OF, lastAddedViewId);
+            }
+            params.setMargins(marginLeft,marginTop,0,0);
+
+            view.setId(currentViewId);
+            layout.addView(view, params);
+
+            lastAddedViewId = currentViewId;
         }
 
         public boolean isFull() {
@@ -261,9 +297,14 @@ public class LabelListView extends LinearLayout {
         public int measureLabelWidth(View label) {
             label.measure(0, 0);
             final int measuredWidth = label.getMeasuredWidth();
-            final int pl = label.getPaddingLeft();
-            final int pr = label.getPaddingRight();
-            return measuredWidth;
+            return measuredWidth + marginLeft;
+        }
+
+        public void newRow() {
+            startNewRow = true;
+            currentLength = 0;
+            isFirstRow = false;
+            previousRowFirstViewId = thisRowFirstViewId;
         }
     }
 
@@ -272,52 +313,23 @@ public class LabelListView extends LinearLayout {
 
         final int maxWidth = this.getMeasuredWidth() - marginMedium;
 
-        final LayoutParams rowLayoutParams = (LayoutParams) getLayoutParams();
-        rowLayoutParams.setMargins(0,marginSmall,marginSmall,0);
-
-        Row currentRow = new Row(maxWidth, buildRowLayout(context, rowLayoutParams));
+        final Rows rows = new Rows(maxWidth, this, marginSmall, marginSmall);
 
         for (View view : views) {
-            final int viewMeasuredWidth = currentRow.measureLabelWidth(view);
+            final int viewMeasuredWidth = rows.measureLabelWidth(view);
 
-            if (currentRow.isEmpty() || currentRow.fits(viewMeasuredWidth)) {
-                currentRow.append(view, viewMeasuredWidth);
+            if (rows.isEmpty() || rows.fits(viewMeasuredWidth)) {
+                rows.append(view, viewMeasuredWidth);
             } else {
-                addView(currentRow.layoutRow);
-
-                currentRow = new Row(maxWidth, buildRowLayout(context, rowLayoutParams));
-                currentRow.append(view, viewMeasuredWidth);
+                rows.newRow();
+                rows.append(view, viewMeasuredWidth);
             }
         }
 
-        if (!currentRow.isEmpty()) {
-            addView(currentRow.layoutRow);
-        }
-        invalidate();
+        requestLayout();
     }
 
     private void removeAllLabelRowsAndViews(List<Button> views) {
-        // FIXME HACK: remove all children from the parent
-        for (View view : views) {
-            if (view.getParent() != null) {
-                if (view.getParent() instanceof LinearLayout) {
-                    ((LinearLayout) view.getParent()).removeView(view);
-                }
-            }
-        }
-        // this alone does not help
         removeAllViews();
     }
-
-
-    private LinearLayout buildRowLayout(Context context, LayoutParams layoutParams) {
-        LinearLayout currentRow;
-        currentRow = new LinearLayout(context);
-        currentRow.setLayoutParams(layoutParams);
-        currentRow.setGravity(Gravity.LEFT);
-        currentRow.setOrientation(LinearLayout.HORIZONTAL);
-        return currentRow;
-    }
-
-
 }
