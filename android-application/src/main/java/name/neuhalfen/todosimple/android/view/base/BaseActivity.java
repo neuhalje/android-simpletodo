@@ -54,6 +54,7 @@ import java.util.Locale;
 import static android.content.Intent.ACTION_MAIN;
 import static android.content.Intent.CATEGORY_LAUNCHER;
 import static android.view.MenuItem.SHOW_AS_ACTION_ALWAYS;
+import static android.view.MenuItem.SHOW_AS_ACTION_NEVER;
 
 public class BaseActivity extends Activity implements ActionBarOwner.View {
     private final static class CroutonStyles {
@@ -224,7 +225,8 @@ public class BaseActivity extends Activity implements ActionBarOwner.View {
                             Log.d("DemoActivity", msg);
                             return true;
                         }
-                    });
+                    })
+            .setShowAsAction(SHOW_AS_ACTION_NEVER);
             menu.add("Log Cache Statistics")
                     .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                         @Override
@@ -240,7 +242,8 @@ public class BaseActivity extends Activity implements ActionBarOwner.View {
                             Log.d("DemoActivity", msg);
                             return true;
                         }
-                    });
+                    })
+            .setShowAsAction(SHOW_AS_ACTION_NEVER);
         }
         return true;
     }
