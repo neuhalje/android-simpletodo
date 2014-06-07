@@ -23,6 +23,7 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import mortar.Mortar;
@@ -51,13 +52,15 @@ public class LabelListView extends LinearLayout {
         final int borderWidth;
 
         final Drawable background;
+        final ViewGroup.LayoutParams layoutParams;
 
-        private LabelViewConfig(int labelTextColor, int bgColor, int borderColor, int borderWidth, Drawable background) {
+        private LabelViewConfig(int labelTextColor, int bgColor, int borderColor, int borderWidth, Drawable background, ViewGroup.LayoutParams layoutParams) {
             this.labelTextColor = labelTextColor;
             this.bgColor = bgColor;
             this.borderColor = borderColor;
             this.borderWidth = borderWidth;
             this.background = background;
+            this.layoutParams = layoutParams;
         }
     }
 
@@ -101,7 +104,11 @@ public class LabelListView extends LinearLayout {
         background.setStroke(borderWidth, borderColor);
         background.setColor(bgColor);
 
-        final LabelViewConfig cfg = new LabelViewConfig(labelTextColor, bgColor, borderColor, borderWidth, background);
+        final LayoutParams layoutParams = new LayoutParams(
+                LayoutParams.WRAP_CONTENT,
+                LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(0,marginSmall,marginSmall,marginSmall);
+        final LabelViewConfig cfg = new LabelViewConfig(labelTextColor, bgColor, borderColor, borderWidth, background, layoutParams);
 
         return cfg;
     }
@@ -188,6 +195,7 @@ public class LabelListView extends LinearLayout {
         tv.setTag(label);
         tv.setTextColor(labelViewConfig.labelTextColor);
         tv.setBackground(labelViewConfig.background);
+        tv.setLayoutParams(labelViewConfig.layoutParams);
         tv.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -242,8 +250,6 @@ public class LabelListView extends LinearLayout {
         }
 
         public void append(View view, int viewMeasuredWidth) {
-            // new LinearLayout.LayoutParams(viewMeasuredWidth, LayoutParams.WRAP_CONTENT)
-            //layoutRow.addView(view, childLayoutParams);
             layoutRow.addView(view);
             currentLength += viewMeasuredWidth;
         }
@@ -255,6 +261,8 @@ public class LabelListView extends LinearLayout {
         public int measureLabelWidth(View label) {
             label.measure(0, 0);
             final int measuredWidth = label.getMeasuredWidth();
+            final int pl = label.getPaddingLeft();
+            final int pr = label.getPaddingRight();
             return measuredWidth;
         }
     }
@@ -265,6 +273,7 @@ public class LabelListView extends LinearLayout {
         final int maxWidth = this.getMeasuredWidth() - marginMedium;
 
         final LayoutParams rowLayoutParams = (LayoutParams) getLayoutParams();
+        rowLayoutParams.setMargins(0,marginSmall,marginSmall,0);
 
         Row currentRow = new Row(maxWidth, buildRowLayout(context, rowLayoutParams));
 
