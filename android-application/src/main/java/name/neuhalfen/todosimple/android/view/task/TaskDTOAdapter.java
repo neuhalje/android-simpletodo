@@ -22,7 +22,7 @@ public class TaskDTOAdapter {
         if (cmd.cmd == TaskDTO.State.NEW) {
             return new TaskDTO(cmd.taskId, 0, "", "", new HashSet<LabelDTO>(), TaskDTO.State.NEW);
         } else {
-            final Option<Task> taskOption = taskApp.loadTask(cmd.taskId);
+            final Option<Task> taskOption = taskApp.loadEntity(cmd.taskId);
             if (taskOption.isDefined()) {
                 final Task task = taskOption.get();
                 // FIXME: add labels from DB

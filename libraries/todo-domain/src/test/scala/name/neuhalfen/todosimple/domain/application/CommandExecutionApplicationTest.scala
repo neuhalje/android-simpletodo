@@ -20,19 +20,19 @@ import name.neuhalfen.todosimple.domain.model.CreateTaskCommand
 import com.google.inject.Inject
 import scala.annotation.meta.field
 
-class TaskManagingApplicationTest extends UnitSpec {
+class CommandExecutionApplicationTest extends UnitSpec {
   @(Inject@field)
-  var tasksApp: TaskManagingApplication = _
+  var tasksApp: CommandExecutionApplication = _
 
   "The task application service " should " return None for a non existing task" in {
-    tasksApp.loadTask(UnitSpec.TASK_ID_NON_EXISTING) should be('empty)
+    tasksApp.loadEntity(UnitSpec.TASK_ID_NON_EXISTING) should be('empty)
   }
 
   it should " return the task for an existing task" in {
     val createTaskCommand: CreateTaskCommand = Commands.createTask("task title", "task desc")
     tasksApp.executeCommand(createTaskCommand)
 
-    tasksApp.loadTask(createTaskCommand.aggregateRootId) should be('defined)
+    tasksApp.loadEntity(createTaskCommand.aggregateRootId) should be('defined)
   }
 
 
@@ -41,10 +41,10 @@ class TaskManagingApplicationTest extends UnitSpec {
     val createTaskCommand: CreateTaskCommand = Commands.createTask("task title", "task desc")
     tasksApp.executeCommand(createTaskCommand)
 
-    val renameTaskCommand = Commands.renameTask(tasksApp.loadTask(createTaskCommand.aggregateRootId).get, "renamed task:title", "renamed task:desc")
+    val renameTaskCommand = Commands.renameTask(tasksApp.loadEntity(createTaskCommand.aggregateRootId).get, "renamed task:title", "renamed task:desc")
     tasksApp.executeCommand(renameTaskCommand)
 
-    val t = tasksApp.loadTask(createTaskCommand.aggregateRootId).get
+    val t = tasksApp.loadEntity(createTaskCommand.aggregateRootId).get
     t._title should be("renamed task:title")
     t._description should be("renamed task:desc")
     t.version should be(renameTaskCommand.aggregateRootVersion + 1)
@@ -64,7 +64,7 @@ class TaskManagingApplicationTest extends UnitSpec {
     val createTaskCommand: CreateTaskCommand = Commands.createTask("task title", "task desc")
     tasksApp.executeCommand(createTaskCommand)
 
-    val task =  tasksApp.loadTask(createTaskCommand.aggregateRootId).get
+    val task =  tasksApp.loadEntity(createTaskCommand.aggregateRootId).get
     task.uncommittedEVTs should be (empty)
   }
 }

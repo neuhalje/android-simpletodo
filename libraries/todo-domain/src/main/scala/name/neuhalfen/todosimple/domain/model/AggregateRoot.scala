@@ -30,6 +30,7 @@ trait AggregateRoot[AR <: AggregateRoot[AR, EVT], EVT] extends EventSourced[AR, 
   def uncommittedEVTs: Seq[EVT]
 
   def markCommitted: AR
+  def handle(command: Command[AR]): AR
 }
 
 trait AggregateFactory[AR <: AggregateRoot[AR, EVT], EVT] extends EventSourced[AR, EVT] {
