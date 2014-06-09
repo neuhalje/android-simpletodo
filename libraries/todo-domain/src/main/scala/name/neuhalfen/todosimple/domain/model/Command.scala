@@ -26,10 +26,12 @@ sealed trait Command[ENTITY] {
 
 object Commands {
   def createTask(title: String, description: String) = CreateTaskCommand(CommandId.generateId(), TaskId.generateId(), title, description, 0)
-
   def renameTask(task: Task, newTitle: String, newDescription: String) = RenameTaskCommand(CommandId.generateId(), task.id, task.version, newTitle, newDescription)
-
   def deleteTask(task: Task) = DeleteTaskCommand(CommandId.generateId(), task.id, task.version)
+  
+  def createLabel(title: String) = CreateLabelCommand(CommandId.generateId(), LabelId.generateId(), title,  0)
+  def renameLabel(label: Label, newTitle: String) = RenameLabelCommand(CommandId.generateId(), label.id, label.version, newTitle)
+  def deleteLabel(label: Label) = DeleteLabelCommand(CommandId.generateId(), label.id, label.version)
 }
 
 case class CreateTaskCommand(id: CommandId[Task], aggregateRootId: TaskId, title: String, description: String, aggregateRootVersion: Int = 0) extends Command[Task] {

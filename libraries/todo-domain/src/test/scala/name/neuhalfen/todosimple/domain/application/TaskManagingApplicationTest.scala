@@ -20,9 +20,9 @@ import name.neuhalfen.todosimple.domain.model.CreateTaskCommand
 import com.google.inject.Inject
 import scala.annotation.meta.field
 
-class CommandExecutionApplicationTest extends UnitSpec {
+class TaskManagingApplicationTest extends UnitSpec {
   @(Inject@field)
-  var tasksApp: CommandExecutionApplication = _
+  var tasksApp: TaskManagingApplication = _
 
   "The task application service " should " return None for a non existing task" in {
     tasksApp.loadEntity(UnitSpec.TASK_ID_NON_EXISTING) should be('empty)
@@ -55,7 +55,7 @@ class CommandExecutionApplicationTest extends UnitSpec {
     val createTaskCommand: CreateTaskCommand = Commands.createTask("task title", "task desc")
     tasksApp.executeCommand(createTaskCommand)
 
-    val renameTaskCommandWithWrongVersion = RenameTaskCommand(UnitSpec.COMMAND_ID_TWO, createTaskCommand.aggregateRootId, 999, "renamed task", "xx")
+    val renameTaskCommandWithWrongVersion = RenameTaskCommand(UnitSpec.TASK_COMMAND_ID_TWO, createTaskCommand.aggregateRootId, 999, "renamed task", "xx")
     an[IllegalArgumentException] should be thrownBy tasksApp.executeCommand(renameTaskCommandWithWrongVersion)
   }
 

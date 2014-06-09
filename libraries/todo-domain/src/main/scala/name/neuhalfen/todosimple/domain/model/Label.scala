@@ -18,6 +18,21 @@ import name.neuhalfen.todosimple.domain.model.EntityState.EntityState
 import org.joda.time.DateTime
 
 
+object Label extends AggregateFactory[Label, Event[Label]] {
+
+
+  override def applyEvent = {
+    case event: LabelCreatedEvent => Label(event.aggregateRootId, event.newAggregateRootVersion, event :: Nil, event.title,  EntityState.CREATED)
+    case event => unhandled(event)
+  }
+
+  def newLabel(command: CreateLabelCommand): Label = {
+    applyEvent(new LabelCreatedEvent(EventId.generateId(), command.aggregateRootId, 0, 1, DateTime.now(), command.title))
+  }
+
+  override def newInstance = new Label(null, 0, List[Event[Label]](), "",  EntityState.NOT_CREATED)
+}
+
 case class Label(
                   _aggregateId: LabelId,
                   _version: Int,

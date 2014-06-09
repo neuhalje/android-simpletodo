@@ -7,5 +7,7 @@ object LabelId {
   def generateId(): LabelId = new LabelId(UUID.randomUUID())
 
   def fromString(s: String): LabelId = new LabelId(UUID.fromString( s))
+
+  def apply(s:String) : LabelId = fromString(s)
 }
 

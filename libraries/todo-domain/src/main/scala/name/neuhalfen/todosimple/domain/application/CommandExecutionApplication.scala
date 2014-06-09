@@ -15,7 +15,11 @@ trait Cache[T <: AggregateRoot[T, Event[T]]] {
 class TaskManagingApplication @Inject()(eventStore: EventStore[Task], eventPublishing: EventPublisher[Task], tx: Transaction, cache: Cache[Task])  extends CommandExecutionApplication[Task](eventStore, eventPublishing, tx, cache)  {
   def newEntityInstance: Task = Task.newInstance
   def loadEntityFromHistory(events: Seq[Event[Task]]): Task = Task.loadFromHistory(events)
+}
 
+class LabelManagingApplication @Inject()(eventStore: EventStore[Label], eventPublishing: EventPublisher[Label], tx: Transaction, cache: Cache[Label])  extends CommandExecutionApplication[Label](eventStore, eventPublishing, tx, cache)  {
+  def newEntityInstance: Label = Label.newInstance
+  def loadEntityFromHistory(events: Seq[Event[Label]]): Label = Label.loadFromHistory(events)
 }
 
 abstract class CommandExecutionApplication[ENTITY <: AggregateRoot[ENTITY, Event[ENTITY]]] (eventStore: EventStore[ENTITY], eventPublishing: EventPublisher[ENTITY], tx: Transaction, cache: Cache[ENTITY]) {

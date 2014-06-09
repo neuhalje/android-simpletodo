@@ -18,7 +18,7 @@ import com.google.inject.{Provides, Module, Binder}
 import name.neuhalfen.todosimple.domain.application.Cache
 import name.neuhalfen.todosimple.domain.infrastructure._
 import name.neuhalfen.todosimple.domain.infrastructure.impl.MemoryEventStore
-import name.neuhalfen.todosimple.domain.model.Task
+import name.neuhalfen.todosimple.domain.model.{Label, Task}
 
 
 class TestDependencyModule extends Module {
@@ -34,5 +34,14 @@ class TestDependencyModule extends Module {
 
   @Provides
   def provideTaskEventStore() : EventStore[Task] =  new MemoryEventStore[Task]
+  /// Label
+  @Provides
+  def provideLabelCache() : Cache[Label] =  new InMemoryCache[Label]
+
+  @Provides
+  def provideLabelEventPublisher() : EventPublisher[Label] =  new DummyEventPublisher[Label]
+
+  @Provides
+  def provideLabelEventStore() : EventStore[Label] =  new MemoryEventStore[Label]
 }
 

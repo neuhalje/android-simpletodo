@@ -32,13 +32,13 @@ class CreateTaskCommandTest extends UnitSpec with TaskTestTrait {
   }
 
   "A create task command " should " base on an aggregate version of zero " in {
-    val tc = new CreateTaskCommand(COMMAND_ID_ONE, TASK_ID_ONE, "title", "description")
+    val tc = new CreateTaskCommand(TASK_COMMAND_ID_ONE, TASK_ID_ONE, "title", "description")
     assert(tc.aggregateRootVersion == 0)
   }
 
   "A created task " should " reject further create commands" in {
     val task = loadExistingTask()
-    val tc = new CreateTaskCommand(COMMAND_ID_TWO, task.id, "title", "description")
+    val tc = new CreateTaskCommand(TASK_COMMAND_ID_TWO, task.id, "title", "description")
 
     an[IllegalArgumentException] should be thrownBy task.handle(tc)
   }
