@@ -15,9 +15,9 @@ specific language governing permissions and limitations under the License.
 package name.neuhalfen.todosimple.domain.model
 
 
-sealed trait Command {
-  val id: CommandId
-  val aggregateRootId: TaskId
+sealed trait Command[ENTITY] {
+  val id: CommandId[ENTITY]
+  val aggregateRootId: UniqueId[ENTITY]
   val aggregateRootVersion: Int
 
   override def toString: String = s"${getClass.getSimpleName}: ${id.toString}. Aggregate: ${aggregateRootId.toString} v$aggregateRootVersion"
@@ -32,14 +32,29 @@ object Commands {
   def deleteTask(task: Task) = DeleteTaskCommand(CommandId.generateId(), task.id, task.version)
 }
 
-case class CreateTaskCommand(id: CommandId, aggregateRootId: TaskId, title: String, description: String, aggregateRootVersion: Int = 0) extends Command {
+case class CreateTaskCommand(id: CommandId[Task], aggregateRootId: TaskId, title: String, description: String, aggregateRootVersion: Int = 0) extends Command[Task] {
   override def toString: String = super.toString() + s", title: '$title', taskDesc: '$description'."
 }
 
-case class RenameTaskCommand(id: CommandId, aggregateRootId: TaskId, aggregateRootVersion: Int, newTitle: String, newDescription: String) extends Command {
+case class RenameTaskCommand(id: CommandId[Task], aggregateRootId: TaskId, aggregateRootVersion: Int, newTitle: String, newDescription: String) extends Command[Task] {
   override def toString: String = super.toString() + s", newTitle: '$newTitle', newDesc: '$newDescription'"
 }
 
-case class DeleteTaskCommand(id: CommandId, aggregateRootId: TaskId, aggregateRootVersion: Int) extends Command {
+case class DeleteTaskCommand(id: CommandId[Task], aggregateRootId: TaskId, aggregateRootVersion: Int) extends Command[Task] {
   override def toString: String = super.toString()
 }
+
+
+
+case class CreateLabelCommand(id: CommandId[Label], aggregateRootId: LabelId, title: String,  aggregateRootVersion: Int = 0) extends Command[Label] {
+  override def toString: String = super.toString() + s", title: '$title'."
+}
+
+case class RenameLabelCommand(id: CommandId[Label], aggregateRootId: LabelId, aggregateRootVersion: Int, newTitle: String) extends Command[Label] {
+  override def toString: String = super.toString() + s", newTitle: '$newTitle'"
+}
+
+case class DeleteLabelCommand(id: CommandId[Label], aggregateRootId: LabelId, aggregateRootVersion: Int) extends Command[Label] {
+  override def toString: String = super.toString()
+}
+

@@ -2,15 +2,15 @@ package name.neuhalfen.todosimple.android.infrastructure.cache;
 
 import name.neuhalfen.todosimple.domain.application.Cache;
 import name.neuhalfen.todosimple.domain.model.Task;
-import name.neuhalfen.todosimple.domain.model.TaskId;
+import name.neuhalfen.todosimple.domain.model.UniqueId;
 import scala.Option;
 import scala.Some;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class TaskCache implements Cache {
-    private Map<TaskId, Task> cache = new HashMap<TaskId, Task>();
+public class TaskCache implements Cache<Task> {
+    private Map<UniqueId<Task>, Task> cache = new HashMap<UniqueId<Task>, Task>();
 
     private int hits = 0;
     private int misses = 0;
@@ -34,7 +34,7 @@ public class TaskCache implements Cache {
     }
 
     @Override
-    public Option<Task> get(TaskId aggregateId) {
+    public Option<Task> get(UniqueId<Task> aggregateId) {
         final Task t = cache.get(aggregateId);
 
         if (null == t) {

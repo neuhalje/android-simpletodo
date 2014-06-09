@@ -65,10 +65,10 @@ class DeleteTaskCommandTest extends UnitSpec with TaskTestTrait {
 
   "deleting a task" should " change the state to DELETED" in {
     val originalTask = createUncommitedTaskViaCreateTaskCommand()
-    assume(originalTask.state == TaskState.CREATED)
+    assume(originalTask.state == EntityState.CREATED)
 
     val deletedTask = originalTask.handle(Commands.deleteTask(originalTask))
-    assert(deletedTask.state == TaskState.DELETED)
+    assert(deletedTask.state == EntityState.DELETED)
   }
 
   "Renaming a deleted task " should " fail " in {

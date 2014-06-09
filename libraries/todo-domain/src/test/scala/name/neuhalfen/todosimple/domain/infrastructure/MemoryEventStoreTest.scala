@@ -15,13 +15,12 @@ specific language governing permissions and limitations under the License.
 package name.neuhalfen.todosimple.domain.infrastructure
 
 import name.neuhalfen.todosimple.test.UnitSpec
-import name.neuhalfen.todosimple.domain.model.{TaskRenamedEvent, TaskCreatedEvent}
-import name.neuhalfen.todosimple.domain.model.Event
+import name.neuhalfen.todosimple.domain.model.{Task, TaskRenamedEvent, TaskCreatedEvent, Event}
 import name.neuhalfen.todosimple.domain.infrastructure.impl.MemoryEventStore
 
 class MemoryEventStoreTest extends UnitSpec {
 
-  def newStore = new MemoryEventStore
+  def newStore = new MemoryEventStore[Task]
 
   val taskId = UnitSpec.TASK_ID_ONE
 
@@ -36,7 +35,7 @@ class MemoryEventStoreTest extends UnitSpec {
     val taskCreatedEvent: TaskCreatedEvent = TaskCreatedEvent(UnitSpec.EVENT_ID_ONE, taskId, 0, 1, UnitSpec.TIME_BEFORE, "new task title", "new task")
     val taskRenamedEvent: TaskRenamedEvent = TaskRenamedEvent(UnitSpec.EVENT_ID_ONE, taskId, 1, 2, UnitSpec.TIME_BEFORE, "renamed task title", "renamed task")
 
-    val events: List[Event] = List(taskCreatedEvent, taskRenamedEvent)
+    val events: List[Event[Task]] = List(taskCreatedEvent, taskRenamedEvent)
     store.appendEvents(taskId, events)
 
     val loadedEvents = store.loadEvents(taskId)

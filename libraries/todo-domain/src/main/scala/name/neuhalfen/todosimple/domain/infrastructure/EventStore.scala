@@ -1,12 +1,12 @@
 package name.neuhalfen.todosimple.domain.infrastructure
 
-import name.neuhalfen.todosimple.domain.model.{TaskId, Event}
+import name.neuhalfen.todosimple.domain.model.{AggregateRoot, UniqueId, TaskId, Event}
 import java.io.IOException
 
-trait EventStore {
+trait EventStore[ENTITY <: AggregateRoot[ENTITY, Event[ENTITY]]] {
   @throws(classOf[IOException])
-  def loadEvents(aggregateId: TaskId): Option[Seq[Event]]
+  def loadEvents(aggregateId: UniqueId[ENTITY]): Option[Seq[Event[ENTITY]]]
 
   @throws(classOf[IOException])
-  def appendEvents(aggregateId: TaskId, events: Seq[Event]): Unit
+  def appendEvents(aggregateId: UniqueId[ENTITY], events: Seq[Event[ENTITY]]): Unit
 }

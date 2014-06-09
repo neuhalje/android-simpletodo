@@ -88,8 +88,9 @@ public class TaskListScreen implements Blueprint {
                                     CreateTaskCommand createTaskCommand = Commands.createTask(String.format(userLocale, "Todo #%0,10d", i), "some random description");
                                     taskApp.executeCommand(createTaskCommand);
 
-                                    for (int version=1; version<50;version++){
-                                        RenameTaskCommand renameTaskCommand = new RenameTaskCommand(CommandId.generateId(), createTaskCommand.aggregateRootId(), version, String.format(userLocale, "Renamed todo #%0,10d for the %d time", i,version-1), "some random, long description for this task! ");
+                                    for (int version = 1; version < 50; version++) {
+                                        final CommandId<Task> commandId = CommandId.generateId();
+                                        RenameTaskCommand renameTaskCommand = new RenameTaskCommand(commandId, createTaskCommand.aggregateRootId(), version, String.format(userLocale, "Renamed todo #%0,10d for the %d time", i, version - 1), "some random, long description for this task! ");
                                         taskApp.executeCommand(renameTaskCommand);
                                     }
                                 }
@@ -106,13 +107,21 @@ public class TaskListScreen implements Blueprint {
                             public void call() {
 
                                 for (int i = 1; i < 500; i++) {
+                                    CommandId<Task> commandId;
+
                                     CreateTaskCommand createTaskCommand = Commands.createTask(String.format(userLocale, "Todo #%0,10d", i), "some random description");
                                     taskApp.executeCommand(createTaskCommand);
-                                    RenameTaskCommand renameTaskCommand = new RenameTaskCommand(CommandId.generateId(), createTaskCommand.aggregateRootId(), 1, String.format(userLocale, "Renamed todo #%0,10d", i), "some random, long description for this task! ");
+
+                                    commandId = CommandId.generateId();
+                                    RenameTaskCommand renameTaskCommand = new RenameTaskCommand(commandId, createTaskCommand.aggregateRootId(), 1, String.format(userLocale, "Renamed todo #%0,10d", i), "some random, long description for this task! ");
                                     taskApp.executeCommand(renameTaskCommand);
-                                    RenameTaskCommand renameTaskCommand2 = new RenameTaskCommand(CommandId.generateId(), createTaskCommand.aggregateRootId(), 2, String.format(userLocale, "Renamed again todo #%0,10d", i), "some random, and considerable longer description for this task! ");
+
+                                    commandId = CommandId.generateId();
+                                    RenameTaskCommand renameTaskCommand2 = new RenameTaskCommand(commandId, createTaskCommand.aggregateRootId(), 2, String.format(userLocale, "Renamed again todo #%0,10d", i), "some random, and considerable longer description for this task! ");
                                     taskApp.executeCommand(renameTaskCommand2);
-                                    DeleteTaskCommand deleteTaskCommand = new DeleteTaskCommand(CommandId.generateId(), createTaskCommand.aggregateRootId(), 3);
+
+                                    commandId = CommandId.generateId();
+                                    DeleteTaskCommand deleteTaskCommand = new DeleteTaskCommand(commandId, createTaskCommand.aggregateRootId(), 3);
                                     taskApp.executeCommand(deleteTaskCommand);
                                 }
                                 TaskListView view = getView();

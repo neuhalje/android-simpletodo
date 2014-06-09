@@ -16,7 +16,8 @@ package name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo;
 
 import android.content.ContentResolver;
 import android.net.Uri;
-import name.neuhalfen.todosimple.domain.model.TaskId;
+import name.neuhalfen.todosimple.domain.model.Task;
+import name.neuhalfen.todosimple.domain.model.UniqueId;
 
 /**
  * Content provider (http://developer.android.com/guide/topics/providers/content-providers.html) interface
@@ -49,7 +50,7 @@ public interface TodoContentProvider {
     }
 
     public static class Factory {
-        public static Uri forAggregateId(TaskId aggregateId) {
+        public static Uri forAggregateId(UniqueId<Task> aggregateId) {
             return Uri.withAppendedPath(CONTENT_URI, aggregateId.toString());
         }
 

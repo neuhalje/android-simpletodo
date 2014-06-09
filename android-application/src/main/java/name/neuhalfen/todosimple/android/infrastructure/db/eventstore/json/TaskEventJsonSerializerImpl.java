@@ -14,6 +14,7 @@ specific language governing permissions and limitations under the License.
  */
 package name.neuhalfen.todosimple.android.infrastructure.db.eventstore.json;
 
+import name.neuhalfen.todosimple.android.di.ForApplication;
 import name.neuhalfen.todosimple.domain.model.*;
 import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONException;
@@ -26,30 +27,31 @@ import java.util.Map;
 import static name.neuhalfen.todosimple.helper.Preconditions.checkNotNull;
 
 
-public class EventJsonSerializerImpl implements EventJsonSerializer<Event> {
+public class TaskEventJsonSerializerImpl implements EventJsonSerializer<Task> {
 
     @Inject
-    public EventJsonSerializerImpl() {
+    public TaskEventJsonSerializerImpl() {
     }
 
 
     @Inject
+    @ForApplication
     DateTimeFormatter timestampFormatter;
 
     @Override
-    public Event parseEvent(String eventJson) throws EventJsonSerializeException {
+    public <T extends Event<Task>> T parseEvent(String eventJson) throws EventJsonSerializeException {
         checkNotNull(eventJson, "eventJson must not be null");
 
         try {
             JSONObject src = new JSONObject(eventJson);
             String type = src.getString("type");
-            BaseEventSerializer parser = map.get(type);
+            BaseEventSerializer<T> parser = (BaseEventSerializer<T>) map.get(type);
 
             if (null == parser) {
                 throw new IllegalArgumentException("Cannot parse event of type '" + type + "' in " + eventJson);
             }
 
-            Event event = parser.parseEvent(src);
+            T event = parser.parseEvent(src);
             return event;
 
         } catch (JSONException e) {
@@ -58,10 +60,10 @@ public class EventJsonSerializerImpl implements EventJsonSerializer<Event> {
     }
 
     @Override
-    public String serializeEvent(Event event) throws EventJsonSerializeException {
+    public <T extends Event<Task>> String serializeEvent(T event) throws EventJsonSerializeException {
         checkNotNull(event, "event must not be null");
         final String type = event.getClass().getSimpleName();
-        BaseEventSerializer serializer = map.get(type);
+        BaseEventSerializer<T> serializer = (BaseEventSerializer<T>) map.get(type);
 
         if (null == serializer) {
             throw new IllegalArgumentException("Cannot serialize event of type '" + type + "' in " + event.toString());
@@ -75,7 +77,8 @@ public class EventJsonSerializerImpl implements EventJsonSerializer<Event> {
         }
     }
 
-    private abstract class BaseEventSerializer<T extends Event> {
+
+    private abstract class BaseEventSerializer<T extends Event<Task>> {
 
         protected static final String ORIGINAL_AGGREGATE_VERSION = "originalAggregateVersion";
         protected static final String NEW_AGGREGATE_VERSION = "newAggregateVersion";
@@ -118,7 +121,8 @@ public class EventJsonSerializerImpl implements EventJsonSerializer<Event> {
 
             final String occurredAt = eventJson.getString(OCCURRED_AT);
 
-            return new TaskCreatedEvent(EventId.fromString(eventId), TaskId.fromString(aggregateId), originalAggregateVersion, newAggregateVersion, timestampFormatter.parseDateTime(occurredAt), title, description);
+            final EventId<Task> objectEventId = EventId.fromString(eventId);
+            return new TaskCreatedEvent(objectEventId, TaskId.fromString(aggregateId), originalAggregateVersion, newAggregateVersion, timestampFormatter.parseDateTime(occurredAt), title, description);
         }
 
         public void serializeEvent(JSONObject dest, TaskCreatedEvent event) throws JSONException {
@@ -147,7 +151,8 @@ public class EventJsonSerializerImpl implements EventJsonSerializer<Event> {
             final String newDescription = eventJson.getString(NEW_DESCRIPTION);
             final String occurredAt = eventJson.getString(OCCURRED_AT);
 
-            return new TaskRenamedEvent(EventId.fromString(eventId), TaskId.fromString(aggregateId), originalAggregateVersion, newAggregateVersion, timestampFormatter.parseDateTime(occurredAt), newTitle, newDescription);
+            final EventId<Task> objectEventId = EventId.fromString(eventId);
+            return new TaskRenamedEvent(objectEventId, TaskId.fromString(aggregateId), originalAggregateVersion, newAggregateVersion, timestampFormatter.parseDateTime(occurredAt), newTitle, newDescription);
         }
     }
 
@@ -166,7 +171,8 @@ public class EventJsonSerializerImpl implements EventJsonSerializer<Event> {
             final String occurredAt = eventJson.getString(OCCURRED_AT);
 
 
-            return new TaskDeletedEvent(EventId.fromString(eventId), TaskId.fromString(aggregateId), originalAggregateVersion, newAggregateVersion, timestampFormatter.parseDateTime(occurredAt));
+            final EventId<Task> objectEventId = EventId.fromString(eventId);
+            return new TaskDeletedEvent(objectEventId, TaskId.fromString(aggregateId), originalAggregateVersion, newAggregateVersion, timestampFormatter.parseDateTime(occurredAt));
         }
     }
 

@@ -14,19 +14,25 @@ specific language governing permissions and limitations under the License.
  */
 package name.neuhalfen.todosimple.test.di
 
-import name.neuhalfen.todosimple.domain.infrastructure._
-import com.google.inject.Module
-import com.google.inject.Binder
-import name.neuhalfen.todosimple.domain.infrastructure.impl.MemoryEventStore
+import com.google.inject.{Provides, Module, Binder}
 import name.neuhalfen.todosimple.domain.application.Cache
+import name.neuhalfen.todosimple.domain.infrastructure._
+import name.neuhalfen.todosimple.domain.infrastructure.impl.MemoryEventStore
+import name.neuhalfen.todosimple.domain.model.Task
 
 
 class TestDependencyModule extends Module {
   def configure(binder: Binder) = {
-    binder.bind(classOf[EventStore]).to(classOf[MemoryEventStore])
-    binder.bind(classOf[EventPublisher]).to(classOf[DummyEventPublisher])
     binder.bind(classOf[Transaction]).to(classOf[DummyTransaction])
-    binder.bind(classOf[Cache]).toInstance(InMemoryCache)
   }
+
+  @Provides
+  def provideTaskCache() : Cache[Task] =  new InMemoryCache[Task]
+
+  @Provides
+  def provideTaskEventPublisher() : EventPublisher[Task] =  new DummyEventPublisher[Task]
+
+  @Provides
+  def provideTaskEventStore() : EventStore[Task] =  new MemoryEventStore[Task]
 }
 

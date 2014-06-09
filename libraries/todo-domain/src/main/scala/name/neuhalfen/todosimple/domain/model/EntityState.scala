@@ -14,7 +14,7 @@ specific language governing permissions and limitations under the License.
  */
 package name.neuhalfen.todosimple.domain.model
 
-object TaskState extends Enumeration {
-  type TaskState = Value
+object EntityState extends Enumeration {
+  type EntityState = Value
   val NOT_CREATED, CREATED, DELETED = Value
 }

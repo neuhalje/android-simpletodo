@@ -17,9 +17,9 @@ package name.neuhalfen.todosimple.domain.model
 import org.joda.time.DateTime
 
 
-sealed trait Event {
-  val id: EventId
-  val aggregateRootId: TaskId
+sealed trait Event[ENTITY] {
+  val id: EventId[ENTITY]
+  val aggregateRootId: UniqueId[ENTITY]
   val originalAggregateRootVersion: Int
   val newAggregateRootVersion: Int
   val occurredAt: DateTime
@@ -27,17 +27,31 @@ sealed trait Event {
   override def toString: String = s"${getClass.getSimpleName}: ${id.toString}. Aggregate: ${aggregateRootId.toString} v$originalAggregateRootVersion->v$newAggregateRootVersion"
 }
 
-case class TaskCreatedEvent(id: EventId, aggregateRootId: TaskId, originalAggregateRootVersion: Int, newAggregateRootVersion: Int, occurredAt: DateTime, title: String, description: String) extends Event {
+case class TaskCreatedEvent(id: EventId[Task], aggregateRootId: TaskId, originalAggregateRootVersion: Int, newAggregateRootVersion: Int, occurredAt: DateTime, title: String, description: String) extends Event[Task] {
   override def toString: String = super.toString() + s", title:'$title', description: '$description'"
 }
 
-case class TaskRenamedEvent(id: EventId, aggregateRootId: TaskId, originalAggregateRootVersion: Int, newAggregateRootVersion: Int, occurredAt: DateTime, newTitle: String, newDescription: String) extends Event {
+case class TaskRenamedEvent(id: EventId[Task], aggregateRootId: TaskId, originalAggregateRootVersion: Int, newAggregateRootVersion: Int, occurredAt: DateTime, newTitle: String, newDescription: String) extends Event[Task] {
   override def toString: String = super.toString() + s",  newTitle: '$newTitle', newDescription: '$newDescription'"
 }
 
-case class TaskDeletedEvent(id: EventId, aggregateRootId: TaskId, originalAggregateRootVersion: Int, newAggregateRootVersion: Int, occurredAt: DateTime) extends Event {
+case class TaskDeletedEvent(id: EventId[Task], aggregateRootId: TaskId, originalAggregateRootVersion: Int, newAggregateRootVersion: Int, occurredAt: DateTime) extends Event[Task] {
   override def toString: String = super.toString()
 }
+
+
+case class LabelCreatedEvent(id: EventId[Label], aggregateRootId: LabelId, originalAggregateRootVersion: Int, newAggregateRootVersion: Int, occurredAt: DateTime, title: String) extends Event[Label] {
+  override def toString: String = super.toString() + s", title:'$title'"
+}
+
+case class LabelRenamedEvent(id: EventId[Label], aggregateRootId: LabelId, originalAggregateRootVersion: Int, newAggregateRootVersion: Int, occurredAt: DateTime, newTitle: String) extends Event[Label] {
+  override def toString: String = super.toString() + s",  newTitle: '$newTitle'"
+}
+
+case class LabelDeletedEvent(id: EventId[Label], aggregateRootId: LabelId, originalAggregateRootVersion: Int, newAggregateRootVersion: Int, occurredAt: DateTime) extends Event[Label] {
+  override def toString: String = super.toString()
+}
+
 
 
 

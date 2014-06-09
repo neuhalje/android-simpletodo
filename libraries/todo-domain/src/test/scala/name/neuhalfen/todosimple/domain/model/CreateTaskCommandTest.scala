@@ -45,7 +45,7 @@ class CreateTaskCommandTest extends UnitSpec with TaskTestTrait {
 
   it should " be in state CREATED" in {
     val task = createUncommitedTaskViaCreateTaskCommand()
-    assert(task.state == TaskState.CREATED)
+    assert(task.state == EntityState.CREATED)
   }
 
 }

@@ -17,50 +17,53 @@ package name.neuhalfen.todosimple.android.infrastructure;
 import android.content.Context;
 import android.net.Uri;
 import de.greenrobot.event.EventBus;
-import name.neuhalfen.todosimple.android.di.ForApplication;
 import name.neuhalfen.todosimple.android.infrastructure.db.SQLiteToTransactionAdapter;
 import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.DatabaseViewManager;
-import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoContentProvider;
 import name.neuhalfen.todosimple.domain.infrastructure.EventPublisher;
+import name.neuhalfen.todosimple.domain.model.AggregateRoot;
 import name.neuhalfen.todosimple.domain.model.Event;
+import scala.collection.Iterator;
+import scala.collection.Seq;
 
-import javax.inject.Inject;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
-public class AndroidEventPublisher implements EventPublisher {
+public class AndroidEventPublisher<T extends AggregateRoot<T, Event<T>>> implements EventPublisher<T> {
 
     private final static String LOG_TAG = "AndroidEventPublisher";
-    @Inject
-    @ForApplication
-    SQLiteToTransactionAdapter txAdapter;
 
-    @Inject
-    @ForApplication
-    EventBus eventBus;
+    //@Inject
+    //public AndroidEventPublisher(@ForApplication SQLiteToTransactionAdapter txAdapter,@ForApplication  EventBus eventBus,@ForApplication  Context context,@ForApplication  Collection<DatabaseViewManager> dbViews,@ForApplication  UriResolver<T> uriResolver){
+    public AndroidEventPublisher(SQLiteToTransactionAdapter txAdapter, EventBus eventBus, Context context, Collection<DatabaseViewManager> dbViews, UriResolver<T> uriResolver) {
+        this.txAdapter = txAdapter;
+        this.eventBus = eventBus;
+        this.context = context;
+        this.dbViews = dbViews;
+        this.uriResolver = uriResolver;
+    }
 
-    @Inject
-    @ForApplication
-    Context context;
-
-    @Inject
-    @ForApplication
-    Collection<DatabaseViewManager> dbViews;
+    private final SQLiteToTransactionAdapter txAdapter;
+    private final EventBus eventBus;
+    private final Context context;
+    private final Collection<DatabaseViewManager> dbViews;
+    private final UriResolver<T> uriResolver;
 
     @Override
-    public void publishEventsInTransaction(List<Event> events) {
+    public void publishEventsInTransaction(Seq<Event<T>> events) {
         for (DatabaseViewManager dbView : dbViews) {
-            dbView.updateDBViewTables(context, txAdapter, Collections.unmodifiableList(events));
+            dbView.updateDBViewTables(context, txAdapter, scala.collection.JavaConversions.seqAsJavaList(events));
         }
     }
 
     @Override
-    public void publishEventsAfterCommit(List<Event> events) {
-        for (Event event : events) {
+    public void publishEventsAfterCommit(Seq<Event<T>> events) {
+
+        final Iterator<Event<T>> eventIterator = events.iterator();
+        while (eventIterator.hasNext()) {
+            Event<T> event = eventIterator.next();
             eventBus.post(event);
-            Uri uriWithAggregateId = TodoContentProvider.Factory.forAggregateId(event.aggregateRootId());
+            Uri uriWithAggregateId = uriResolver.resolveId(event.aggregateRootId());
             context.getContentResolver().notifyChange(uriWithAggregateId, null);
         }
     }
+
 }

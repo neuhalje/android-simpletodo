@@ -19,23 +19,27 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dagger.Module;
 import dagger.Provides;
+import de.greenrobot.event.EventBus;
 import flow.Parcer;
 import name.neuhalfen.todosimple.android.TodoApplication;
 import name.neuhalfen.todosimple.android.infrastructure.AndroidEventPublisher;
+import name.neuhalfen.todosimple.android.infrastructure.UriResolver;
 import name.neuhalfen.todosimple.android.infrastructure.cache.TaskCache;
 import name.neuhalfen.todosimple.android.infrastructure.db.SQLiteToTransactionAdapter;
 import name.neuhalfen.todosimple.android.infrastructure.db.TodoSQLiteHelper;
 import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.DatabaseViewManager;
 import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoContentProviderImpl;
 import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoTableDatabaseViewManager;
+import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoUriResolver;
 import name.neuhalfen.todosimple.android.infrastructure.db.eventstore.AndroidEventStore;
-import name.neuhalfen.todosimple.android.infrastructure.db.eventstore.json.EventJsonSerializer;
-import name.neuhalfen.todosimple.android.infrastructure.db.eventstore.json.EventJsonSerializerImpl;
+import name.neuhalfen.todosimple.android.infrastructure.db.eventstore.EventStoreTable;
+import name.neuhalfen.todosimple.android.infrastructure.db.eventstore.json.TaskEventJsonSerializerImpl;
 import name.neuhalfen.todosimple.android.view.base.GsonParcer;
 import name.neuhalfen.todosimple.domain.application.Cache;
 import name.neuhalfen.todosimple.domain.application.TaskManagingApplication;
 import name.neuhalfen.todosimple.domain.infrastructure.EventPublisher;
 import name.neuhalfen.todosimple.domain.infrastructure.EventStore;
+import name.neuhalfen.todosimple.domain.model.Task;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
@@ -45,7 +49,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-@Module(library = true, complete = true, injects = {AndroidEventStore.class, TodoContentProviderImpl.class, AndroidEventPublisher.class, SQLiteToTransactionAdapter.class, EventJsonSerializerImpl.class}, includes = EventBusModule.class)
+@Module(library = true, complete = true, injects = {AndroidEventStore.class, TodoContentProviderImpl.class, AndroidEventPublisher.class, SQLiteToTransactionAdapter.class, TaskEventJsonSerializerImpl.class}, includes = EventBusModule.class)
 public class AndroidApplicationModule {
     private final TodoApplication application;
 
@@ -67,7 +71,7 @@ public class AndroidApplicationModule {
     @Singleton
     @Provides
     @ForApplication
-    TaskManagingApplication provideTaskManagementApplication(@ForApplication EventStore eventStore, @ForApplication EventPublisher eventPublisher, @ForApplication SQLiteToTransactionAdapter tx, @ForApplication Cache taskCache) {
+    TaskManagingApplication provideTaskManagementApplication(@ForApplication EventStore<Task> eventStore, @ForApplication EventPublisher<Task> eventPublisher, @ForApplication SQLiteToTransactionAdapter tx, @ForApplication Cache<Task> taskCache) {
         return new TaskManagingApplication(eventStore, eventPublisher, tx, taskCache);
     }
 
@@ -81,7 +85,7 @@ public class AndroidApplicationModule {
     @Singleton
     @Provides
     @ForApplication
-    Cache provideTaskCacheIF(@ForApplication TaskCache cache) {
+    Cache<Task> provideTaskCacheIF(@ForApplication TaskCache cache) {
         return cache;
     }
 
@@ -105,18 +109,22 @@ public class AndroidApplicationModule {
 //    @Module(injects = {TaskManagingApplication.class},includes = EventBusModule.class, library = true)
 //    static class ForDomainModule {
 //
+
+
     @Singleton
     @Provides
     @ForApplication
-    EventStore provideEventStore(AndroidEventStore es) {
-        return es;
+    EventStore<Task> provideEventStore(@ForApplication SQLiteToTransactionAdapter txAdapter, @ForApplication TaskEventJsonSerializerImpl serializer, @ForApplication DateTimeFormatter timestampFormatter, @ForApplication EventStoreTable table) {
+        //EventStore<Task> provideEventStore(@ForApplication SQLiteToTransactionAdapter txAdapter, @ForApplication EventJsonSerializer<Event<Task>> serializer, @ForApplication DateTimeFormatter timestampFormatter, @ForApplication EventStoreTable table) {
+        return new AndroidEventStore<Task>(txAdapter, serializer, timestampFormatter, table);
     }
 
     @Singleton
     @Provides
     @ForApplication
-    EventPublisher provideEventPublisher(AndroidEventPublisher p) {
-        return p;
+    EventPublisher<Task> provideTaskEventPublisher(@ForApplication SQLiteToTransactionAdapter txAdapter, @ForApplication EventBus eventBus, @ForApplication Context context, @ForApplication Collection<DatabaseViewManager> dbViews, @ForApplication UriResolver<Task> uriResolver) {
+        final AndroidEventPublisher<Task> publisher = new AndroidEventPublisher<Task>(txAdapter, eventBus, context, dbViews, uriResolver);
+        return publisher;
     }
 
     /**
@@ -133,8 +141,10 @@ public class AndroidApplicationModule {
 
     @Provides
     @Singleton
-    EventJsonSerializer provideEventJsonSerializer() {
-        return application.get(EventJsonSerializerImpl.class);
+    @ForApplication
+    TaskEventJsonSerializerImpl provideTaskEventJsonSerializer() {
+        //EventJsonSerializer<Event<Task>> provideTaskEventJsonSerializer() {
+        return application.get(TaskEventJsonSerializerImpl.class);
     }
 
     @Provides
@@ -160,8 +170,25 @@ public class AndroidApplicationModule {
 
     @Provides
     @Singleton
+    @ForApplication
     DateTimeFormatter provideISOtimestampFormatter() {
         return ISODateTimeFormat.basicDateTime();
+    }
+
+
+    @Provides
+    @Singleton
+    @ForApplication
+    UriResolver<Task> provideTaskUriResolver() {
+        return new TodoUriResolver();
+    }
+
+    @Provides
+    @Singleton
+    @ForApplication
+    EventStoreTable proveideEventStoreTable()
+    {
+        return new EventStoreTable();
     }
 
     /*

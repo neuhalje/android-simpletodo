@@ -16,19 +16,12 @@ package name.neuhalfen.todosimple.domain.model
 
 import java.util.UUID
 
-case class EventId(id: UUID) {
-  if (null == id) throw new IllegalArgumentException("id must not be NULL")
-
-  def this() = this(UUID.randomUUID())
-
-  def this(idstr: String) = this(UUID.fromString(idstr))
-
-  override def toString: String = s"${id.toString}"
-}
+case class EventId[ENTITY](id: UUID) extends UniqueId[Event[ENTITY]](id)
 
 object EventId {
-  def generateId(): EventId = new EventId()
+  def  generateId[ENTITY](): EventId[ENTITY] = new EventId[ENTITY](UUID.randomUUID())
 
-  def fromString(s: String): EventId = new EventId(s)
+  def fromString[ENTITY](s: String): EventId[ENTITY] = new EventId[ENTITY](UUID.fromString( s))
+  def apply[ENTITY](s:String) : EventId[ENTITY] = fromString(s)
 }
 

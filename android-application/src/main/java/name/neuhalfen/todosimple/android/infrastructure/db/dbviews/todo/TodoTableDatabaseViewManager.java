@@ -21,20 +21,15 @@ import android.net.Uri;
 import android.util.Log;
 import name.neuhalfen.todosimple.android.infrastructure.db.SQLiteToTransactionAdapter;
 import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.DatabaseViewManager;
-import name.neuhalfen.todosimple.domain.model.Event;
-import name.neuhalfen.todosimple.domain.model.TaskCreatedEvent;
-import name.neuhalfen.todosimple.domain.model.TaskDeletedEvent;
-import name.neuhalfen.todosimple.domain.model.TaskRenamedEvent;
-
-import java.util.List;
+import name.neuhalfen.todosimple.domain.model.*;
 
 import static name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoContentProvider.TodoTable.*;
 
-public class TodoTableDatabaseViewManager implements DatabaseViewManager {
+public class TodoTableDatabaseViewManager implements DatabaseViewManager<Task> {
     private final static String LOG_TAG = "TodoTableDatabaseView";
 
     @Override
-    public void updateDBViewTables(Context context, SQLiteToTransactionAdapter txAdapter, List<Event> events) {
+    public void updateDBViewTables(Context context, SQLiteToTransactionAdapter txAdapter, Iterable<Event<Task>> events) {
         final SQLiteDatabase db = txAdapter.getDb();
 
 
@@ -102,4 +97,5 @@ public class TodoTableDatabaseViewManager implements DatabaseViewManager {
         Uri uriWithId = TodoContentProvider.Factory.forContenProvider_Id(id);
         context.getContentResolver().notifyChange(uriWithId, null);
     }
+
 }

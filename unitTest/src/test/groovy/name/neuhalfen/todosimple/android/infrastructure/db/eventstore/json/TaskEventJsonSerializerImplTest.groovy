@@ -15,10 +15,7 @@ specific language governing permissions and limitations under the License.
 package name.neuhalfen.todosimple.android.infrastructure.db.eventstore.json
 
 import name.neuhalfen.todosimple.android.di.Injector
-import name.neuhalfen.todosimple.domain.model.Event
-import name.neuhalfen.todosimple.domain.model.TaskCreatedEvent
-import name.neuhalfen.todosimple.domain.model.TaskDeletedEvent
-import name.neuhalfen.todosimple.domain.model.TaskRenamedEvent
+import name.neuhalfen.todosimple.domain.model.*
 import org.robolectric.Robolectric
 import org.robolectric.annotation.Config
 import pl.polidea.robospock.RoboSpecification
@@ -26,15 +23,15 @@ import pl.polidea.robospock.RoboSpecification
 import static name.neuhalfen.todosimple.helper.TestConstants.*
 
 @Config(manifest = "../android-application//src/main/AndroidManifest.xml")
-class EventJsonSerializerImplTest
+class TaskEventJsonSerializerImplTest
         extends RoboSpecification {
 
 
-    EventJsonSerializer sut;
+    EventJsonSerializer<Task> sut;
 
     def setup() {
         def application = Robolectric.application
-        sut = ((Injector) application).get(EventJsonSerializerImpl.class);
+        sut = ((Injector) application).get(TaskEventJsonSerializerImpl.class);
     }
 
     def "serializing and deserializing a TaskRenamedEvent returns an equal instance"() {

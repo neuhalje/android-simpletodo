@@ -25,6 +25,8 @@ trait EventSourced[ES <: EventSourced[ES, EVT], EVT] {
 
 trait AggregateRoot[AR <: AggregateRoot[AR, EVT], EVT] extends EventSourced[AR, EVT] {
 
+  def id : UniqueId[AR]
+
   def uncommittedEVTs: Seq[EVT]
 
   def markCommitted: AR

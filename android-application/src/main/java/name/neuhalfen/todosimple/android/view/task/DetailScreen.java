@@ -31,7 +31,6 @@ import name.neuhalfen.todosimple.android.view.base.ActionBarOwner;
 import name.neuhalfen.todosimple.android.view.base.Main;
 import name.neuhalfen.todosimple.android.view.base.notification.ViewShowNotificationCommand;
 import name.neuhalfen.todosimple.android.view.label.LabelDTO;
-import name.neuhalfen.todosimple.android.view.label.LabelListView;
 import name.neuhalfen.todosimple.domain.application.TaskManagingApplication;
 import name.neuhalfen.todosimple.domain.model.*;
 import rx.util.functions.Action0;
@@ -108,7 +107,7 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
 
 
     @Singleton
-    static class Presenter extends ViewPresenter<DetailView>{
+    static class Presenter extends ViewPresenter<DetailView> {
 
 
         private final TaskManagingApplication taskApp;
@@ -167,8 +166,8 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
                 actionBar.setConfig(actionBarConfig);
 
                 takeCommand(this.cmd);
-                view.setAvailableLabelProvider(   new ArrayAdapter<String>(context,
-                        android.R.layout.simple_dropdown_item_1line, new String[] {
+                view.setAvailableLabelProvider(new ArrayAdapter<String>(context,
+                        android.R.layout.simple_dropdown_item_1line, new String[]{
                         "Belgium", "France", "Italy", "Germany", "Spain"}
                 ));
             }
@@ -198,7 +197,8 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
 
             switch (view.getTaskStatus()) {
                 case EXISTING:
-                    Command command = new DeleteTaskCommand(CommandId.generateId(), cmd.taskId, view.getTaskVersion());
+                    final CommandId<Task> commandId = CommandId.generateId();
+                    Command<Task> command = new DeleteTaskCommand(commandId, cmd.taskId, view.getTaskVersion());
                     executeCommand(command);
                     break;
                 case NEW:
@@ -224,14 +224,18 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
             }
 
 
-            final Command command;
+            final Command<Task> command;
             switch (view.getTaskStatus()) {
-                case EXISTING:
-                    command = new RenameTaskCommand(CommandId.generateId(), this.cmd.taskId, view.getTaskVersion(), view.getEditedTitle(), view.getEditedDescription());
-                    break;
-                case NEW:
-                    command = new CreateTaskCommand(CommandId.generateId(), this.cmd.taskId, view.getEditedTitle(), view.getEditedDescription(), 0);
-                    break;
+                case EXISTING: {
+                    final CommandId<Task> commandId = CommandId.generateId();
+                    command = new RenameTaskCommand(commandId, this.cmd.taskId, view.getTaskVersion(), view.getEditedTitle(), view.getEditedDescription());
+                }
+                break;
+                case NEW: {
+                    final CommandId<Task> commandId = CommandId.generateId();
+                    command = new CreateTaskCommand(commandId, this.cmd.taskId, view.getEditedTitle(), view.getEditedDescription(), 0);
+                }
+                break;
                 case DELETED:
                     // nothing to do.Probably a stray "save" from closing the view after saving
                     return;
@@ -241,7 +245,7 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
             executeCommand(command);
         }
 
-        private void executeCommand(final Command command) {
+        private void executeCommand(final Command<Task> command) {
             new AsyncTask<Command, Void, Void>() {
                 @Override
                 protected Void doInBackground(final Command... params) {
@@ -314,13 +318,28 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
             return cmd.taskId.equals(event.aggregateRootId());
         }
 
-        public void onAddLabelClicked(LabelDTO label) {
+        public void onAddLabelClicked(final String labelText) {
+            /* FIXME
             final DetailView view = getView();
+
+            final Option<UUID> labelOption = labelApp.findByText(labelText);
+            final LabelDTO label;
+
+            if (labelOption.nonEmpty()) {
+                label = new LabelDTO(labelOption.get(), labelText);
+            } else {
+                label = labelApp.createLabel(labelText);
+            }
+
+            // TODO: add label to task
+
             view.showLabelAssigned(label);
+            */
         }
 
         public void onRemoveLabelClicked(LabelDTO label) {
             final DetailView view = getView();
+            // TODO: remove label from task
             view.showLabelRemoved(label);
         }
     }

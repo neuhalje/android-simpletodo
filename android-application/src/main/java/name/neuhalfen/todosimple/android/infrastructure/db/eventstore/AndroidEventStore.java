@@ -17,12 +17,12 @@ package name.neuhalfen.todosimple.android.infrastructure.db.eventstore;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-import name.neuhalfen.todosimple.android.di.ForApplication;
 import name.neuhalfen.todosimple.android.infrastructure.db.SQLiteToTransactionAdapter;
 import name.neuhalfen.todosimple.android.infrastructure.db.eventstore.json.EventJsonSerializer;
 import name.neuhalfen.todosimple.domain.infrastructure.EventStore;
+import name.neuhalfen.todosimple.domain.model.AggregateRoot;
 import name.neuhalfen.todosimple.domain.model.Event;
-import name.neuhalfen.todosimple.domain.model.TaskId;
+import name.neuhalfen.todosimple.domain.model.UniqueId;
 import name.neuhalfen.todosimple.helper.Preconditions;
 import org.joda.time.format.DateTimeFormatter;
 import scala.Option;
@@ -30,41 +30,41 @@ import scala.collection.Iterator;
 import scala.collection.Seq;
 import scala.collection.mutable.MutableList;
 
-import javax.inject.Inject;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class AndroidEventStore implements EventStore {
+public class AndroidEventStore<T extends AggregateRoot<T, Event<T>>> implements EventStore<T> {
 
+    private final SQLiteToTransactionAdapter txAdapter;
+    private final EventJsonSerializer serializer;
+    private final DateTimeFormatter timestampFormatter;
+    private final EventStoreTable table;
 
-    @Inject
-    @ForApplication
-    SQLiteToTransactionAdapter txAdapter;
-
-    @Inject
-    EventJsonSerializer serializer;
-
-    @Inject
-    DateTimeFormatter timestampFormatter;
+    public AndroidEventStore(SQLiteToTransactionAdapter txAdapter, EventJsonSerializer serializer, DateTimeFormatter timestampFormatter, EventStoreTable table) {
+        this.txAdapter = txAdapter;
+        this.serializer = serializer;
+        this.timestampFormatter = timestampFormatter;
+        this.table = table;
+    }
 
 
     @Override
-    public Option<Seq<Event>> loadEvents(TaskId aggregateId) throws IOException {
+    public Option<Seq<Event<T>>> loadEvents(UniqueId<T> aggregateId) throws IOException {
         Preconditions.checkNotNull(aggregateId, "aggregateId must not be null");
 
         SQLiteDatabase db = txAdapter.getDb();
-        Cursor cursor = EventStoreTableImpl.queryForAggregateOrderByVersion(db, aggregateId);
+        Cursor cursor = table.queryForAggregateOrderByVersion(db, aggregateId);
         if (cursor.isAfterLast()) {
             return Option.apply(null);
         } else {
 
             try {
                 int columnIndexEvent = cursor.getColumnIndexOrThrow(EventStoreTableImpl.Table.COLUMN_EVENT);
-                scala.collection.mutable.MutableList<Event> events = new MutableList<Event>();
+                scala.collection.mutable.MutableList<Event<T>> events = new MutableList<Event<T>>();
                 //events.appendElem();
                 while (cursor.moveToNext()) {
                     String eventJson = cursor.getString(columnIndexEvent);
-                    Event event = serializer.parseEvent(eventJson);
+                    Event<T> event = serializer.parseEvent(eventJson);
                     events.appendElem(event);
                 }
                 return Option.apply(events.toSeq());
@@ -75,16 +75,16 @@ public class AndroidEventStore implements EventStore {
     }
 
     @Override
-    public void appendEvents(TaskId aggregateId, Seq<Event> events) throws IOException {
+    public void appendEvents(UniqueId<T> aggregateId, Seq<Event<T>> events) throws IOException {
         try {
-            Iterator<Event> eventIterator = events.iterator();
+            Iterator<Event<T>> eventIterator = events.iterator();
             SQLiteDatabase db = txAdapter.getDb();
 
             while (eventIterator.hasNext()) {
                 Event event = eventIterator.next();
                 Log.d("EventStore", String.format("%s += %s ", aggregateId.toString(), event.toString()));
                 String eventJson = serializer.serializeEvent(event);
-                EventStoreTableImpl.record(db, aggregateId, event.newAggregateRootVersion(), timestampFormatter.print(event.occurredAt()), event.getClass().getName(), eventJson);
+                table.record(db, aggregateId, event.newAggregateRootVersion(), timestampFormatter.print(event.occurredAt()), event.getClass().getName(), eventJson);
             }
         } catch (SQLException e) {
             throw new IOException(e);

@@ -17,8 +17,8 @@ package name.neuhalfen.todosimple.domain.infrastructure
 
 import name.neuhalfen.todosimple.domain.model.Event
 
-class DummyEventPublisher extends EventPublisher {
-  def publishEventsInTransaction(events: java.util.List[Event]): Unit = {}
+class DummyEventPublisher[ENTITY] extends EventPublisher[ENTITY] {
+  def publishEventsInTransaction(events: Seq[Event[ENTITY]]): Unit = {}
 
   /**
    * The events are committed to the database, the transaction is done.
@@ -27,7 +27,7 @@ class DummyEventPublisher extends EventPublisher {
    *
    * @param events
    */
-  def publishEventsAfterCommit(events: java.util.List[Event]): Unit = {}
+  def publishEventsAfterCommit(events: Seq[Event[ENTITY]]): Unit = {}
 
 
 }

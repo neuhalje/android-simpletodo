@@ -14,18 +14,18 @@ specific language governing permissions and limitations under the License.
  */
 package name.neuhalfen.todosimple.domain.infrastructure.impl
 
-import name.neuhalfen.todosimple.domain.model.{TaskId, Event}
+import name.neuhalfen.todosimple.domain.model.{AggregateRoot, UniqueId, TaskId, Event}
 import name.neuhalfen.todosimple.domain.infrastructure.EventStore
 
-class MemoryEventStore extends EventStore {
-  val data = collection.mutable.Map[TaskId, List[Event]]()
+class MemoryEventStore[ENTITY <: AggregateRoot[ENTITY, Event[ENTITY]]] extends EventStore[ENTITY] {
+  val data = collection.mutable.Map[UniqueId[ENTITY], List[Event[ENTITY]]]()
 
-  override def appendEvents(aggregateId: TaskId, events: Seq[Event]): Unit = {
-    val stored = data getOrElse(aggregateId, List[Event]())
+  override def appendEvents(aggregateId: UniqueId[ENTITY], events: Seq[Event[ENTITY]]): Unit = {
+    val stored = data getOrElse(aggregateId, List[Event[ENTITY]]())
     data(aggregateId) = stored ++ events
   }
 
-  override def loadEvents(aggregateId: TaskId): Option[Seq[Event]] = {
+  override def loadEvents(aggregateId: UniqueId[ENTITY]): Option[Seq[Event[ENTITY]]] = {
     data get aggregateId
   }
 }

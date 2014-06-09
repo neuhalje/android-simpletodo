@@ -1,13 +1,13 @@
 package name.neuhalfen.todosimple.domain.infrastructure
 
-import name.neuhalfen.todosimple.domain.model.Event
+import name.neuhalfen.todosimple.domain.model.{AggregateRoot, Event}
 import java.io.IOException
 
 
 /**
  * When an application transaction is about to be complete,  the events need to be published
  */
-trait EventPublisher {
+trait EventPublisher[ENTITY] {
   /**
    * The events are not yet committed to the database, the transaction is still ongoing.
    *
@@ -16,7 +16,7 @@ trait EventPublisher {
    * @param events
    */
   @throws(classOf[IOException])
-  def publishEventsInTransaction(events: java.util.List[Event]): Unit
+  def publishEventsInTransaction(events: Seq[Event[ENTITY]]): Unit
 
   /**
    * The events are committed to the database, the transaction is done.
@@ -26,5 +26,5 @@ trait EventPublisher {
    * @param events
    */
   @Deprecated
-  def publishEventsAfterCommit(events: java.util.List[Event]): Unit
+  def publishEventsAfterCommit(events: Seq[Event[ENTITY]]): Unit
 }

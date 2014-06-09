@@ -16,11 +16,10 @@ package name.neuhalfen.todosimple.android.infrastructure.db.dbviews;
 
 import android.content.Context;
 import name.neuhalfen.todosimple.android.infrastructure.db.SQLiteToTransactionAdapter;
+import name.neuhalfen.todosimple.domain.model.AggregateRoot;
 import name.neuhalfen.todosimple.domain.model.Event;
 
-import java.util.List;
-
-public interface DatabaseViewManager {
+public interface DatabaseViewManager<ENTITY extends AggregateRoot<ENTITY, Event<ENTITY>>> {
 
     /**
      * Update the database with the passed domain events. The events are guaranteed
@@ -33,5 +32,5 @@ public interface DatabaseViewManager {
      * @param db      DO NOT COMMIT!
      * @param events
      */
-    public void updateDBViewTables(Context context, SQLiteToTransactionAdapter db, List<Event> events);
+    public void updateDBViewTables(Context context, SQLiteToTransactionAdapter db, Iterable<Event<ENTITY>> events);
 }
