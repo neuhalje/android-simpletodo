@@ -33,7 +33,7 @@ public class AndroidEventPublisher<T extends AggregateRoot<T, Event<T>>> impleme
 
     //@Inject
     //public AndroidEventPublisher(@ForApplication SQLiteToTransactionAdapter txAdapter,@ForApplication  EventBus eventBus,@ForApplication  Context context,@ForApplication  Collection<DatabaseViewManager> dbViews,@ForApplication  UriResolver<T> uriResolver){
-    public AndroidEventPublisher(SQLiteToTransactionAdapter txAdapter, EventBus eventBus, Context context, Collection<DatabaseViewManager> dbViews, UriResolver<T> uriResolver) {
+    public AndroidEventPublisher(SQLiteToTransactionAdapter txAdapter, EventBus eventBus, Context context, Collection<DatabaseViewManager<T>> dbViews, UriResolver<T> uriResolver) {
         this.txAdapter = txAdapter;
         this.eventBus = eventBus;
         this.context = context;
@@ -44,7 +44,7 @@ public class AndroidEventPublisher<T extends AggregateRoot<T, Event<T>>> impleme
     private final SQLiteToTransactionAdapter txAdapter;
     private final EventBus eventBus;
     private final Context context;
-    private final Collection<DatabaseViewManager> dbViews;
+    private final Collection<DatabaseViewManager<T>> dbViews;
     private final UriResolver<T> uriResolver;
 
     @Override

@@ -40,6 +40,12 @@ specific language governing permissions and limitations under the License.
             android:authorities="name.neuhalfen.todosimple.android.TODOS">
             <!-- Write is not supported -->
         </provider>
+        <provider
+            android:exported="false"
+            android:name=".infrastructure.db.dbviews.label.LabelContentProviderImpl"
+            android:authorities="name.neuhalfen.todosimple.android.TODOS">
+            <!-- Write is not supported -->
+        </provider>
     </application>
 
 

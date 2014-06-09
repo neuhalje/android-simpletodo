@@ -23,22 +23,22 @@ import pl.polidea.robospock.RoboSpecification
 import static name.neuhalfen.todosimple.helper.TestConstants.*
 
 @Config(manifest = "../android-application//src/main/AndroidManifest.xml")
-class TaskEventJsonSerializerImplTest
+class LabelEventJsonSerializerImplTest
         extends RoboSpecification {
 
 
-    EventJsonSerializer<Task> sut;
+    EventJsonSerializer<Label> sut;
 
     def setup() {
         def application = Robolectric.application
-        sut = ((Injector) application).get(TaskEventJsonSerializerImpl.class);
+        sut = ((Injector) application).get(LabelEventJsonSerializerImpl.class);
     }
 
-    def "serializing and deserializing a TaskRenamedEvent returns an equal instance"() {
+    def "serializing and deserializing a LabelRenamedEvent returns an equal instance"() {
 
 
         given:
-        TaskRenamedEvent event = new TaskRenamedEvent(taskEventId2, taskId1, 1, 2, TIME_BEFORE, "my new title", "my new description");
+        LabelRenamedEvent event = new LabelRenamedEvent(labelEventId1, labelId1, 1, 2, TIME_BEFORE, "my new title");
 
         when:
         String serializedEvent = sut.serializeEvent(event);
@@ -48,9 +48,9 @@ class TaskEventJsonSerializerImplTest
         event.equals(deserialized)
     }
 
-    def "serializing and deserializing a TaskCreatedEvents returns an equal instance"() {
+    def "serializing and deserializing a LabelCreatedEvents returns an equal instance"() {
         given:
-        TaskCreatedEvent event = new TaskCreatedEvent(taskEventId2, taskId1, 0, 1, TIME_BEFORE, "my new title", "my description");
+        LabelCreatedEvent event = new LabelCreatedEvent(labelEventId1, labelId1, 0, 1, TIME_BEFORE, "my new title");
 
         when:
         String serializedEvent = sut.serializeEvent(event);
@@ -60,9 +60,9 @@ class TaskEventJsonSerializerImplTest
         event.equals(deserialized)
     }
 
-    def "serializing and deserializing a TaskDeletedEvent returns an equal instance"() {
+    def "serializing and deserializing a LabelDeletedEvent returns an equal instance"() {
         given:
-        Event event = new TaskDeletedEvent(taskEventId2, taskId1, 1, 2, TIME_NOW);
+        Event event = new LabelDeletedEvent(labelEventId1, labelId1, 1, 2, TIME_NOW);
 
         when:
         String serializedEvent = sut.serializeEvent(event);

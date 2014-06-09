@@ -28,17 +28,22 @@ import name.neuhalfen.todosimple.android.infrastructure.cache.TaskCache;
 import name.neuhalfen.todosimple.android.infrastructure.db.SQLiteToTransactionAdapter;
 import name.neuhalfen.todosimple.android.infrastructure.db.TodoSQLiteHelper;
 import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.DatabaseViewManager;
+import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.label.LabelContentProviderImpl;
+import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.label.LabelTableDatabaseViewManager;
+import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.label.LabelUriResolver;
 import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoContentProviderImpl;
 import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoTableDatabaseViewManager;
 import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoUriResolver;
 import name.neuhalfen.todosimple.android.infrastructure.db.eventstore.AndroidEventStore;
 import name.neuhalfen.todosimple.android.infrastructure.db.eventstore.EventStoreTable;
+import name.neuhalfen.todosimple.android.infrastructure.db.eventstore.json.LabelEventJsonSerializerImpl;
 import name.neuhalfen.todosimple.android.infrastructure.db.eventstore.json.TaskEventJsonSerializerImpl;
 import name.neuhalfen.todosimple.android.view.base.GsonParcer;
 import name.neuhalfen.todosimple.domain.application.Cache;
 import name.neuhalfen.todosimple.domain.application.TaskManagingApplication;
 import name.neuhalfen.todosimple.domain.infrastructure.EventPublisher;
 import name.neuhalfen.todosimple.domain.infrastructure.EventStore;
+import name.neuhalfen.todosimple.domain.model.Label;
 import name.neuhalfen.todosimple.domain.model.Task;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
@@ -49,7 +54,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-@Module(library = true, complete = true, injects = {AndroidEventStore.class, TodoContentProviderImpl.class, AndroidEventPublisher.class, SQLiteToTransactionAdapter.class, TaskEventJsonSerializerImpl.class}, includes = EventBusModule.class)
+@Module(library = true, complete = true, injects = {AndroidEventStore.class, TodoContentProviderImpl.class, LabelContentProviderImpl.class, AndroidEventPublisher.class, SQLiteToTransactionAdapter.class, TaskEventJsonSerializerImpl.class, LabelEventJsonSerializerImpl.class}, includes = EventBusModule.class)
 public class AndroidApplicationModule {
     private final TodoApplication application;
 
@@ -122,8 +127,17 @@ public class AndroidApplicationModule {
     @Singleton
     @Provides
     @ForApplication
-    EventPublisher<Task> provideTaskEventPublisher(@ForApplication SQLiteToTransactionAdapter txAdapter, @ForApplication EventBus eventBus, @ForApplication Context context, @ForApplication Collection<DatabaseViewManager> dbViews, @ForApplication UriResolver<Task> uriResolver) {
+    EventPublisher<Task> provideTaskEventPublisher(@ForApplication SQLiteToTransactionAdapter txAdapter, @ForApplication EventBus eventBus, @ForApplication Context context, @ForApplication Collection<DatabaseViewManager<Task>> dbViews, @ForApplication UriResolver<Task> uriResolver) {
         final AndroidEventPublisher<Task> publisher = new AndroidEventPublisher<Task>(txAdapter, eventBus, context, dbViews, uriResolver);
+        return publisher;
+    }
+
+
+    @Singleton
+    @Provides
+    @ForApplication
+    EventPublisher<Label> provideLabelEventPublisher(@ForApplication SQLiteToTransactionAdapter txAdapter, @ForApplication EventBus eventBus, @ForApplication Context context, @ForApplication Collection<DatabaseViewManager<Label>> dbViews, @ForApplication UriResolver<Label> uriResolver) {
+        final AndroidEventPublisher<Label> publisher = new AndroidEventPublisher<Label>(txAdapter, eventBus, context, dbViews, uriResolver);
         return publisher;
     }
 
@@ -149,9 +163,17 @@ public class AndroidApplicationModule {
 
     @Provides
     @ForApplication
-    Collection<DatabaseViewManager> provideDatabaseViewUpdaters() {
-        List<DatabaseViewManager> views = new ArrayList<DatabaseViewManager>();
+    Collection<DatabaseViewManager<Task>> provideTaskDatabaseViewUpdaters() {
+        List<DatabaseViewManager<Task>> views = new ArrayList<DatabaseViewManager<Task>>();
         views.add(new TodoTableDatabaseViewManager());
+        return views;
+    }
+
+    @Provides
+    @ForApplication
+    Collection<DatabaseViewManager<Label>> provideLabelDatabaseViewUpdaters() {
+        List<DatabaseViewManager<name.neuhalfen.todosimple.domain.model.Label>> views = new ArrayList<DatabaseViewManager<Label>>();
+        views.add(new LabelTableDatabaseViewManager());
         return views;
     }
 
@@ -175,6 +197,13 @@ public class AndroidApplicationModule {
         return ISODateTimeFormat.basicDateTime();
     }
 
+
+    @Provides
+    @Singleton
+    @ForApplication
+    UriResolver<Label> provideLabelUriResolver() {
+        return new LabelUriResolver();
+    }
 
     @Provides
     @Singleton
