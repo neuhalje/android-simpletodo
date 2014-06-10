@@ -42,7 +42,7 @@ import javax.inject.Inject;
 import static name.neuhalfen.todosimple.helper.Preconditions.checkNotNull;
 import static name.neuhalfen.todosimple.helper.Preconditions.checkState;
 
-public class DetailView extends LinearLayout   implements LabelListView.OnLabelClickedListener,  LoaderManager.LoaderCallbacks<Cursor>  {
+public class DetailView extends RelativeLayout   implements LabelListView.OnLabelClickedListener,  LoaderManager.LoaderCallbacks<Cursor>  {
     @Inject
     DetailScreen.Presenter presenter;
 
