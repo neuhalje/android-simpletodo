@@ -43,7 +43,7 @@ specific language governing permissions and limitations under the License.
         <provider
             android:exported="false"
             android:name=".infrastructure.db.dbviews.label.LabelContentProviderImpl"
-            android:authorities="name.neuhalfen.todosimple.android.TODOS">
+            android:authorities="name.neuhalfen.todosimple.android.LABELS">
             <!-- Write is not supported -->
         </provider>
     </application>

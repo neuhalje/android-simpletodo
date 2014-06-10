@@ -15,9 +15,12 @@ specific language governing permissions and limitations under the License.
 package name.neuhalfen.todosimple.android.view.task;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
+import android.widget.SimpleCursorAdapter;
+import android.widget.Toast;
 import dagger.Provides;
 import de.greenrobot.event.EventBus;
 import flow.Flow;
@@ -31,6 +34,7 @@ import name.neuhalfen.todosimple.android.view.base.ActionBarOwner;
 import name.neuhalfen.todosimple.android.view.base.Main;
 import name.neuhalfen.todosimple.android.view.base.notification.ViewShowNotificationCommand;
 import name.neuhalfen.todosimple.android.view.label.LabelDTO;
+import name.neuhalfen.todosimple.domain.application.LabelManagingApplication;
 import name.neuhalfen.todosimple.domain.application.TaskManagingApplication;
 import name.neuhalfen.todosimple.domain.model.*;
 import rx.util.functions.Action0;
@@ -116,12 +120,13 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
         private final EventBus eventBus;
         private final Flow flow;
         private final Context context;
+        private final LabelManagingApplication labelApp;
 
         private Cmd cmd;
 
 
         @Inject
-        Presenter(@ForApplication TaskManagingApplication taskApp, TaskDTOAdapter taskDTOAdapter, @ForApplication EventBus eventBus, ActionBarOwner actionBar, Cmd initialCommand, Flow flow, @ForApplication Context context) {
+        Presenter(@ForApplication TaskManagingApplication taskApp, @ForApplication LabelManagingApplication labelApp, TaskDTOAdapter taskDTOAdapter, @ForApplication EventBus eventBus, ActionBarOwner actionBar, Cmd initialCommand, Flow flow, @ForApplication Context context) {
             this.taskApp = taskApp;
             this.taskDTOAdapter = taskDTOAdapter;
             this.actionBar = actionBar;
@@ -129,6 +134,7 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
             this.cmd = initialCommand;
             this.flow = flow;
             this.context = context;
+            this.labelApp = labelApp;
         }
 
         @Override
@@ -166,10 +172,7 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
                 actionBar.setConfig(actionBarConfig);
 
                 takeCommand(this.cmd);
-                view.setAvailableLabelProvider(new ArrayAdapter<String>(context,
-                        android.R.layout.simple_dropdown_item_1line, new String[]{
-                        "Belgium", "France", "Italy", "Germany", "Spain"}
-                ));
+                view.fillLabelDropdown();
             }
         }
 
@@ -319,22 +322,23 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
         }
 
         public void onAddLabelClicked(final String labelText) {
-            /* FIXME
             final DetailView view = getView();
 
-            final Option<UUID> labelOption = labelApp.findByText(labelText);
-            final LabelDTO label;
 
-            if (labelOption.nonEmpty()) {
-                label = new LabelDTO(labelOption.get(), labelText);
-            } else {
-                label = labelApp.createLabel(labelText);
-            }
+            final CreateLabelCommand createLabelCommand = Commands.createLabel(labelText);
+            labelApp.executeCommand(createLabelCommand);
 
-            // TODO: add label to task
+            final LabelDTO label = new LabelDTO(createLabelCommand.aggregateRootId(), labelText);
 
+            Toast.makeText(context, "Create  & add label: " + label.toString(), Toast.LENGTH_LONG).show();
             view.showLabelAssigned(label);
-            */
+        }
+        public void onAddLabelClicked(LabelId labelId, String labelText) {
+            final LabelDTO label = new LabelDTO(labelId, labelText);
+            final DetailView view = getView();
+            view.showLabelAssigned(label);
+
+            Toast.makeText(context, "Add existing label: " + label.toString(), Toast.LENGTH_LONG).show();
         }
 
         public void onRemoveLabelClicked(LabelDTO label) {
@@ -342,5 +346,6 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
             // TODO: remove label from task
             view.showLabelRemoved(label);
         }
+
     }
 }

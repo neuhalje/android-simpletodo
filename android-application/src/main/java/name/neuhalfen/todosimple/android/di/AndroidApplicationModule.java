@@ -24,7 +24,7 @@ import flow.Parcer;
 import name.neuhalfen.todosimple.android.TodoApplication;
 import name.neuhalfen.todosimple.android.infrastructure.AndroidEventPublisher;
 import name.neuhalfen.todosimple.android.infrastructure.UriResolver;
-import name.neuhalfen.todosimple.android.infrastructure.cache.TaskCache;
+import name.neuhalfen.todosimple.android.infrastructure.cache.GlobalEntityCache;
 import name.neuhalfen.todosimple.android.infrastructure.db.SQLiteToTransactionAdapter;
 import name.neuhalfen.todosimple.android.infrastructure.db.TodoSQLiteHelper;
 import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.DatabaseViewManager;
@@ -39,7 +39,7 @@ import name.neuhalfen.todosimple.android.infrastructure.db.eventstore.EventStore
 import name.neuhalfen.todosimple.android.infrastructure.db.eventstore.json.LabelEventJsonSerializerImpl;
 import name.neuhalfen.todosimple.android.infrastructure.db.eventstore.json.TaskEventJsonSerializerImpl;
 import name.neuhalfen.todosimple.android.view.base.GsonParcer;
-import name.neuhalfen.todosimple.domain.application.Cache;
+import name.neuhalfen.todosimple.domain.application.LabelManagingApplication;
 import name.neuhalfen.todosimple.domain.application.TaskManagingApplication;
 import name.neuhalfen.todosimple.domain.infrastructure.EventPublisher;
 import name.neuhalfen.todosimple.domain.infrastructure.EventStore;
@@ -76,22 +76,29 @@ public class AndroidApplicationModule {
     @Singleton
     @Provides
     @ForApplication
-    TaskManagingApplication provideTaskManagementApplication(@ForApplication EventStore<Task> eventStore, @ForApplication EventPublisher<Task> eventPublisher, @ForApplication SQLiteToTransactionAdapter tx, @ForApplication Cache<Task> taskCache) {
-        return new TaskManagingApplication(eventStore, eventPublisher, tx, taskCache);
+    TaskManagingApplication provideTaskManagementApplication(@ForApplication EventStore<Task> eventStore, @ForApplication EventPublisher<Task> eventPublisher, @ForApplication SQLiteToTransactionAdapter tx, @ForApplication GlobalEntityCache<Task> cache) {
+        return new TaskManagingApplication(eventStore, eventPublisher, tx, cache);
     }
 
     @Singleton
     @Provides
     @ForApplication
-    TaskCache provideTaskCache() {
-        return new TaskCache();
+    LabelManagingApplication provideLabelManagementApplication(@ForApplication EventStore<Label> eventStore, @ForApplication EventPublisher<Label> eventPublisher, @ForApplication SQLiteToTransactionAdapter tx, @ForApplication GlobalEntityCache<Label> cache) {
+        return new LabelManagingApplication(eventStore, eventPublisher, tx, cache);
     }
 
-    @Singleton
     @Provides
+    @Singleton
     @ForApplication
-    Cache<Task> provideTaskCacheIF(@ForApplication TaskCache cache) {
-        return cache;
+    GlobalEntityCache<Task> provideTaskCache() {
+        return new GlobalEntityCache<Task>();
+    }
+
+    @Provides
+    @Singleton
+    @ForApplication
+    GlobalEntityCache<Label> provideLabelCacheIF() {
+        return new GlobalEntityCache<Label>();
     }
 
     @Singleton
@@ -119,8 +126,13 @@ public class AndroidApplicationModule {
     @Singleton
     @Provides
     @ForApplication
-    EventStore<Task> provideEventStore(@ForApplication SQLiteToTransactionAdapter txAdapter, @ForApplication TaskEventJsonSerializerImpl serializer, @ForApplication DateTimeFormatter timestampFormatter, @ForApplication EventStoreTable table) {
-        //EventStore<Task> provideEventStore(@ForApplication SQLiteToTransactionAdapter txAdapter, @ForApplication EventJsonSerializer<Event<Task>> serializer, @ForApplication DateTimeFormatter timestampFormatter, @ForApplication EventStoreTable table) {
+    EventStore<Label> provideLabelEventStoreCast(@ForApplication SQLiteToTransactionAdapter txAdapter, @ForApplication LabelEventJsonSerializerImpl serializer, @ForApplication DateTimeFormatter timestampFormatter, @ForApplication EventStoreTable table) {
+        return new AndroidEventStore<Label>(txAdapter, serializer, timestampFormatter, table);
+    }
+    @Singleton
+    @Provides
+    @ForApplication
+    EventStore<Task> provideTaskEventStoreCast(@ForApplication SQLiteToTransactionAdapter txAdapter, @ForApplication TaskEventJsonSerializerImpl serializer, @ForApplication DateTimeFormatter timestampFormatter, @ForApplication EventStoreTable table) {
         return new AndroidEventStore<Task>(txAdapter, serializer, timestampFormatter, table);
     }
 
@@ -157,8 +169,13 @@ public class AndroidApplicationModule {
     @Singleton
     @ForApplication
     TaskEventJsonSerializerImpl provideTaskEventJsonSerializer() {
-        //EventJsonSerializer<Event<Task>> provideTaskEventJsonSerializer() {
         return application.get(TaskEventJsonSerializerImpl.class);
+    }
+    @Provides
+    @Singleton
+    @ForApplication
+    LabelEventJsonSerializerImpl provideLabelEventJsonSerializer() {
+        return application.get(LabelEventJsonSerializerImpl.class);
     }
 
     @Provides

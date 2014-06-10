@@ -28,6 +28,7 @@ import android.widget.RelativeLayout;
 import mortar.Mortar;
 import mortar.MortarScope;
 import name.neuhalfen.todosimple.android.R;
+import name.neuhalfen.todosimple.domain.model.LabelId;
 
 import javax.inject.Inject;
 import java.util.*;
@@ -125,14 +126,9 @@ public class LabelListView extends RelativeLayout {
 
         if (isInEditMode()) { // IDEA Editor
             // Add some demo data in the IDE editor
-            UUID id = UUID.randomUUID();
-            assignLabel(new LabelDTO(id, "Demo label!"));
-
-            id = UUID.randomUUID();
-            assignLabel(new LabelDTO(id, "Important"));
-
-            id = UUID.randomUUID();
-            assignLabel(new LabelDTO(id, "another one"));
+            assignLabel(new LabelDTO(LabelId.generateId(), "Demo label!"));
+            assignLabel(new LabelDTO(LabelId.generateId(), "Important"));
+            assignLabel(new LabelDTO(LabelId.generateId(), "another one"));
             return;
         }
     }

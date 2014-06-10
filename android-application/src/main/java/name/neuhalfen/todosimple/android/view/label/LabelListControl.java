@@ -4,6 +4,7 @@ import android.os.Bundle;
 import mortar.Blueprint;
 import mortar.ViewPresenter;
 import name.neuhalfen.todosimple.android.view.base.Main;
+import name.neuhalfen.todosimple.domain.model.LabelId;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -35,11 +36,11 @@ class LabelListControl implements Blueprint {
 
 
         private WeakReference<LabelListView.OnLabelClickedListener> onLabelClickedListener;
-        private final Map<UUID, LabelDTO> assignedLabels;
+        private final Map<LabelId, LabelDTO> assignedLabels;
 
         @Inject
         public Presenter() {
-            assignedLabels = new HashMap<UUID, LabelDTO>();
+            assignedLabels = new HashMap<LabelId, LabelDTO>();
         }
 
         @Override

@@ -1,14 +1,14 @@
 package name.neuhalfen.todosimple.android.view.label;
 
-import java.util.UUID;
+import name.neuhalfen.todosimple.domain.model.LabelId;
 
 import static name.neuhalfen.todosimple.helper.Preconditions.checkNotNull;
 
 public class LabelDTO {
-    public final UUID id;
+    public final LabelId id;
     public final String name;
 
-    public LabelDTO(UUID id, String name) {
+    public LabelDTO(LabelId id, String name) {
         checkNotNull(id,"id must not be null");
         checkNotNull(name,"name must not be null");
         this.id = id;

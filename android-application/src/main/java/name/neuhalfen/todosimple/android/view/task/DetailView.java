@@ -14,17 +14,27 @@ specific language governing permissions and limitations under the License.
  */
 package name.neuhalfen.todosimple.android.view.task;
 
+import android.app.LoaderManager;
 import android.content.Context;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.database.Cursor;
+import android.os.Bundle;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 import flow.Parcer;
 import mortar.Mortar;
 import name.neuhalfen.todosimple.android.R;
+import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.label.LabelContentProvider;
+import name.neuhalfen.todosimple.android.view.base.BaseActivity;
 import name.neuhalfen.todosimple.android.view.label.LabelDTO;
 import name.neuhalfen.todosimple.android.view.label.LabelListView;
+import name.neuhalfen.todosimple.domain.model.LabelId;
 import name.neuhalfen.todosimple.domain.model.TaskId;
 import org.apache.commons.lang3.StringUtils;
 
@@ -33,7 +43,7 @@ import javax.inject.Inject;
 import static name.neuhalfen.todosimple.helper.Preconditions.checkNotNull;
 import static name.neuhalfen.todosimple.helper.Preconditions.checkState;
 
-public class DetailView extends LinearLayout   implements LabelListView.OnLabelClickedListener  {
+public class DetailView extends LinearLayout   implements LabelListView.OnLabelClickedListener,  LoaderManager.LoaderCallbacks<Cursor>  {
     @Inject
     DetailScreen.Presenter presenter;
 
@@ -66,6 +76,7 @@ public class DetailView extends LinearLayout   implements LabelListView.OnLabelC
     private int taskVersion;
     private TaskId taskId;
 
+    private SimpleCursorAdapter adapter;
 
     public DetailView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -80,7 +91,23 @@ public class DetailView extends LinearLayout   implements LabelListView.OnLabelC
     void addLabelButtonClick() {
         final String labelText = labelAutoComplete.getText().toString();
         if (StringUtils.isBlank(labelText)) {return;}
-        presenter.onAddLabelClicked(labelText);
+        if (null == adapter) {
+            return;
+        }
+        int position  = labelAutoComplete.getListSelection();
+        final boolean isExistingLabelSelected = position != ListView.INVALID_POSITION;
+
+        if (isExistingLabelSelected) {
+            Cursor cursor = (Cursor) adapter.getItem(position);
+            if (null == cursor) {
+                return;
+            }
+            String aggregateId = cursor.getString(cursor.getColumnIndex(LabelContentProvider.LabelTable.COLUMN_AGGREGATE_ID));
+            final LabelId labelId = LabelId.fromString(aggregateId);
+            presenter.onAddLabelClicked(labelId, labelText);
+        }else{
+            presenter.onAddLabelClicked(labelText);
+        }
     }
 
     @Override
@@ -103,6 +130,12 @@ public class DetailView extends LinearLayout   implements LabelListView.OnLabelC
         }
         presenter.onCloseView();
         labels.setOnLabelClickedListener(null);
+
+        final LoaderManager loaderManager = getLoaderManager();
+        if (loaderManager != null) {
+            loaderManager.destroyLoader(1);
+        }
+
         ButterKnife.reset(this);
         presenter.dropView(this);
     }
@@ -156,8 +189,10 @@ public class DetailView extends LinearLayout   implements LabelListView.OnLabelC
     }
 
 
-    public <T extends ListAdapter & Filterable> void  setAvailableLabelProvider(T adapter){
+    private <T extends ListAdapter & Filterable> void  setAvailableLabelAdapter(T adapter){
         labelAutoComplete.setAdapter(adapter);
+
+
     }
 
 
@@ -180,5 +215,63 @@ public class DetailView extends LinearLayout   implements LabelListView.OnLabelC
         if (presenter!=null) {
             presenter.onRemoveLabelClicked(label);
         }
+    }
+
+
+    //// Label Loader
+    @CheckForNull
+    private LoaderManager getLoaderManager() {
+        Context context = getContext();
+        LoaderManager loaderManager = (LoaderManager) context.getSystemService(BaseActivity.NAME_NEUHALFEN_LOADER_MANAGER);
+
+        if (null != loaderManager) {
+            return loaderManager;
+        } else {
+            Log.i("TaskListView", String.format("initLoaderManager: Context '%s' is not returning %s.", context, BaseActivity.NAME_NEUHALFEN_LOADER_MANAGER));
+        }
+        return null;
+    }
+
+    public void fillLabelDropdown() {
+        final LoaderManager loaderManager = getLoaderManager();
+        adapter = createDbAdapter();
+        setAvailableLabelAdapter(adapter);
+        if (loaderManager != null) {
+            loaderManager.initLoader(1, null, this);
+        }
+    }
+
+    // creates a new loader after the initLoader () call
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String[] projection = {LabelContentProvider.LabelTable.COLUMN_ID, LabelContentProvider.LabelTable.COLUMN_TITLE, LabelContentProvider.LabelTable.COLUMN_AGGREGATE_ID};
+        CursorLoader cursorLoader = new CursorLoader(getContext(),
+                LabelContentProvider.CONTENT_URI, projection, null, null, LabelContentProvider.LabelTable.COLUMN_TITLE);
+        return cursorLoader;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        adapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        // data is not available anymore, delete reference
+        adapter.swapCursor(null);
+    }
+
+    private SimpleCursorAdapter createDbAdapter() {
+
+        // Fields from the database (projection)
+        // Must include the _id column for the adapter to work
+        String[] from = new String[]{LabelContentProvider.LabelTable.COLUMN_TITLE};
+        // Fields on the UI to which we map
+        int[] to = new int[]{android.R.id.text1};
+
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(getContext(), android.R.layout.simple_list_item_activated_1, null, from,
+                to, SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+
+        return adapter;
     }
 }

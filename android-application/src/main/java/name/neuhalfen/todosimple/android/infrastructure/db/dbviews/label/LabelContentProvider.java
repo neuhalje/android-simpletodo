@@ -59,7 +59,7 @@ public interface LabelContentProvider {
     }
 
 
-    public static final String AUTHORITY = "name.neuhalfen.todosimple.android.TODOS";
+    public static final String AUTHORITY = "name.neuhalfen.todosimple.android.LABELS";
 
     static final String BASE_PATH = "labels";
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY

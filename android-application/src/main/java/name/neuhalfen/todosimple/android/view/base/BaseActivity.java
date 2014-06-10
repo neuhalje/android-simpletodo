@@ -41,15 +41,12 @@ import mortar.MortarScopeDevHelper;
 import name.neuhalfen.todosimple.android.BuildConfig;
 import name.neuhalfen.todosimple.android.R;
 import name.neuhalfen.todosimple.android.di.ForApplication;
-import name.neuhalfen.todosimple.android.infrastructure.cache.TaskCache;
+import name.neuhalfen.todosimple.android.infrastructure.cache.GlobalEntityCache;
 import name.neuhalfen.todosimple.android.view.base.notification.ViewShowNotificationCommand;
-import name.neuhalfen.todosimple.domain.model.TaskCreatedEvent;
-import name.neuhalfen.todosimple.domain.model.TaskDeletedEvent;
-import name.neuhalfen.todosimple.domain.model.TaskRenamedEvent;
+import name.neuhalfen.todosimple.domain.model.*;
 
 import javax.inject.Inject;
 import java.util.List;
-import java.util.Locale;
 
 import static android.content.Intent.ACTION_MAIN;
 import static android.content.Intent.CATEGORY_LAUNCHER;
@@ -96,7 +93,11 @@ public class BaseActivity extends Activity implements ActionBarOwner.View {
 
     @Inject
     @ForApplication
-    TaskCache taskCache;
+    GlobalEntityCache<Task> taskCache;
+
+    @Inject
+    @ForApplication
+    GlobalEntityCache<Label> labelCache;
 
     private Flow mainFlow;
 
@@ -231,13 +232,9 @@ public class BaseActivity extends Activity implements ActionBarOwner.View {
                     .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
-                            final int cacheAccesses = taskCache.getHits() + taskCache.getMisses();
                             final String msg;
-                            if (cacheAccesses > 0) {
-                                msg = String.format(Locale.getDefault(), "TaskCache: %d items. %d accesses, %f0.1%% hit rate", taskCache.getSize(), cacheAccesses, (double) taskCache.getHits() * 100 / cacheAccesses);
-                            } else {
-                                msg = String.format(Locale.getDefault(), "TaskCache: %d items.  No accesses", taskCache.getSize());
-                            }
+
+                            msg = String.format("Tasks: %s\nLabels: %s", taskCache.toString(), labelCache.toString());
                             Toast.makeText(BaseActivity.this, msg, Toast.LENGTH_LONG).show();
                             Log.d("DemoActivity", msg);
                             return true;
