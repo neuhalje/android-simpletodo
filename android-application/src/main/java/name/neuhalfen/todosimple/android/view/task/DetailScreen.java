@@ -15,11 +15,8 @@ specific language governing permissions and limitations under the License.
 package name.neuhalfen.todosimple.android.view.task;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
-import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 import dagger.Provides;
 import de.greenrobot.event.EventBus;
@@ -30,6 +27,7 @@ import mortar.Blueprint;
 import mortar.ViewPresenter;
 import name.neuhalfen.todosimple.android.R;
 import name.neuhalfen.todosimple.android.di.ForApplication;
+import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.label.LabelQueryService;
 import name.neuhalfen.todosimple.android.view.base.ActionBarOwner;
 import name.neuhalfen.todosimple.android.view.base.Main;
 import name.neuhalfen.todosimple.android.view.base.notification.ViewShowNotificationCommand;
@@ -38,6 +36,7 @@ import name.neuhalfen.todosimple.domain.application.LabelManagingApplication;
 import name.neuhalfen.todosimple.domain.application.TaskManagingApplication;
 import name.neuhalfen.todosimple.domain.model.*;
 import rx.util.functions.Action0;
+import scala.Option;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -121,12 +120,13 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
         private final Flow flow;
         private final Context context;
         private final LabelManagingApplication labelApp;
+        private final LabelQueryService labelQueryService;
 
         private Cmd cmd;
 
 
         @Inject
-        Presenter(@ForApplication TaskManagingApplication taskApp, @ForApplication LabelManagingApplication labelApp, TaskDTOAdapter taskDTOAdapter, @ForApplication EventBus eventBus, ActionBarOwner actionBar, Cmd initialCommand, Flow flow, @ForApplication Context context) {
+        Presenter(@ForApplication TaskManagingApplication taskApp, @ForApplication LabelManagingApplication labelApp, TaskDTOAdapter taskDTOAdapter, @ForApplication EventBus eventBus, ActionBarOwner actionBar, Cmd initialCommand, Flow flow, @ForApplication Context context, @ForApplication LabelQueryService labelQueryService) {
             this.taskApp = taskApp;
             this.taskDTOAdapter = taskDTOAdapter;
             this.actionBar = actionBar;
@@ -135,6 +135,7 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
             this.flow = flow;
             this.context = context;
             this.labelApp = labelApp;
+            this.labelQueryService = labelQueryService;
         }
 
         @Override
@@ -324,19 +325,27 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
         public void onAddLabelClicked(final String labelText) {
             final DetailView view = getView();
 
+            final Option<LabelDTO> existingLabel = labelQueryService.findByTitle(labelText);
+             final LabelDTO label;
 
-            final CreateLabelCommand createLabelCommand = Commands.createLabel(labelText);
-            labelApp.executeCommand(createLabelCommand);
+            if (existingLabel.isDefined()) {
+                label = existingLabel.get();
+                Toast.makeText(context, "Found & add label: " + label.toString(), Toast.LENGTH_LONG).show();
+            } else {
 
-            final LabelDTO label = new LabelDTO(createLabelCommand.aggregateRootId(), labelText);
+                final CreateLabelCommand createLabelCommand = Commands.createLabel(labelText);
+                labelApp.executeCommand(createLabelCommand);
 
-            Toast.makeText(context, "Create  & add label: " + label.toString(), Toast.LENGTH_LONG).show();
+                label = new LabelDTO(createLabelCommand.aggregateRootId(), labelText);
+                Toast.makeText(context, "Create  & add label: " + label.toString(), Toast.LENGTH_LONG).show();
+            }
+
             view.showLabelAssigned(label);
         }
-        public void onAddLabelClicked(LabelId labelId, String labelText) {
+        private void onAddLabelClicked(LabelId labelId, String labelText) {
+            // FIXME: call me
             final LabelDTO label = new LabelDTO(labelId, labelText);
             final DetailView view = getView();
-            view.showLabelAssigned(label);
 
             Toast.makeText(context, "Add existing label: " + label.toString(), Toast.LENGTH_LONG).show();
         }

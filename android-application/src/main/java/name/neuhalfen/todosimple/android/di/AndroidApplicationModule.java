@@ -28,9 +28,7 @@ import name.neuhalfen.todosimple.android.infrastructure.cache.GlobalEntityCache;
 import name.neuhalfen.todosimple.android.infrastructure.db.SQLiteToTransactionAdapter;
 import name.neuhalfen.todosimple.android.infrastructure.db.TodoSQLiteHelper;
 import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.DatabaseViewManager;
-import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.label.LabelContentProviderImpl;
-import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.label.LabelTableDatabaseViewManager;
-import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.label.LabelUriResolver;
+import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.label.*;
 import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoContentProviderImpl;
 import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoTableDatabaseViewManager;
 import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoUriResolver;
@@ -54,7 +52,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-@Module(library = true, complete = true, injects = {AndroidEventStore.class, TodoContentProviderImpl.class, LabelContentProviderImpl.class, AndroidEventPublisher.class, SQLiteToTransactionAdapter.class, TaskEventJsonSerializerImpl.class, LabelEventJsonSerializerImpl.class}, includes = EventBusModule.class)
+@Module(library = true, complete = true, injects = {AndroidEventStore.class, TodoContentProviderImpl.class, LabelContentProviderImpl.class, AndroidEventPublisher.class, SQLiteToTransactionAdapter.class, TaskEventJsonSerializerImpl.class, LabelEventJsonSerializerImpl.class, LabelQueryServiceImpl.class}, includes = EventBusModule.class)
 public class AndroidApplicationModule {
     private final TodoApplication application;
 
@@ -232,11 +230,17 @@ public class AndroidApplicationModule {
     @Provides
     @Singleton
     @ForApplication
-    EventStoreTable proveideEventStoreTable()
+    EventStoreTable provideEventStoreTable()
     {
         return new EventStoreTable();
     }
 
+    @Provides
+    @Singleton
+    @ForApplication
+    LabelQueryService provideLabelQueryService() {
+        return application.get(LabelQueryServiceImpl.class);
+    }
     /*
     @Provides @Singleton LocationManager provideLocationManager() {
         return (LocationManager) application.getSystemService(LOCATION_SERVICE);

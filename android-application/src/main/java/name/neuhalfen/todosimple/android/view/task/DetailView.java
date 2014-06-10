@@ -34,7 +34,6 @@ import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.label.LabelCo
 import name.neuhalfen.todosimple.android.view.base.BaseActivity;
 import name.neuhalfen.todosimple.android.view.label.LabelDTO;
 import name.neuhalfen.todosimple.android.view.label.LabelListView;
-import name.neuhalfen.todosimple.domain.model.LabelId;
 import name.neuhalfen.todosimple.domain.model.TaskId;
 import org.apache.commons.lang3.StringUtils;
 
@@ -91,23 +90,7 @@ public class DetailView extends LinearLayout   implements LabelListView.OnLabelC
     void addLabelButtonClick() {
         final String labelText = labelAutoComplete.getText().toString();
         if (StringUtils.isBlank(labelText)) {return;}
-        if (null == adapter) {
-            return;
-        }
-        int position  = labelAutoComplete.getListSelection();
-        final boolean isExistingLabelSelected = position != ListView.INVALID_POSITION;
-
-        if (isExistingLabelSelected) {
-            Cursor cursor = (Cursor) adapter.getItem(position);
-            if (null == cursor) {
-                return;
-            }
-            String aggregateId = cursor.getString(cursor.getColumnIndex(LabelContentProvider.LabelTable.COLUMN_AGGREGATE_ID));
-            final LabelId labelId = LabelId.fromString(aggregateId);
-            presenter.onAddLabelClicked(labelId, labelText);
-        }else{
-            presenter.onAddLabelClicked(labelText);
-        }
+        presenter.onAddLabelClicked(labelText);
     }
 
     @Override
@@ -246,7 +229,7 @@ public class DetailView extends LinearLayout   implements LabelListView.OnLabelC
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String[] projection = {LabelContentProvider.LabelTable.COLUMN_ID, LabelContentProvider.LabelTable.COLUMN_TITLE, LabelContentProvider.LabelTable.COLUMN_AGGREGATE_ID};
         CursorLoader cursorLoader = new CursorLoader(getContext(),
-                LabelContentProvider.CONTENT_URI, projection, null, null, LabelContentProvider.LabelTable.COLUMN_TITLE);
+                LabelContentProvider.CONTENT_URI, projection, null, null, LabelContentProvider.LabelTable.COLUMN_TITLE + " COLLATE LOCALIZED ASC");
         return cursorLoader;
     }
 
@@ -271,6 +254,14 @@ public class DetailView extends LinearLayout   implements LabelListView.OnLabelC
 
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(getContext(), android.R.layout.simple_list_item_activated_1, null, from,
                 to, SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+
+        adapter.setCursorToStringConverter(new SimpleCursorAdapter.CursorToStringConverter() {
+            @Override
+            public CharSequence convertToString(Cursor cursor) {
+                final int colIndex = cursor.getColumnIndexOrThrow(LabelContentProvider.LabelTable.COLUMN_TITLE);
+                return cursor.getString(colIndex);
+            }
+        });
 
         return adapter;
     }
