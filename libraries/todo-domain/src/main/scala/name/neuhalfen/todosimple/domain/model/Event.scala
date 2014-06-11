@@ -39,6 +39,14 @@ case class TaskDeletedEvent(id: EventId[Task], aggregateRootId: TaskId, original
   override def toString: String = super.toString()
 }
 
+case class TaskLabeledEvent(id: EventId[Task], aggregateRootId: TaskId, originalAggregateRootVersion: Int, newAggregateRootVersion: Int, occurredAt: DateTime, label:LabelId) extends Event[Task] {
+  override def toString: String = super.toString() + s", label $label"
+}
+
+case class TaskLabelRemovedEvent(id: EventId[Task], aggregateRootId: TaskId, originalAggregateRootVersion: Int, newAggregateRootVersion: Int, occurredAt: DateTime, label:LabelId) extends Event[Task] {
+  override def toString: String = super.toString() + s", label $label"
+}
+
 
 case class LabelCreatedEvent(id: EventId[Label], aggregateRootId: LabelId, originalAggregateRootVersion: Int, newAggregateRootVersion: Int, occurredAt: DateTime, title: String) extends Event[Label] {
   override def toString: String = super.toString() + s", title:'$title'"

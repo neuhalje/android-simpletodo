@@ -318,6 +318,37 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
             }
         }
 
+        /**
+         * Event bus callback
+         */
+        public void onEventMainThread(TaskLabeledEvent event) {
+            final DetailView view = getView();
+            if (null == view) {
+                return;
+            }
+
+            if (!isMyAggregate(event)) {
+                return;
+            }
+            view.setTaskVersion(event.newAggregateRootVersion());
+        }
+
+        /**
+         * Event bus callback
+         */
+        public void onEventMainThread(TaskLabelRemovedEvent event) {
+            final DetailView view = getView();
+            if (null == view) {
+                return;
+            }
+
+            if (!isMyAggregate(event)) {
+                return;
+            }
+            view.setTaskVersion(event.newAggregateRootVersion());
+        }
+
+
         private boolean isMyAggregate(Event event) {
             return cmd.taskId.equals(event.aggregateRootId());
         }
@@ -339,7 +370,8 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
                 label = new LabelDTO(createLabelCommand.aggregateRootId(), labelText);
                 Toast.makeText(context, "Create  & add label: " + label.toString(), Toast.LENGTH_LONG).show();
             }
-
+            final LabelTaskCommand labelTaskCommand = new LabelTaskCommand(CommandId.<Task>generateId(), cmd.taskId, view.getTaskVersion(), label.id);
+            taskApp.executeCommand(labelTaskCommand);
             view.showLabelAssigned(label);
         }
         private void onAddLabelClicked(LabelId labelId, String labelText) {

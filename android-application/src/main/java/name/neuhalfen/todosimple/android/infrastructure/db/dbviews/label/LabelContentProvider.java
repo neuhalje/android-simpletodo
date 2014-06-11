@@ -43,6 +43,7 @@ public interface LabelContentProvider {
                 LabelTable.COLUMN_ID};
 
         int TABLE_VERSION = 1;
+        public static final String TABLE_NAME = "labels";
     }
 
     public static class Factory {

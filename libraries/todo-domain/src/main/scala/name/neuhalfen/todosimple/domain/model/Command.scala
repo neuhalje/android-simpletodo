@@ -28,7 +28,10 @@ object Commands {
   def createTask(title: String, description: String) = CreateTaskCommand(CommandId.generateId(), TaskId.generateId(), title, description, 0)
   def renameTask(task: Task, newTitle: String, newDescription: String) = RenameTaskCommand(CommandId.generateId(), task.id, task.version, newTitle, newDescription)
   def deleteTask(task: Task) = DeleteTaskCommand(CommandId.generateId(), task.id, task.version)
-  
+
+  def labelTask(task: Task, label: LabelId) = LabelTaskCommand(CommandId.generateId(), task.id, task.version, label)
+  def unlabelTask(task: Task, label: LabelId) = RemoveLabelFromTaskCommand(CommandId.generateId(), task.id, task.version, label)
+
   def createLabel(title: String) = CreateLabelCommand(CommandId.generateId(), LabelId.generateId(), title,  0)
   def renameLabel(label: Label, newTitle: String) = RenameLabelCommand(CommandId.generateId(), label.id, label.version, newTitle)
   def deleteLabel(label: Label) = DeleteLabelCommand(CommandId.generateId(), label.id, label.version)
@@ -44,6 +47,13 @@ case class RenameTaskCommand(id: CommandId[Task], aggregateRootId: TaskId, aggre
 
 case class DeleteTaskCommand(id: CommandId[Task], aggregateRootId: TaskId, aggregateRootVersion: Int) extends Command[Task] {
   override def toString: String = super.toString()
+}
+
+case class LabelTaskCommand(id: CommandId[Task], aggregateRootId: TaskId, aggregateRootVersion: Int, label:LabelId) extends Command[Task] {
+  override def toString: String = super.toString() + s", label $label"
+}
+case class RemoveLabelFromTaskCommand(id: CommandId[Task], aggregateRootId: TaskId, aggregateRootVersion: Int, label:LabelId) extends Command[Task] {
+  override def toString: String = super.toString() + s", label $label"
 }
 
 

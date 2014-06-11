@@ -48,6 +48,30 @@ class TaskEventJsonSerializerImplTest
         event.equals(deserialized)
     }
 
+    def "serializing and deserializing a TaskLabelRemovedEvent returns an equal instance"() {
+        given:
+        Event event = new TaskLabelRemovedEvent(taskEventId2, taskId1, 1, 2, TIME_BEFORE, LabelId.generateId());
+
+        when:
+        String serializedEvent = sut.serializeEvent(event);
+        Event deserialized = sut.parseEvent(serializedEvent);
+
+        then:
+        event.equals(deserialized)
+    }
+
+    def "serializing and deserializing a TaskLabeledEvent returns an equal instance"() {
+        given:
+        Event event = new TaskLabeledEvent(taskEventId2, taskId1, 1, 2, TIME_BEFORE, LabelId.generateId());
+
+        when:
+        String serializedEvent = sut.serializeEvent(event);
+        Event deserialized = sut.parseEvent(serializedEvent);
+
+        then:
+        event.equals(deserialized)
+    }
+
     def "serializing and deserializing a TaskCreatedEvents returns an equal instance"() {
         given:
         TaskCreatedEvent event = new TaskCreatedEvent(taskEventId2, taskId1, 0, 1, TIME_BEFORE, "my new title", "my description");

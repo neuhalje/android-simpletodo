@@ -19,6 +19,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.label.LabelContentProvider;
 import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.label.LabelTableImpl;
+import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.LabelsForTaskTable;
+import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.LabelsForTaskTableImpl;
 import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoContentProvider;
 import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoTableImpl;
 import name.neuhalfen.todosimple.android.infrastructure.db.eventstore.EventStoreTableImpl;
@@ -26,7 +28,7 @@ import name.neuhalfen.todosimple.android.infrastructure.db.eventstore.EventStore
 public class TodoSQLiteHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "todotable.db";
-    private static final int DATABASE_VERSION = TodoContentProvider.TodoTable.TABLE_VERSION + EventStoreTableImpl.Table.TABLE_VERSION + LabelContentProvider.LabelTable.TABLE_VERSION;
+    private static final int DATABASE_VERSION = TodoContentProvider.TodoTable.TABLE_VERSION + EventStoreTableImpl.Table.TABLE_VERSION + LabelContentProvider.LabelTable.TABLE_VERSION + LabelsForTaskTable.TABLE_VERSION;
 
     public TodoSQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -35,6 +37,7 @@ public class TodoSQLiteHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         TodoTableImpl.onCreate(db);
+        LabelsForTaskTableImpl.onCreate(db);
         LabelTableImpl.onCreate(db);
         EventStoreTableImpl.onCreate(db);
     }
@@ -43,6 +46,7 @@ public class TodoSQLiteHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         TodoTableImpl.onUpgrade(db, oldVersion, newVersion);
         LabelTableImpl.onUpgrade(db, oldVersion, newVersion);
+        LabelsForTaskTableImpl.onUpgrade(db,oldVersion,newVersion);
         EventStoreTableImpl.onUpgrade(db, oldVersion, newVersion);
     }
 }

@@ -77,7 +77,7 @@ public class LabelContentProviderImpl extends ContentProvider implements LabelCo
         checkColumns(projection);
 
         // Set the table
-        queryBuilder.setTables(LabelTableImpl.TABLE_LABELS);
+        queryBuilder.setTables(LabelTableImpl.TABLE_NAME);
 
         int uriType = sURIMatcher.match(uri);
         switch (uriType) {

@@ -22,7 +22,7 @@ public class TodoTableImpl implements TodoContentProvider.TodoTable {
     public static final String TABLE_TODOS = "todos";
 
     // Database creation sql statement
-    private static final String DATABASE_CREATE = "create table "
+    private static final String DATABASE_CREATE_TODOS = "create table "
             + TABLE_TODOS + "(" + COLUMN_ID
             + " integer primary key autoincrement, "
             + COLUMN_AGGREGATE_ID + " text not null unique,"
@@ -33,8 +33,7 @@ public class TodoTableImpl implements TodoContentProvider.TodoTable {
 
 
     public static void onCreate(SQLiteDatabase database) {
-        database.execSQL(DATABASE_CREATE);
-
+        database.execSQL(DATABASE_CREATE_TODOS);
     }
 
     public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

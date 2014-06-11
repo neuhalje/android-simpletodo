@@ -36,7 +36,7 @@ public class LabelQueryServiceImpl implements LabelQueryService {
             SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
 
             // Set the table
-            queryBuilder.setTables(LabelTableImpl.TABLE_LABELS);
+            queryBuilder.setTables(LabelTableImpl.TABLE_NAME);
             Cursor cursor = queryBuilder.query(db, new String[]{LabelContentProvider.LabelTable.COLUMN_AGGREGATE_ID, LabelContentProvider.LabelTable.COLUMN_TITLE}, LabelContentProvider.LabelTable.COLUMN_TITLE + "=?", new String[]{labelText}, null, null, null);
 
             if (cursor.isAfterLast()) {

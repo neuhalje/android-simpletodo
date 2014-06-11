@@ -55,11 +55,11 @@ public class LabelTableDatabaseViewManager implements DatabaseViewManager<Label>
 
     private void handleLabelDeletedEvent(SQLiteToTransactionAdapter txAdapter, SQLiteDatabase db, LabelDeletedEvent evt) {
         String whereClause = COLUMN_AGGREGATE_ID + "='" + evt.aggregateRootId().toString() + "' AND " + COLUMN_AGGREGATE_VERSION + " = " + evt.originalAggregateRootVersion();
-        int rowsDeleted = db.delete(LabelTableImpl.TABLE_LABELS,
+        int rowsDeleted = db.delete(LabelTableImpl.TABLE_NAME,
                 whereClause,
                 null);
         if (rowsDeleted != 1) {
-            Log.e(LOG_TAG, String.format("Could not update (delete) view %s: Where clause \"%s\" matched %d rows (should match exactly 1).", LabelTableImpl.TABLE_LABELS, whereClause, rowsDeleted));
+            Log.e(LOG_TAG, String.format("Could not update (delete) view %s: Where clause \"%s\" matched %d rows (should match exactly 1).", LabelTableImpl.TABLE_NAME, whereClause, rowsDeleted));
             txAdapter.rollback();
             throw new RuntimeException("Could not update (delete)  view, maybe a race condition with the version?");
         }
@@ -73,12 +73,12 @@ public class LabelTableDatabaseViewManager implements DatabaseViewManager<Label>
         // final String[] whereArgs = {evt.aggregateRootId().toString(), "" + evt.originalAggregateRootVersion()};
 
         String whereClause = COLUMN_AGGREGATE_ID + "='" + evt.aggregateRootId().toString() + "' AND " + COLUMN_AGGREGATE_VERSION + " = " + evt.originalAggregateRootVersion();
-        int rowsUpdated = db.update(LabelTableImpl.TABLE_LABELS,
+        int rowsUpdated = db.update(LabelTableImpl.TABLE_NAME,
                 values,
                 whereClause,
                 null);
         if (rowsUpdated != 1) {
-            Log.e(LOG_TAG, String.format("Could not update view %s: Where clause \"%s\" matched %d rows (should match exactly 1).", LabelTableImpl.TABLE_LABELS, whereClause, rowsUpdated));
+            Log.e(LOG_TAG, String.format("Could not update view %s: Where clause \"%s\" matched %d rows (should match exactly 1).", LabelTableImpl.TABLE_NAME, whereClause, rowsUpdated));
             txAdapter.rollback();
             throw new RuntimeException("Could not update view, maybe a race condition with the version?");
         }
@@ -88,7 +88,7 @@ public class LabelTableDatabaseViewManager implements DatabaseViewManager<Label>
         values.put(COLUMN_AGGREGATE_ID, evt.aggregateRootId().toString());
         values.put(COLUMN_TITLE, evt.title());
 
-        long id = db.insert(LabelTableImpl.TABLE_LABELS, null, values);
+        long id = db.insert(LabelTableImpl.TABLE_NAME, null, values);
 
         Uri uriWithId = LabelContentProvider.Factory.forContentProvider_Id(id);
         context.getContentResolver().notifyChange(uriWithId, null);

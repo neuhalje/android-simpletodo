@@ -22,7 +22,7 @@ object Task extends AggregateFactory[Task, Event[Task]] {
 
 
   override def applyEvent = {
-    case event: TaskCreatedEvent => Task(event.aggregateRootId, event.newAggregateRootVersion, event :: Nil, event.title, event.description, EntityState.CREATED)
+    case event: TaskCreatedEvent => Task(event.aggregateRootId, event.newAggregateRootVersion, event :: Nil, event.title, event.description, Set[LabelId](),  EntityState.CREATED)
     case event => unhandled(event)
   }
 
@@ -30,7 +30,7 @@ object Task extends AggregateFactory[Task, Event[Task]] {
     applyEvent(new TaskCreatedEvent(EventId.generateId(), command.aggregateRootId, 0, 1, DateTime.now(), command.title, command.description))
   }
 
-  override def newInstance = new Task(null, 0, List[Event[Task]](), "", "", EntityState.NOT_CREATED)
+  override def newInstance = new Task(null, 0, List[Event[Task]](), "", "", Set[LabelId](), EntityState.NOT_CREATED)
 }
 
 case class Task(
@@ -39,6 +39,7 @@ case class Task(
                  _uncommittedEvents: List[Event[Task]],
                  _title: String,
                  _description: String,
+                 labels: Set[LabelId],
                  state: EntityState
                  ) extends AggregateRoot[Task, Event[Task]] {
 
@@ -51,6 +52,9 @@ case class Task(
       case c: CreateTaskCommand => createTask(c)
       case c: RenameTaskCommand => renameTask(c)
       case c: DeleteTaskCommand => deleteTask(c)
+      case c: LabelTaskCommand => labelTask(c)
+      case c: RemoveLabelFromTaskCommand => unlabelTask(c)
+
     }
   }
 
@@ -90,6 +94,32 @@ case class Task(
     }
   }
 
+  private def labelTask(command: LabelTaskCommand): Task = {
+    requireCorrectAggregateId(command.aggregateRootId)
+    requireCorrectAggregateVersion(command.aggregateRootVersion)
+    requireState(EntityState.CREATED)
+
+    val label: LabelId = command.label
+    if (labels.contains(label)) {
+      this
+    } else {
+      applyEvent(new TaskLabeledEvent(EventId.generateId(), id, version, version + 1, DateTime.now(), label))
+    }
+  }
+
+  private def unlabelTask(command: RemoveLabelFromTaskCommand): Task = {
+    requireCorrectAggregateId(command.aggregateRootId)
+    requireCorrectAggregateVersion(command.aggregateRootVersion)
+    requireState(EntityState.CREATED)
+
+    val label: LabelId = command.label
+    if (labels.contains(label)) {
+      applyEvent(new TaskLabelRemovedEvent(EventId.generateId(), id, version, version + 1, DateTime.now(), label))
+    } else {
+      this
+    }
+  }
+
   override def applyEvent = {
     case event: Event[Task] => {
       // The guard needs to let through "task created" events.
@@ -99,13 +129,18 @@ case class Task(
 
       event match {
         case TaskCreatedEvent(_, aggregateRootId, _, newAggregateVersion, _, newTitle, newDescription) =>
-          copy(aggregateRootId, newAggregateVersion, _uncommittedEvents :+ event, newTitle, newDescription, EntityState.CREATED)
+          copy(aggregateRootId, newAggregateVersion, _uncommittedEvents :+ event, newTitle, newDescription,labels, EntityState.CREATED)
 
         case TaskRenamedEvent(_, _, _, newAggregateVersion, _, newTitle, newDescription) =>
-          copy(id, newAggregateVersion, _uncommittedEvents :+ event, newTitle, newDescription, state)
+          copy(id, newAggregateVersion, _uncommittedEvents :+ event, newTitle, newDescription, labels,state)
 
-        case TaskDeletedEvent(_, _, _, newAggregateVersion, _) =>
-          copy(id, newAggregateVersion, _uncommittedEvents :+ event, _title, _description, EntityState.DELETED)
+        case TaskDeletedEvent(_, _, _, newAggregateVersion,_) =>
+          copy(id, newAggregateVersion, _uncommittedEvents :+ event, _title, _description,labels, EntityState.DELETED)
+
+        case TaskLabeledEvent(_, _, _, newAggregateVersion,_, label) =>
+          copy(id, newAggregateVersion, _uncommittedEvents :+ event, _title, _description,labels + label, state)
+        case TaskLabelRemovedEvent(_, _, _, newAggregateVersion,_, label) =>
+          copy(id, newAggregateVersion, _uncommittedEvents :+ event, _title, _description,labels - label, state)
       }
     }
   }

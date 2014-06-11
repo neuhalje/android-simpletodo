@@ -91,6 +91,7 @@ public class TaskEventJsonSerializerImpl implements EventJsonSerializer<Task> {
         protected static final String NEW_TITLE = "newTitle";
         protected static final String DESCRIPTION = "description";
         protected static final String NEW_DESCRIPTION = "newDescription";
+        protected static final String LABEL = "label";
 
         public abstract T parseEvent(JSONObject eventJson) throws JSONException;
 
@@ -155,6 +156,50 @@ public class TaskEventJsonSerializerImpl implements EventJsonSerializer<Task> {
             return new TaskRenamedEvent(objectEventId, TaskId.fromString(aggregateId), originalAggregateVersion, newAggregateVersion, timestampFormatter.parseDateTime(occurredAt), newTitle, newDescription);
         }
     }
+    private final class TaskLabeledEventSerializer extends BaseEventSerializer<TaskLabeledEvent> {
+
+        public void serializeEvent(JSONObject dest, TaskLabeledEvent event) throws JSONException {
+            super.serializeEvent(dest, event);
+            dest.put(LABEL, event.label());
+        }
+
+        @Override
+        public TaskLabeledEvent parseEvent(JSONObject eventJson) throws JSONException {
+            final String aggregateId = eventJson.getString(AGGREGATEID);
+            final String eventId = eventJson.getString(EVENTID);
+            final int newAggregateVersion = eventJson.getInt(NEW_AGGREGATE_VERSION);
+            final int originalAggregateVersion = eventJson.getInt(ORIGINAL_AGGREGATE_VERSION);
+
+            final String occurredAt = eventJson.getString(OCCURRED_AT);
+            final String labelIdStr = eventJson.getString(LABEL);
+            final LabelId labelId = LabelId.fromString(labelIdStr);
+
+            final EventId<Task> objectEventId = EventId.fromString(eventId);
+            return new TaskLabeledEvent(objectEventId, TaskId.fromString(aggregateId), originalAggregateVersion, newAggregateVersion, timestampFormatter.parseDateTime(occurredAt), labelId);
+        }
+    }
+    private final class TaskLabelRemovedEventSerializer extends BaseEventSerializer<TaskLabelRemovedEvent> {
+
+        public void serializeEvent(JSONObject dest, TaskLabelRemovedEvent event) throws JSONException {
+            super.serializeEvent(dest, event);
+            dest.put(LABEL, event.label());
+        }
+
+        @Override
+        public TaskLabelRemovedEvent parseEvent(JSONObject eventJson) throws JSONException {
+            final String aggregateId = eventJson.getString(AGGREGATEID);
+            final String eventId = eventJson.getString(EVENTID);
+            final int newAggregateVersion = eventJson.getInt(NEW_AGGREGATE_VERSION);
+            final int originalAggregateVersion = eventJson.getInt(ORIGINAL_AGGREGATE_VERSION);
+
+            final String occurredAt = eventJson.getString(OCCURRED_AT);
+            final String labelIdStr = eventJson.getString(LABEL);
+            final LabelId labelId = LabelId.fromString(labelIdStr);
+
+            final EventId<Task> objectEventId = EventId.fromString(eventId);
+            return new TaskLabelRemovedEvent(objectEventId, TaskId.fromString(aggregateId), originalAggregateVersion, newAggregateVersion, timestampFormatter.parseDateTime(occurredAt), labelId);
+        }
+    }
 
     private final class TaskDeletedEventSerializer extends BaseEventSerializer<TaskDeletedEvent> {
 
@@ -182,5 +227,7 @@ public class TaskEventJsonSerializerImpl implements EventJsonSerializer<Task> {
         map.put(TaskCreatedEvent.class.getSimpleName(), new TaskCreatedEventSerializer());
         map.put(TaskRenamedEvent.class.getSimpleName(), new TaskRenamedEventSerializer());
         map.put(TaskDeletedEvent.class.getSimpleName(), new TaskDeletedEventSerializer());
+        map.put(TaskLabeledEvent.class.getSimpleName(), new TaskLabeledEventSerializer());
+        map.put(TaskLabelRemovedEvent.class.getSimpleName(), new TaskLabelRemovedEventSerializer());
     }
 }
