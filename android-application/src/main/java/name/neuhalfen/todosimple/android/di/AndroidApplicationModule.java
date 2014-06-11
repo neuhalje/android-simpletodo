@@ -29,9 +29,7 @@ import name.neuhalfen.todosimple.android.infrastructure.db.SQLiteToTransactionAd
 import name.neuhalfen.todosimple.android.infrastructure.db.TodoSQLiteHelper;
 import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.DatabaseViewManager;
 import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.label.*;
-import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoContentProviderImpl;
-import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoTableDatabaseViewManager;
-import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.TodoUriResolver;
+import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.*;
 import name.neuhalfen.todosimple.android.infrastructure.db.eventstore.AndroidEventStore;
 import name.neuhalfen.todosimple.android.infrastructure.db.eventstore.EventStoreTable;
 import name.neuhalfen.todosimple.android.infrastructure.db.eventstore.json.LabelEventJsonSerializerImpl;
@@ -52,7 +50,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-@Module(library = true, complete = true, injects = {AndroidEventStore.class, TodoContentProviderImpl.class, LabelContentProviderImpl.class, AndroidEventPublisher.class, SQLiteToTransactionAdapter.class, TaskEventJsonSerializerImpl.class, LabelEventJsonSerializerImpl.class, LabelQueryServiceImpl.class}, includes = EventBusModule.class)
+@Module(library = true, complete = true, injects = {AndroidEventStore.class, TodoContentProviderImpl.class, LabelContentProviderImpl.class, AndroidEventPublisher.class, SQLiteToTransactionAdapter.class, TaskEventJsonSerializerImpl.class, LabelEventJsonSerializerImpl.class, LabelQueryServiceImpl.class, LabelsForTaskQueryServiceImpl.class}, includes = EventBusModule.class)
 public class AndroidApplicationModule {
     private final TodoApplication application;
 
@@ -240,6 +238,13 @@ public class AndroidApplicationModule {
     @ForApplication
     LabelQueryService provideLabelQueryService() {
         return application.get(LabelQueryServiceImpl.class);
+    }
+
+    @Provides
+    @Singleton
+    @ForApplication
+    LabelsForTaskQueryService provideLabelsForTaskQueryService(LabelsForTaskQueryServiceImpl impl) {
+        return impl;
     }
     /*
     @Provides @Singleton LocationManager provideLocationManager() {

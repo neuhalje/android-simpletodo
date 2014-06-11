@@ -52,6 +52,7 @@ public class LabelsForTaskQueryServiceImpl implements LabelsForTaskQueryService 
                     final LabelDTO label = new LabelDTO(LabelId.fromString(labelId), labelTitle);
 
                     set.add(label);
+                    cursor.moveToNext();
                 }
                 return set;
             }

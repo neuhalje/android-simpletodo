@@ -28,6 +28,8 @@ import mortar.ViewPresenter;
 import name.neuhalfen.todosimple.android.R;
 import name.neuhalfen.todosimple.android.di.ForApplication;
 import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.label.LabelQueryService;
+import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.LabelsForTaskQueryService;
+import name.neuhalfen.todosimple.android.infrastructure.db.dbviews.todo.LabelsForTaskTable;
 import name.neuhalfen.todosimple.android.view.base.ActionBarOwner;
 import name.neuhalfen.todosimple.android.view.base.Main;
 import name.neuhalfen.todosimple.android.view.base.notification.ViewShowNotificationCommand;
@@ -40,6 +42,8 @@ import scala.Option;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import java.util.Set;
 
 import static name.neuhalfen.todosimple.helper.Preconditions.checkNotNull;
 
@@ -121,12 +125,13 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
         private final Context context;
         private final LabelManagingApplication labelApp;
         private final LabelQueryService labelQueryService;
+        private final LabelsForTaskQueryService labelsForTaskQuery;
 
         private Cmd cmd;
 
 
         @Inject
-        Presenter(@ForApplication TaskManagingApplication taskApp, @ForApplication LabelManagingApplication labelApp, TaskDTOAdapter taskDTOAdapter, @ForApplication EventBus eventBus, ActionBarOwner actionBar, Cmd initialCommand, Flow flow, @ForApplication Context context, @ForApplication LabelQueryService labelQueryService) {
+        Presenter(@ForApplication TaskManagingApplication taskApp, @ForApplication LabelManagingApplication labelApp, TaskDTOAdapter taskDTOAdapter, @ForApplication EventBus eventBus, ActionBarOwner actionBar, Cmd initialCommand, Flow flow, @ForApplication Context context, @ForApplication LabelQueryService labelQueryService,  @ForApplication LabelsForTaskQueryService labelsForTaskQuery) {
             this.taskApp = taskApp;
             this.taskDTOAdapter = taskDTOAdapter;
             this.actionBar = actionBar;
@@ -136,6 +141,7 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
             this.context = context;
             this.labelApp = labelApp;
             this.labelQueryService = labelQueryService;
+            this.labelsForTaskQuery = labelsForTaskQuery;
         }
 
         @Override
@@ -174,6 +180,11 @@ public class DetailScreen implements HasParent<TaskListScreen>, Blueprint {
 
                 takeCommand(this.cmd);
                 view.fillLabelDropdown();
+
+                final Set<LabelDTO> assignedLabels = labelsForTaskQuery.findByTask(cmd.taskId);
+                for (LabelDTO assignedLabel : assignedLabels) {
+                    view.showLabelAssigned(assignedLabel);
+                }
             }
         }
 
