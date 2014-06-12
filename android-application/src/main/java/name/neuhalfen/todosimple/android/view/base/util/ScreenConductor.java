@@ -31,8 +31,8 @@ import static android.view.animation.AnimationUtils.loadAnimation;
  * A conductor that can swap subviews within a container view.
  * <p/>
  *
- * @param <S> the type of the screens that serve as a {@link mortar.Blueprint} for subview. Must
- *            be annotated with {@link flow.Layout}, suitable for use with {@link flow.Layouts#createView}.
+ * @param <S> the type of the screens that serve as a {@link Blueprint} for subview. Must
+ * be annotated with {@link flow.Layout}, suitable for use with {@link flow.Layouts#createView}.
  */
 public class ScreenConductor<S extends Blueprint> implements CanShowScreen<S> {
 
@@ -41,7 +41,7 @@ public class ScreenConductor<S extends Blueprint> implements CanShowScreen<S> {
 
     /**
      * @param container the container used to host child views. Typically this is a {@link
-     *                  android.widget.FrameLayout} under the action bar.
+     * android.widget.FrameLayout} under the action bar.
      */
     public ScreenConductor(Context context, ViewGroup container) {
         this.context = context;
@@ -62,7 +62,7 @@ public class ScreenConductor<S extends Blueprint> implements CanShowScreen<S> {
                 return;
             }
 
-            oldChildScope.destroy();
+            myScope.destroyChild(oldChildScope);
         }
 
         // Create the new child.
@@ -79,8 +79,7 @@ public class ScreenConductor<S extends Blueprint> implements CanShowScreen<S> {
     protected void setAnimation(Flow.Direction direction, View oldChild, View newChild) {
         if (oldChild == null) return;
 
-        int out = direction == Flow.Direction.FORWARD ?
-                R.anim.slide_out_left : R.anim.slide_out_right;
+        int out = direction == Flow.Direction.FORWARD ? R.anim.slide_out_left : R.anim.slide_out_right;
         int in = direction == Flow.Direction.FORWARD ? R.anim.slide_in_right : R.anim.slide_in_left;
 
         oldChild.setAnimation(loadAnimation(context, out));

@@ -256,7 +256,8 @@ public class BaseActivity extends Activity implements ActionBarOwner.View {
 
         // activityScope may be null in case isWrongInstance() returned true in onCreate()
         if (isFinishing() && activityScope != null) {
-            activityScope.destroy();
+            MortarScope parentScope = Mortar.getScope(getApplication());
+            parentScope.destroyChild(activityScope);
             activityScope = null;
         }
     }

@@ -59,7 +59,7 @@ android {
 }
 
 dependencies {
-    def butterknifeVersion = "5.0.1+"
+    def butterknifeVersion = "5.1.0"
 
     compile project.ext.shareddeps['dagger_rt']
     apt project.ext.shareddeps['dagger_apt']
@@ -71,8 +71,8 @@ dependencies {
 
     compile 'org.apache.commons:commons-lang3:3.3.2'
 
-    compile 'com.squareup.flow:flow:0.6'
-    compile 'com.squareup.mortar:mortar:0.14'
+    compile 'com.squareup.flow:flow:0.7'
+    compile 'com.squareup.mortar:mortar:0.16'
 
     compile "com.netflix.rxjava:rxjava-core:0.14.7"
     compile "com.google.code.gson:gson:2.2.4"

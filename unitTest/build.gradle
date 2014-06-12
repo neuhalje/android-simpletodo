@@ -23,7 +23,7 @@ android {
 }
 
 dependencies {
-    testCompile 'org.codehaus.groovy:groovy-all:1.8.+'
+    testCompile 'org.codehaus.groovy:groovy-all:1.8.9'
     testCompile 'org.robospock:robospock:0.4'
 }
 
