@@ -177,7 +177,7 @@ public class LabelListView extends RelativeLayout {
         }
         if (null != tobeRemoved) {
             allLabelViews.remove(tobeRemoved);
-            buildLabelRows(allLabelViews, getContext());
+            requestLayout();
         }
     }
 
@@ -210,15 +210,20 @@ public class LabelListView extends RelativeLayout {
                     }
                 });
 
-
-        buildLabelRows(allLabelViews, getContext());
-        invalidate();
+        requestLayout();
     }
 
     private void onLabelClicked(LabelDTO label) {
         if (presenter != null) {
             presenter.onLabelClicked(label);
         }
+    }
+
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        buildLabelRows(allLabelViews, getContext(), right-left);
+        super.onLayout(changed, left, top, right, bottom);
     }
 
     /**
@@ -278,7 +283,7 @@ public class LabelListView extends RelativeLayout {
             } else {
                 params.addRule(RelativeLayout.RIGHT_OF, lastAddedViewId);
             }
-            params.setMargins(marginLeft,marginTop,0,0);
+            params.setMargins(marginLeft, marginTop, 0, 0);
 
             view.setId(currentViewId);
             layout.addView(view, params);
@@ -304,10 +309,8 @@ public class LabelListView extends RelativeLayout {
         }
     }
 
-    private void buildLabelRows(List<Button> views, Context context) {
+    private void buildLabelRows(List<Button> views, Context context, int maxWidth) {
         removeAllLabelRowsAndViews(views);
-
-        final int maxWidth = this.getMeasuredWidth() - marginMedium;
 
         final Rows rows = new Rows(maxWidth, this, marginSmall, marginSmall);
 
@@ -321,8 +324,6 @@ public class LabelListView extends RelativeLayout {
                 rows.append(view, viewMeasuredWidth);
             }
         }
-
-        requestLayout();
     }
 
     private void removeAllLabelRowsAndViews(List<Button> views) {

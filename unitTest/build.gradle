@@ -4,26 +4,30 @@ buildscript {
         maven {
             url "https://oss.sonatype.org/content/repositories/snapshots/"
         }
+        mavenLocal()
     }
     dependencies {
-        classpath 'com.novoda:gradle-android-test-plugin:0.9.3-SNAPSHOT'
+        classpath 'com.novoda:gradle-android-test-plugin:0.9.9-SNAPSHOT'
     }
 }
 
 apply plugin: 'groovy'
-apply plugin: 'idea'
-apply plugin: 'android-test'
+//apply plugin: 'idea'
+//apply plugin: 'android-test'
+
+test.reports.html.enabled = false     // just clean up dashboard from not generated reports
+test.reports.junitXml.enabled = false // just clean up dashboard from not generated reports
+
 
 repositories {
     mavenCentral()
-}
-
-android {
-    projectUnderTest ':android-application'
+        mavenLocal()
 }
 
 dependencies {
-    testCompile 'org.codehaus.groovy:groovy-all:1.8.9'
-    testCompile 'org.robospock:robospock:0.4'
+    // testCompile 'org.codehaus.groovy:groovy-all:1.8.9'
+    testCompile 'org.robospock:robospock:0.5'
 }
+
+tasks["compileJava"].dependsOn ":android-application:zip2jar"
 

@@ -2,13 +2,17 @@
 
 buildscript {
     repositories {
-        mavenCentral()
+         mavenCentral()
+         maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+         mavenLocal()
     }
 }
 
 allprojects {
     repositories {
-        mavenCentral()
+         mavenCentral()
+         maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+         mavenLocal()
     }
 
     def daggerVersion = "1.2.1"
@@ -23,6 +27,6 @@ allprojects {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.11'
+    gradleVersion = '2.1'
 }
 
