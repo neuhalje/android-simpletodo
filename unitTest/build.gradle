@@ -13,7 +13,7 @@ buildscript {
 
 apply plugin: 'groovy'
 //apply plugin: 'idea'
-//apply plugin: 'android-test'
+apply plugin: 'android-test'
 
 test.reports.html.enabled = false     // just clean up dashboard from not generated reports
 test.reports.junitXml.enabled = false // just clean up dashboard from not generated reports
@@ -25,9 +25,9 @@ repositories {
 }
 
 dependencies {
-    // testCompile 'org.codehaus.groovy:groovy-all:1.8.9'
-    testCompile 'org.robospock:robospock:0.5'
+    testCompile 'org.codehaus.groovy:groovy-all:1.8.9'
+    testCompile 'org.robospock:robospock:0.4.4'
 }
 
-tasks["compileJava"].dependsOn ":android-application:zip2jar"
-
+//tasks["compileJava"].dependsOn ":android-application:zip2jar"
+tasks["compileJava"].dependsOn project(":android-application").tasks["assembleDebug"]
