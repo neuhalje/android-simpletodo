@@ -37,7 +37,8 @@ dependencies {
     testCompile 'org.codehaus.groovy:groovy-all:1.8.9'
     testCompile 'org.robospock:robospock:0.4.4'
 
-    compile 'com.squareup.flow:flow:0.7'
+    testCompile 'com.squareup.flow:flow:0.7'
+    testCompile 'com.squareup.mortar:mortar:0.16'
     testCompile "com.google.code.gson:gson:2.2.4"
 }
 
