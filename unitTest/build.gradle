@@ -1,33 +1,44 @@
+apply plugin: 'groovy'
+
+def appProject  = project(":android-application")
+def domainProject  = project(":libraries:todo-domain")
+
 buildscript {
     repositories {
+        mavenLocal()
         mavenCentral()
         maven {
             url "https://oss.sonatype.org/content/repositories/snapshots/"
         }
-        mavenLocal()
     }
     dependencies {
         classpath 'com.novoda:gradle-android-test-plugin:0.9.9-SNAPSHOT'
     }
 }
 
-apply plugin: 'groovy'
 //apply plugin: 'idea'
-apply plugin: 'android-test'
+//apply plugin: 'android-test'
 
-test.reports.html.enabled = false     // just clean up dashboard from not generated reports
-test.reports.junitXml.enabled = false // just clean up dashboard from not generated reports
+//test.reports.html.enabled = false     // just clean up dashboard from not generated reports
+//test.reports.junitXml.enabled = false // just clean up dashboard from not generated reports
 
 
 repositories {
+    mavenLocal()
     mavenCentral()
-        mavenLocal()
 }
 
 dependencies {
+    testCompile appProject
+    testCompile fileTree(dir: appProject.file("build/libs"), include: "*.jar")
+
+    testCompile domainProject
+
     testCompile 'org.codehaus.groovy:groovy-all:1.8.9'
     testCompile 'org.robospock:robospock:0.4.4'
+
+    compile 'com.squareup.flow:flow:0.7'
+    testCompile "com.google.code.gson:gson:2.2.4"
 }
 
-//tasks["compileJava"].dependsOn ":android-application:zip2jar"
-tasks["compileJava"].dependsOn project(":android-application").tasks["assembleDebug"]
+tasks["test"].dependsOn ":android-application:zip2jar"
