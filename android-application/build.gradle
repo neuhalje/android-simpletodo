@@ -6,7 +6,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.13.2'
+        classpath 'com.android.tools.build:gradle:0.13.3'
         classpath "com.jimdo.gradle:gradle-apt-plugin:0.5-SNAPSHOT"
     }
 }
@@ -59,7 +59,7 @@ android {
 }
 
 dependencies {
-    def butterknifeVersion = "5.1.0"
+    def butterknifeVersion = "5.1.2"
     compile project.ext.shareddeps['dagger_rt']
     apt project.ext.shareddeps['dagger_apt']
     compile project.ext.shareddeps['joda_time']

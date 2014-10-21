@@ -15,7 +15,7 @@ allprojects {
          mavenLocal()
     }
 
-    def daggerVersion = "1.2.1"
+    def daggerVersion = "1.2.2"
 
     project.ext.shareddeps = [
             eventbus  : ['de.greenrobot:eventbus:2.2.1'],
