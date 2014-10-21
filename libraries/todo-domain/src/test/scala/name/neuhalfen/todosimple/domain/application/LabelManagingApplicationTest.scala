@@ -35,7 +35,7 @@ class LabelManagingApplicationTest extends UnitSpec {
   }
 
 
-  it should " update a task " in {
+  it should " update a renamed label " in {
 
     val createLabelCommand: CreateLabelCommand = Commands.createLabel("label title")
     labelApp.executeCommand(createLabelCommand)
@@ -48,7 +48,7 @@ class LabelManagingApplicationTest extends UnitSpec {
     t.version should be(renameLabelCommand.aggregateRootVersion + 1)
   }
 
-  it should "fail, when the command targets the wrong version" in {
+  it should "fail, when any command targets the wrong version" in {
 
     val createLabelCommand: CreateLabelCommand = Commands.createLabel("task title")
     labelApp.executeCommand(createLabelCommand)
