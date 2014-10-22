@@ -23,8 +23,9 @@ trait EventPublisher[ENTITY] {
    *
    * The object implementing this method can use the events to e.g. inform the user.
    *
+   * @deprecated "Marker to remind me to think of something better."
    * @param events
    */
-  @Deprecated
+  @Deprecated()
   def publishEventsAfterCommit(events: Seq[Event[ENTITY]]): Unit
 }

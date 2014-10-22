@@ -5,6 +5,13 @@ import name.neuhalfen.todosimple.domain.infrastructure.{TransactionRollbackExcep
 import name.neuhalfen.todosimple.domain.model._
 import scala.Some
 
+/**
+ * A cache for aggregate roots. In case of cache misses, the entity is loaded from the storage backend.
+ *
+ * A 'do nothing' implementation is a valid implementation.
+ *
+ * @tparam T Aggregate Type
+ */
 trait Cache[T <: AggregateRoot[T, Event[T]]] {
 
   def put(aggregate: T): Unit
@@ -35,14 +42,20 @@ abstract class CommandExecutionApplication[ENTITY <: AggregateRoot[ENTITY, Event
 
       val loadedEntity: Option[ENTITY] = cache.get(aggregateId).orElse(loadFromEventStore(aggregateId))
 
+      // if the entity is not found, try to execute the commands against a fresh entity. The entity will check the
+      // validity of the command.
       val entity = loadedEntity.getOrElse(newEntityInstance)
+
       val augementedEntity = entity.handle(command)
 
       val uncommittedEVTs: Seq[Event[ENTITY]] = augementedEntity.uncommittedEVTs
       eventStore.appendEvents(augementedEntity.id, uncommittedEVTs)
       eventPublishing.publishEventsInTransaction(uncommittedEVTs)
+
       tx.commit()
+
       cache.put(augementedEntity.markCommitted)
+
       publishEventsAfterCommitIgnoreExceptions(uncommittedEVTs)
     } catch {
       // FIXME: Make error reports better ...
