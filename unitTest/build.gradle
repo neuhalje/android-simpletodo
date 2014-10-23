@@ -1,7 +1,6 @@
 apply plugin: 'groovy'
 
-def appProject  = project(":android-application")
-def domainProject  = project(":libraries:todo-domain")
+
 
 buildscript {
     repositories {
@@ -16,6 +15,11 @@ buildscript {
     }
 }
 
+def appProject = project(":android-application")
+def appProjectCompileDependencies = appProject.configurations['compile'].dependencies
+def domainProject = project(":libraries:todo-domain")
+
+
 //apply plugin: 'idea'
 //apply plugin: 'android-test'
 
@@ -29,17 +33,33 @@ repositories {
 }
 
 dependencies {
+
     testCompile appProject
+    testCompile domainProject
+
+    // add all dependencies of the app.
+    // FIXME: There must be a better way to do this!
+    for (cd in appProjectCompileDependencies) {
+
+        def sn = cd.getClass().getSimpleName();
+
+        if (sn.equals("DefaultExternalModuleDependency_Decorated")) {
+
+            testCompile(group: cd.group, name: cd.name, version: cd.version) {
+                // exclusion is not neccessary, but generally a good idea.
+                exclude group: 'com.google.android', module: 'support-v4'
+                exclude group: 'com.android.support', module: 'support-v4'
+                transitive = false
+            }
+        }
+    }
+
     testCompile fileTree(dir: appProject.file("build/libs"), include: "*.jar")
 
-    testCompile domainProject
 
     testCompile 'org.codehaus.groovy:groovy-all:1.8.9'
     testCompile 'org.robospock:robospock:0.4.4'
 
-    testCompile 'com.squareup.flow:flow:0.7'
-    testCompile 'com.squareup.mortar:mortar:0.16'
-    testCompile "com.google.code.gson:gson:2.2.4"
 }
 
 tasks["test"].dependsOn ":android-application:zip2jar"
