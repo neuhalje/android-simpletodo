@@ -56,6 +56,10 @@ Branching & Feature Developement
 
 Is done via [gitflow](http://nvie.com/posts/a-successful-git-branching-model/). Also look [here](http://danielkummer.github.io/git-flow-cheatsheet/) for a nice cheat sheet.
                            
+IDE
+====
+
+I use intellij as IDE. My dev OS is (now) Ubuntu. To make everything work smooth, make sure that the OpenJDK is used (try `update-java-alternatives`). The Oracle java does not work well with intellij.
                            
 CAVEATS
 =========
@@ -75,12 +79,12 @@ startup failed:
 ```
 
 Running/Debugging `unitTest`
----------------------
+------------------------------
 
 Running `unitTest` in IntelliJ fails with `IncompatibleClassChangeException`s. Debugging the gradle task `:unitTest:check` works though (sometimes the task has to run twice):
 
 ![IntelliJ configuration](website/IntelliJ_Run-unitTests.png)
-o
+
 
 LICENSE
 ============
