@@ -14,6 +14,7 @@ specific language governing permissions and limitations under the License.
  */
 package name.neuhalfen.todosimple.android.di;
 
+import android.app.Application;
 import android.content.Context;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -52,10 +53,12 @@ import java.util.Locale;
 
 @Module(library = true, complete = true, injects = {AndroidEventStore.class, TodoContentProviderImpl.class, LabelContentProviderImpl.class, AndroidEventPublisher.class, SQLiteToTransactionAdapter.class, TaskEventJsonSerializerImpl.class, LabelEventJsonSerializerImpl.class, LabelQueryServiceImpl.class, LabelsForTaskQueryServiceImpl.class}, includes = EventBusModule.class)
 public class AndroidApplicationModule {
-    private final TodoApplication application;
+    private final Context application;
+    private final Injector injector;
 
-    public AndroidApplicationModule(TodoApplication application) {
+    public AndroidApplicationModule(Context application, Injector injector) {
         this.application = application;
+        this.injector = injector;
     }
 
     /**
@@ -165,13 +168,13 @@ public class AndroidApplicationModule {
     @Singleton
     @ForApplication
     TaskEventJsonSerializerImpl provideTaskEventJsonSerializer() {
-        return application.get(TaskEventJsonSerializerImpl.class);
+        return injector.get(TaskEventJsonSerializerImpl.class);
     }
     @Provides
     @Singleton
     @ForApplication
     LabelEventJsonSerializerImpl provideLabelEventJsonSerializer() {
-        return application.get(LabelEventJsonSerializerImpl.class);
+        return injector.get(LabelEventJsonSerializerImpl.class);
     }
 
     @Provides
@@ -237,7 +240,7 @@ public class AndroidApplicationModule {
     @Singleton
     @ForApplication
     LabelQueryService provideLabelQueryService() {
-        return application.get(LabelQueryServiceImpl.class);
+        return injector.get(LabelQueryServiceImpl.class);
     }
 
     @Provides

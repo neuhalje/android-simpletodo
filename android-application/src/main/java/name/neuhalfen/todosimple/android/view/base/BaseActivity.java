@@ -99,7 +99,7 @@ public class BaseActivity extends Activity implements ActionBarOwner.View {
     @ForApplication
     GlobalEntityCache<Label> labelCache;
 
-    private Flow mainFlow;
+    Flow mainFlow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

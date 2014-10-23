@@ -34,7 +34,6 @@ public class TodoApplication
     public void onCreate() {
         super.onCreate();
         rootScope = Mortar.createRootScope(BuildConfig.DEBUG, getApplicationGraph());
-        //rootScope = Mortar.createRootScope(BuildConfig.DEBUG);
     }
 
     public MortarScope getRootScope() {
@@ -43,7 +42,7 @@ public class TodoApplication
 
     protected List<Object> getModules() {
         return Arrays.asList(
-                (Object) new AndroidApplicationModule(this)
+                (Object) new AndroidApplicationModule(this,this)
         );
     }
 
